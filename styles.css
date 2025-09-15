@@ -45,10 +45,13 @@
   
   /* Brand font change only for the company name */
   .brand {
+    display: inline-flex; align-items: center; gap: 10px;
     font-family: "Manrope", system-ui, sans-serif;
     font-weight: 800;
     letter-spacing: .2px;
   }
+  .brand-mark { width: 28px; height: 28px; border-radius: 8px; }
+  
   nav a { margin-left: 18px; font-size: 14.5px; color: var(--muted); }
   nav a:hover { color: var(--text); }
   
@@ -64,13 +67,19 @@
   .btn-ghost { color: var(--text); background: transparent; border-color: var(--border); }
   .btn-ghost:hover { background: rgba(255,255,255,.04); }
   
-  /* Hero */
+  /* HERO with background photo + overlay */
   .hero {
     padding: 84px 0 42px;
     position: relative;
-    background:
-      radial-gradient(80rem 60rem at 50% -10%, rgba(34,211,238,.12), transparent 60%),
-      linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,.3) 100%);
+    color: var(--text);
+    /* Top overlay → photo → subtle glow */
+    background-image:
+      linear-gradient(180deg, rgba(15,23,42,.55), rgba(15,23,42,.65)),
+      url("images/hero.jpg"),
+      radial-gradient(80rem 60rem at 50% -10%, rgba(34,211,238,.12), transparent 60%);
+    background-size: auto, cover, auto;
+    background-position: center, center, center;
+    background-repeat: no-repeat, no-repeat, no-repeat;
     text-align: left;
   }
   .hero h1 {
@@ -102,14 +111,19 @@
   }
   .card:hover { transform: translateY(-2px); border-color: rgba(34,211,238,.28); }
   
+  /* Optional icon layout for cards */
+  .card-head { display: flex; align-items: center; gap: 10px; }
+  .icon { width: 36px; height: 36px; flex: 0 0 36px; filter: drop-shadow(0 2px 6px rgba(0,0,0,.25)); }
+  
   /* Process */
   .process-line {
     margin-top: 8px;
     font-size: clamp(18px, 2.2vw, 26px);
     font-weight: 800;
   }
-  /* Ensure no vertical blue line anywhere */
+  /* Ensure NO vertical blue line anywhere */
   blockquote, .process-line::before { border: 0 !important; content: none !important; }
+  
   .steps { margin-top: 18px; display: grid; gap: 16px; grid-template-columns: repeat(1, minmax(0,1fr)); }
   @media (min-width: 900px){ .steps { grid-template-columns: repeat(3,1fr);} }
   .step {
