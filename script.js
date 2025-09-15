@@ -12,8 +12,32 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   // Set current year in footer
   document.getElementById('year').textContent = new Date().getFullYear();
   
-  // Lazy-load all non-brand images by default
-  document.querySelectorAll('img:not(.brand-mark)').forEach(img => {
-    if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
-  });
+  // Progressive enhancement for Netlify Forms (AJAX submit)
+  const enquiryForm = document.querySelector('form[name="enquiry"]');
+  const statusEl = document.getElementById('enquiryStatus');
+  
+  function encode(data) {
+    return Object.keys(data)
+      .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(data[k]))
+      .join("&");
+  }
+  
+  if (enquiryForm && statusEl) {
+    enquiryForm.addEventListener('submit', async (e) => {
+      // Let Netlify handle it normally if JS fails
+      e.preventDefault();
+      const formData = new FormData(enquiryForm);
+      try {
+        await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: encode(Object.fromEntries(formData))
+        });
+        statusEl.textContent = "Thanks — your enquiry was sent.";
+        enquiryForm.reset();
+      } catch (err) {
+        statusEl.textContent = "Couldn’t send just now. Please try again.";
+      }
+    });
+  }
   

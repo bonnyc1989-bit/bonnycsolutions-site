@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <!-- Cache-bust -->
-  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
   <!-- Page wrapper (adds vertical white borders) -->
@@ -26,7 +26,7 @@
       <div class="nav-inner container">
         <a class="brand" href="#">
           <img src="images/logo.png" alt="BonnyCsolutions logo" class="brand-mark" width="28" height="28" />
-        <span>Bonny Contracting Solutions Pty Ltd</span>
+          <span>Bonny Contracting Solutions Pty Ltd</span>
         </a>
         <nav>
           <a href="#services">Services</a>
@@ -59,7 +59,8 @@
 
             <div class="cta-row">
               <a class="btn btn-primary" href="#contact">Get Started</a>
-              <a class="btn btn-ghost" href="#services">See Services</a>
+              <!-- Make this match the primary button -->
+              <a class="btn btn-primary" href="#services">See Services</a>
             </div>
 
             <p class="support">
@@ -129,6 +130,44 @@
         </div>
       </section>
 
+      <!-- ENQUIRY FORM (Netlify Forms) -->
+      <section id="enquiry" class="section">
+        <div class="container">
+          <h2>Quick Enquiry</h2>
+          <p>Have a question? Send us a note and we’ll reply within 1–3 business days.</p>
+
+          <form name="enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="enquiry-form">
+            <!-- Netlify required hidden field -->
+            <input type="hidden" name="form-name" value="enquiry" />
+            <!-- Honeypot -->
+            <input type="text" name="bot-field" class="hp-field" aria-hidden="true" tabindex="-1" autocomplete="off" />
+
+            <div class="grid">
+              <label class="field">
+                <span>Name</span>
+                <input type="text" name="name" required />
+              </label>
+
+              <label class="field">
+                <span>Email</span>
+                <input type="email" name="email" required />
+              </label>
+            </div>
+
+            <label class="field">
+              <span>Your message</span>
+              <textarea name="message" rows="6" required></textarea>
+            </label>
+
+            <div class="enquiry-actions">
+              <button type="submit" class="btn btn-primary">Send Enquiry</button>
+              <span class="enquiry-status" id="enquiryStatus" aria-live="polite"></span>
+            </div>
+          </form>
+          <!-- Tip: In Netlify → Forms → Notifications, add an Email notification to info@bonnycsolutions.com -->
+        </div>
+      </section>
+
       <!-- ABOUT -->
       <section id="about" class="section">
         <div class="container">
@@ -162,7 +201,7 @@
       </section>
     </main>
 
-    <!-- FOOTER (no tagline line) -->
+    <!-- FOOTER (no tagline) -->
     <footer class="footer">
       <div class="footer-inner container">
         <p>© <span id="year"></span> BonnyCsolutions. All rights reserved.</p>

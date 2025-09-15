@@ -1,6 +1,7 @@
 /* ================================
-   BonnyCsolutions – styles.css (v9)
-   Large hero (real <img>), big Contact watermark, borders/dividers, blue highlights
+   BonnyCsolutions – styles.css (v10)
+   Large hero (real <img>), enquiry form, strong Contact watermark,
+   vertical white borders & horizontal dividers, blue highlights
    ================================ */
 
    :root{
@@ -68,8 +69,8 @@
   .hero h1{ color:var(--brand-strong); }
   .section > .container > h2{ color:var(--brand); }  /* Services, Our Process, About, Contact */
   .card h3{ color:var(--brand); }                    /* card titles */
-  .process-line{ color:var(--brand); }               /* full line in blue */
-  .step h3{ color:var(--brand); }                    /* step titles in blue */
+  .process-line{ color:var(--brand); }               /* process headline in blue */
+  .step h3{ color:var(--brand); }                    /* step titles */
   
   /* Header */
   .nav{
@@ -98,18 +99,16 @@
   .btn:active{ transform:translateY(1px) scale(.99) }
   .btn-primary{ color:#0b1220; background:var(--white); border-color:rgba(255,255,255,.9) }
   .btn-primary:hover{ background:#f2f6ff }
-  .btn-ghost{ color:var(--white); background:transparent; border:1px solid var(--white) }
-  .btn-ghost:hover{ background:rgba(255,255,255,.06) }
   
   /* ======================
      HERO — big, image via <img>
-     (slightly shorter and centered so H1 sits higher)
+     (shorter and centered so H1 sits higher)
      ====================== */
   .hero{
-    min-height:clamp(520px, 70vh, 820px);  /* was 80vh; now slightly shorter */
-    padding:56px 0 48px;                   /* a bit less top padding */
+    min-height:clamp(520px, 70vh, 820px);
+    padding:56px 0 48px;
     display:flex;
-    align-items:center;                     /* center content vertically (higher) */
+    align-items:center;
     position:relative;
     overflow:hidden;
   }
@@ -121,7 +120,7 @@
     width:100%;
     height:100%;
     object-fit:cover;
-    object-position:center top; /* push image toward header */
+    object-position:center top;
     transform:translateZ(0);
     z-index:0;
   }
@@ -183,15 +182,36 @@
     box-shadow:var(--shadow);
   }
   
+  /* Enquiry form */
+  .enquiry-form{ margin-top:16px }
+  .enquiry-form .hp-field{ display:none }
+  .enquiry-form .grid{
+    display:grid; gap:14px; grid-template-columns:1fr;
+  }
+  @media (min-width:780px){ .enquiry-form .grid{ grid-template-columns:1fr 1fr } }
+  .field{ display:flex; flex-direction:column; gap:8px }
+  .field span{ color:#e9eefc; font-weight:600 }
+  .field input, .field textarea{
+    background:rgba(255,255,255,.07);
+    color:var(--white);
+    border:1px solid rgba(255,255,255,.45);
+    border-radius:12px;
+    padding:12px 14px;
+    outline:none;
+  }
+  .field input:focus, .field textarea:focus{ border-color:#fff }
+  .enquiry-actions{ display:flex; align-items:center; gap:12px; margin-top:12px }
+  .enquiry-status{ color:#bdeafe; font-weight:600 }
+  
   /* Contact grid + big watermark */
   #contact{ position:relative; overflow:hidden; }
   #contact::before{
     content:"";
     position:absolute; inset:0;
     background:url("images/logo.png") no-repeat center center;
-    /* Fill the whole area with the logo (without repeating) */
-    background-size: clamp(600px, 90vw, 1600px) auto;
-    opacity:.12;
+    /* Fill the whole area with the logo */
+    background-size: clamp(700px, 95vw, 1800px) auto;
+    opacity:.16;
     filter:grayscale(100%);
     pointer-events:none;
     z-index:0;
