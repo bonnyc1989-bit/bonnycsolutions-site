@@ -2,35 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bonny Contracting Solutions Pty Ltd | Federal Contract Consulting</title>
   <meta name="description" content="We surface DoD & U.S. State Department opportunities and raise your probability of award." />
+  <meta name="keywords" content="US federal contracts, DoD consulting, proposal management, capture management, SAM registration, NAICS, PSC, small business programs" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Bonny Contracting Solutions Pty Ltd | Federal Contract Consulting" />
+  <meta property="og:description" content="Pipeline development, early shaping, and compliant proposals—built for small businesses." />
+  <meta property="og:image" content="images/og-image.jpg" />
+  <meta property="og:url" content="https://bonnycsolutions.com" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Favicon (optional) -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <!-- Cache-bust -->
-  <link rel="stylesheet" href="styles.css?v=17" />
-
+  <link rel="stylesheet" href="styles.css?v=21" />
 </head>
+
 <body>
-  <!-- Page wrapper (adds vertical white borders) -->
+  <!-- Page wrapper (adds vertical borders) -->
   <div class="page">
 
     <!-- Header -->
-    <header class="nav">
+    <header class="nav" role="banner">
       <div class="nav-inner container">
-        <a class="brand" href="#"><span>Bonny Contracting Solutions Pty Ltd</span></a>
-        <nav>
-          <a href="#services">Services</a>
-          <a href="#process">Process</a>
-          <a href="#about">About</a>
-          <a href="#contact" class="btn btn-primary">Book a Free Call</a>
+        <a class="brand" href="#hero"><span>Bonny Contracting Solutions Pty Ltd</span></a>
+        <nav aria-label="Primary">
+          <ul class="nav-list">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#enquiry">Enquiry</a></li>
+            <li><a href="#contact" class="btn btn-primary">Book a Free Call</a></li>
+          </ul>
         </nav>
       </div>
     </header>
@@ -38,8 +50,8 @@
     <main class="page-inner">
 
       <!-- HERO -->
-      <section class="hero section">
-        <img class="hero-bg" src="images/hero.jpg" alt="" aria-hidden="true" decoding="async" fetchpriority="high" />
+      <section id="hero" class="hero section" aria-label="Hero">
+        <img class="hero-bg" src="images/hero.jpg" alt="Abstract defense and government procurement theme background" decoding="async" fetchpriority="high" />
         <div class="container">
           <div class="hero-panel">
             <h1>Find. Influence. Win.<br />U.S. Federal Contracts.</h1>
@@ -59,33 +71,33 @@
       </section>
 
       <!-- SERVICES -->
-      <section id="services" class="section">
+      <section id="services" class="section" aria-labelledby="services-title">
         <div class="container">
-          <h2>Services</h2>
+          <h2 id="services-title">Services</h2>
           <p>I focus on practical, outcomes-first support. When needed, we bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
 
-          <div class="cards">
-            <article class="card">
+          <div class="cards" role="list">
+            <article class="card" role="listitem">
               <h3>Agency Targeting & Pipeline</h3>
               <p>Identify who buys what you sell, analyze history, and prioritize winnable work.</p>
             </article>
-            <article class="card">
+            <article class="card" role="listitem">
               <h3>Capture & Positioning</h3>
               <p>Shape requirements early via Sources Sought/RFI, credible outreach, and partner alignment.</p>
             </article>
-            <article class="card">
+            <article class="card" role="listitem">
               <h3>Proposal Management</h3>
               <p>Compliant, compelling proposals with disciplined reviews and coordinated pricing.</p>
             </article>
-            <article class="card">
+            <article class="card" role="listitem">
               <h3>Subcontracting & Teaming</h3>
               <p>Build the right team, negotiate fair terms, and align past performance to the ask.</p>
             </article>
-            <article class="card">
+            <article class="card" role="listitem">
               <h3>Readiness & Certifications</h3>
               <p>SAM, reps &amp; certs, small-business programs, and NAICS/PSC alignment done right.</p>
             </article>
-            <article class="card">
+            <article class="card" role="listitem">
               <h3>Post-Award Hand-off</h3>
               <p>From award to kickoff—transition plans, reporting rhythms, and quality baselines.</p>
             </article>
@@ -94,22 +106,22 @@
       </section>
 
       <!-- PROCESS -->
-      <section id="process" class="section">
+      <section id="process" class="section" aria-labelledby="process-title">
         <div class="container">
-          <h2>Our Process</h2>
+          <h2 id="process-title">Our Process</h2>
           <h3 class="process-line">Finding Opportunities → Pursuing → Winning.</h3>
           <p class="muted">Don’t know where to start? Overwhelmed by Federal Acquisition? I guide you from confusion to contract—supported by the BonnyCsolutions team where needed.</p>
 
-          <div class="steps">
-            <article class="step">
+          <div class="steps" role="list">
+            <article class="step" role="listitem">
               <h3>1. Find Opportunities</h3>
               <p>Targeted agency research, historical spend, contract vehicles, and early signals.</p>
             </article>
-            <article class="step">
+            <article class="step" role="listitem">
               <h3>2. Pursue Smart</h3>
               <p>Bid/No-Bid rigor, capture actions, and disciplined proposal execution.</p>
             </article>
-            <article class="step">
+            <article class="step" role="listitem">
               <h3>3. Win &amp; Deliver</h3>
               <p>Close strong, plan the hand-off, and set up reporting so delivery starts clean.</p>
             </article>
@@ -117,10 +129,10 @@
         </div>
       </section>
 
-      <!-- ABOUT (before Enquiry) -->
-      <section id="about" class="section">
+      <!-- ABOUT -->
+      <section id="about" class="section" aria-labelledby="about-title">
         <div class="container">
-          <h2>About</h2>
+          <h2 id="about-title">About</h2>
           <p>We have 15 years of experience across government procurement and commercial operations. That mix lets us translate requirements into clear, actionable work—so you’re pursuing the right opportunities, not just the loud ones.</p>
           <p>Our role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling. When a project needs more hands, we bring in the right specialists to fulfill the requirements put forward by the federal government.</p>
           <p>If you want growth without wasted effort, we’ll be a good fit. We meet you where you are, align strategy to your strengths, and push each opportunity forward with a calm, disciplined process.</p>
@@ -128,30 +140,30 @@
       </section>
 
       <!-- QUICK ENQUIRY (Netlify Forms) -->
-      <section id="enquiry" class="section">
+      <section id="enquiry" class="section" aria-labelledby="enquiry-title">
         <div class="container">
-          <h2>Quick Enquiry</h2>
+          <h2 id="enquiry-title">Quick Enquiry</h2>
           <p>Have a question? Send us a note and we’ll reply within 1–3 business days.</p>
 
-          <form name="enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="enquiry-form">
+          <form name="enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="enquiry-form" action="/thank-you">
             <input type="hidden" name="form-name" value="enquiry" />
             <input type="text" name="bot-field" class="hp-field" aria-hidden="true" tabindex="-1" autocomplete="off" />
 
             <div class="grid">
               <label class="field">
                 <span>Name</span>
-                <input type="text" name="name" required />
+                <input type="text" name="name" required aria-label="Your name" placeholder="Your name" autocomplete="name" />
               </label>
 
               <label class="field">
                 <span>Email</span>
-                <input type="email" name="email" required />
+                <input type="email" name="email" required aria-label="Your email" placeholder="you@company.com" autocomplete="email" />
               </label>
             </div>
 
             <label class="field">
               <span>Your message</span>
-              <textarea name="message" rows="6" required></textarea>
+              <textarea name="message" rows="6" required aria-label="Your message" placeholder="Tell us about your goals and challenges…"></textarea>
             </label>
 
             <div class="enquiry-actions">
@@ -162,10 +174,10 @@
         </div>
       </section>
 
-      <!-- CONTACT (single card; LASER watermark behind entire section) -->
-      <section id="contact" class="section">
+      <!-- CONTACT -->
+      <section id="contact" class="section" aria-labelledby="contact-title">
         <div class="container">
-          <h2>Contact</h2>
+          <h2 id="contact-title">Contact</h2>
 
           <div class="card contact-card">
             <h3>Get in touch</h3>
@@ -177,17 +189,25 @@
 
             <hr class="card-divider" />
 
-            <div class="company-block">
+            <address class="company-block" aria-label="Company details">
               <h4>Company</h4>
               <p>Bonny Contracting Solutions Pty Ltd</p>
               <p>ABN: 86 768 265 615</p>
               <p>Brisbane, Australia</p>
-            </div>
+            </address>
           </div>
         </div>
       </section>
-      <!-- No footer per your request -->
+
     </main>
+
+    <!-- FOOTER: short, no extra scroll -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="container footer-inner">
+        <p>© <span id="year"></span> Bonny Contracting Solutions Pty Ltd — All rights reserved.</p>
+      </div>
+    </footer>
+
   </div>
 
   <script src="script.js"></script>

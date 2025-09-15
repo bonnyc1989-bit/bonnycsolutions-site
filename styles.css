@@ -1,11 +1,10 @@
 /* =========================================
-   BonnyCsolutions — styles.css (v20)
-   - Vertical page borders + horizontal section dividers
+   BonnyCsolutions — styles.css (v21)
+   - Vertical page borders + section dividers
    - Hero with image overlay + glass panel
    - Services/Process cards
-   - Quick Enquiry (logo watermark behind section)
-   - Laser image now applied from #about and extends
-     down to (and behind) the Contact section
+   - Quick Enquiry (logo watermark)
+   - Footer trimmed to end page cleanly
    ========================================= */
 
 /* ---------- Theme & tokens ---------- */
@@ -46,8 +45,10 @@
   /* Vertical white page borders */
   .page{
     min-height:100dvh;
-    border-left:2px solid var(--white);
-    border-right:2px solid var(--white);
+    border-left:2px solid rgba(255,255,255,.92);
+    border-right:2px solid rgba(255,255,255,.92);
+    display:flex;
+    flex-direction:column;
   }
   
   /* Content width + left/right indent */
@@ -64,7 +65,7 @@
   .section:not(:first-of-type)::before{
     content:"";
     position:absolute; left:var(--inset); right:var(--inset); top:0;
-    height:2px; background:var(--white); opacity:.95;
+    height:2px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent);
   }
   
   /* ---------- Type ---------- */
@@ -73,7 +74,7 @@
   a{ color:inherit; text-decoration:none; }
   .muted{ color:var(--muted); }
   
-  /* Blue accents where requested */
+  /* Blue accents */
   .hero h1{ color:var(--brand-strong); }
   .section > .container > h2{ color:var(--brand); }
   .card h3{ color:var(--brand); }
@@ -96,8 +97,9 @@
     font-family:"Manrope",system-ui,sans-serif;
     font-weight:800; letter-spacing:.2px; color:var(--white);
   }
-  nav a{ margin-left:18px; font-size:14.5px; color:#dbe6f4; }
-  nav a:hover{ color:var(--white); }
+  .nav-list{ list-style:none; margin:0; padding:0; display:flex; align-items:center; gap:18px; }
+  .nav-list a{ font-size:15.5px; color:#dbe6f4; padding:6px 4px; }
+  .nav-list a:hover{ color:var(--white); }
   
   /* ---------- Buttons ---------- */
   .btn{
@@ -108,7 +110,14 @@
   }
   .btn:active{ transform:translateY(1px) scale(.99); }
   .btn-primary{ color:#0b1220; background:var(--white); border-color:rgba(255,255,255,.9); }
-  .btn-primary:hover{ background:#f2f6ff; }
+  .btn-primary:hover{ background:#f5f8ff; border-color:rgba(255,255,255,.95); }
+  
+  /* Focus styles */
+  :where(a, button, .btn, input, textarea, select):focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 10px;
+  }
   
   /* ---------- HERO ---------- */
   .hero{
@@ -146,6 +155,15 @@
   .cta-row{ display:flex; gap:12px; margin-top:16px; flex-wrap:wrap; }
   .support{ margin-top:14px; }
   
+  /* Small-screen legibility bump */
+  @media (max-width: 640px) {
+    .hero-panel {
+      background: rgba(15,23,42,.45);
+      border-color: rgba(255,255,255,.35);
+    }
+    .hero h1 { line-height: 1.12; }
+  }
+  
   /* ---------- Services / Cards ---------- */
   .cards{
     margin-top:20px;
@@ -164,8 +182,8 @@
   }
   .card:hover{
     transform:translateY(-2px);
-    border-color:rgba(255,255,255,.8);
-    background:rgba(255,255,255,.08);
+    border-color:rgba(255,255,255,.85);
+    background:rgba(255,255,255,.10);
   }
   
   /* ---------- Process ---------- */
@@ -214,38 +232,23 @@
   .enquiry-actions{ display:flex; align-items:center; gap:12px; margin-top:12px; }
   .enquiry-status{ color:#bdeafe; font-weight:600; }
   
-  /* ---------- LASER IMAGE FROM ABOUT, EXTENDING TO CONTACT ---------- */
-  /* We paint the laser image as a huge ::after on #about and let it
-     overflow down behind the next sections. Contact no longer has its
-     own background image; it shows this single large image instead. */
-  
-  #about{
-    position:relative;
-    z-index:0;            /* establish stacking so ::after can sit under others */
-    overflow:visible;     /* allow the big ::after to overflow below */
+  /* Placeholder + autofill legibility */
+  ::placeholder { color: rgba(235,241,255,.72); }
+  .field input:-webkit-autofill,
+  .field textarea:-webkit-autofill {
+    -webkit-text-fill-color: var(--white);
+    -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,.07) inset;
+    box-shadow: 0 0 0 1000px rgba(255,255,255,.07) inset;
+    transition: background-color 5000s ease-in-out 0s;
   }
   
-  /* Big image that starts at #about and extends down (behind Enquiry & Contact) */
-  #about::after{
-    content:"";
-    position:absolute;
-    left:0; right:0; top:0;
-    /* extend WELL past the bottom so it covers Quick Enquiry + Contact */
-    bottom:-140vh;                         /* push far below About */
-    background: url("images/laser.png") no-repeat center bottom;
-    background-size: cover;
-    opacity:.55;                           /* requested ~0.55 */
-    pointer-events:none;
-    z-index:-1;                            /* behind #about content */
-  }
+  /* Inputs: error/success utilities */
+  .field input.is-error, .field textarea.is-error { border-color: #ff6b6b !important; }
+  .field input.is-success, .field textarea.is-success { border-color: #34d399 !important; }
+  .enquiry-status.success { color: #86efac; }
+  .enquiry-status.error { color: #fecaca; }
   
-  /* Ensure following sections appear above the big image */
-  #enquiry, #contact{
-    position:relative;
-    z-index:1;
-  }
-  
-  /* ---------- Contact (no separate bg; glass card only) ---------- */
+  /* ---------- Contact (glass card) ---------- */
   .contact-card{
     margin-top:16px;
     background: rgba(255,255,255,.10);
@@ -262,4 +265,46 @@
     margin:12px 0;
   }
   .company-block h4{ margin:0 0 6px; color:var(--brand); }
+  .contact-list a:hover { text-decoration: underline; }
+  
+  /* ---------- Footer (tight, no extra scroll) ---------- */
+  .site-footer{
+    margin-top:auto; /* push footer to the bottom when content is short */
+    border-top: 2px solid rgba(255,255,255,.95);
+    background: rgba(11,18,32,.85);
+  }
+  .footer-inner{
+    padding: 16px 0;
+    text-align:center;
+    color:#dbe6f4;
+    font-size:14px;
+  }
+  
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  /* ---------- Print ---------- */
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #000 !important;
+    }
+    .page, .section::before, .hero::after, #enquiry::before {
+      border: none !important;
+      background: none !important;
+      box-shadow: none !important;
+    }
+    .btn, .card, .step, .contact-card, .hero-panel {
+      background: #fff !important;
+      color: #000 !important;
+      border: 1px solid #ccc !important;
+      box-shadow: none !important;
+    }
+  }
   
