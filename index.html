@@ -6,26 +6,18 @@
   <title>Bonny Contracting Solutions Pty Ltd | Federal Contract Consulting</title>
   <meta name="description" content="We specialize in surfacing DoD & U.S. State Department opportunities and increasing your probability of award." />
 
-  <!-- Social share -->
-  <meta property="og:title" content="BonnyCsolutions — Federal Contract Consulting">
-  <meta property="og:description" content="We surface DoD & U.S. State Department opportunities and raise your probability of award.">
-  <meta property="og:image" content="https://bonnycsolutions.com/images/og-cover.jpg">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- Brand & site fonts -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Favicon -->
+  <!-- Favicon (optional if you added images/favicon.png) -->
   <link rel="icon" type="image/png" href="images/favicon.png">
-  <link rel="apple-touch-icon" href="images/favicon.png">
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=5" />
 </head>
 <body>
-  <!-- Page wrapper with vertical borders -->
+  <!-- Page wrapper adds the vertical white borders -->
   <div class="page">
 
     <!-- Header -->
@@ -45,22 +37,24 @@
     </header>
 
     <main class="page-inner">
-
       <!-- HERO -->
       <section class="hero section">
         <div class="container">
-          <h1>Find. Influence. Win.<br />U.S. Federal Contracts.</h1>
-          <p>Pipeline development, early shaping, and compliant proposals—built for small businesses.</p>
+          <!-- “Glass” panel adds white into the upper layer so text stands out -->
+          <div class="hero-panel">
+            <h1>Find. Influence. Win.<br />U.S. Federal Contracts.</h1>
+            <p>Pipeline development, early shaping, and compliant proposals—built for small businesses.</p>
 
-          <div class="cta-row">
-            <a class="btn btn-primary" href="#contact">Get Started</a>
-            <a class="btn btn-ghost" href="#services">See Services</a>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="#contact">Get Started</a>
+              <a class="btn btn-ghost" href="#services">See Services</a>
+            </div>
+
+            <p class="support">
+              We specialize in bringing the right <strong>DoD</strong> and <strong>U.S. State Department</strong> solicitations forward and
+              increasing your probability of award—through focused targeting, disciplined capture, and sharp proposals.
+            </p>
           </div>
-
-          <p class="support">
-            We specialize in bringing the right <strong>DoD</strong> and <strong>U.S. State Department</strong> solicitations forward and
-            increasing your probability of award—through focused targeting, disciplined capture, and sharp proposals.
-          </p>
         </div>
       </section>
 
@@ -104,7 +98,9 @@
         <div class="container">
           <h2>Our Process</h2>
           <h3 class="process-line">Finding <span class="highlight">Opportunities</span> → Pursuing → Winning.</h3>
-          <p class="muted">Don’t know where to start? Overwhelmed by Federal Acquisition? I guide you from confusion to contract—supported by the BonnyCsolutions team where needed.</p>
+          <p class="muted">
+            Don’t know where to start? Overwhelmed by Federal Acquisition? I guide you from confusion to contract—supported by the BonnyCsolutions team where needed.
+          </p>
 
           <div class="steps">
             <article class="step">
@@ -133,75 +129,41 @@
         </div>
       </section>
 
-      <!-- CONTACT (Netlify Forms) -->
+      <!-- CONTACT (simple details) -->
       <section id="contact" class="section">
         <div class="container">
-          <h2>Book a Free Call</h2>
-
-          <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="card contact-form">
-            <input type="hidden" name="form-name" value="contact">
-            <p class="hidden"><label>Don’t fill this out: <input name="bot-field"></label></p>
-
-            <div class="form-row">
-              <label>
-                Name
-                <input name="name" required />
-              </label>
-              <label>
-                Email
-                <input type="email" name="email" required />
-              </label>
+          <h2>Contact</h2>
+          <div class="contact-grid">
+            <div class="card">
+              <h3>Get in touch</h3>
+              <ul class="contact-list">
+                <li>Email: <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></li>
+                <li>Phone: <a href="tel:+61448793660">+61 448 793 660</a></li>
+                <li>Reply within 1–3 business days.</li>
+              </ul>
             </div>
-
-            <label>
-              What questions do you have?
-              <textarea name="message" rows="6"></textarea>
-            </label>
-
-            <div class="form-actions">
-              <button class="btn btn-primary" type="submit">Request Call</button>
-              <p class="muted">Reply within 1–3 business days.</p>
+            <div class="card">
+              <h3>Company</h3>
+              <p>Bonny Contracting Solutions Pty Ltd (“BonnyCsolutions”)</p>
+              <p>Brisbane, Australia</p>
             </div>
-          </form>
+          </div>
         </div>
       </section>
-
     </main>
 
-    <!-- FOOTER -->
+    <!-- FOOTER with logo watermark -->
     <footer class="footer">
       <div class="footer-inner container">
-        <div>
-          <h3>Contact</h3>
-          <ul>
-            <li>Email: <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></li>
-            <li>Phone: <a href="tel:+61448793660">+61 448 793 660</a></li>
-            <li>Response time: Reply within 1–3 business days.</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Company Details</h3>
-          <p>Bonny Contracting Solutions Pty Ltd (“BonnyCsolutions”)</p>
-          <p>Brisbane, Australia</p>
-        </div>
-        <div>
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#process">Process</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bottom container">
         <p>© <span id="year"></span> BonnyCsolutions. All rights reserved.</p>
         <p>Built with clarity. No fluff.</p>
       </div>
     </footer>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    // Inline so you don't need a separate script.js for this bit
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
