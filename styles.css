@@ -1,10 +1,11 @@
 /* =========================================
-   BonnyCsolutions — styles.css (v19)
+   BonnyCsolutions — styles.css (v20)
    - Vertical page borders + horizontal section dividers
    - Hero with image overlay + glass panel
    - Services/Process cards
    - Quick Enquiry (logo watermark behind section)
-   - Contact = full-bleed hero-style background (laser.png)
+   - Laser image now applied from #about and extends
+     down to (and behind) the Contact section
    ========================================= */
 
 /* ---------- Theme & tokens ---------- */
@@ -49,7 +50,7 @@
     border-right:2px solid var(--white);
   }
   
-  /* Content width + left/right indent (keeps text off the very edge) */
+  /* Content width + left/right indent */
   .container{
     width:100%;
     max-width:1180px;
@@ -184,7 +185,7 @@
   }
   
   /* ---------- Quick Enquiry (logo watermark) ---------- */
-  #enquiry{ position:relative; overflow:hidden; }
+  #enquiry{ position:relative; overflow:hidden; z-index:1; }
   #enquiry::before{
     content:"";
     position:absolute; inset:0;
@@ -213,36 +214,38 @@
   .enquiry-actions{ display:flex; align-items:center; gap:12px; margin-top:12px; }
   .enquiry-status{ color:#bdeafe; font-weight:600; }
   
-  /* ---------- Contact = full-bleed hero-style background ---------- */
-  /* Fills nearly a full screen so the image reaches up to Quick Enquiry */
-  #contact{
+  /* ---------- LASER IMAGE FROM ABOUT, EXTENDING TO CONTACT ---------- */
+  /* We paint the laser image as a huge ::after on #about and let it
+     overflow down behind the next sections. Contact no longer has its
+     own background image; it shows this single large image instead. */
+  
+  #about{
     position:relative;
-    overflow:hidden;
-    min-height:90vh;                                   /* fill the screen */
-    padding-top: clamp(32px, 5vh, 72px);
-    padding-bottom: clamp(80px, 14vh, 160px);
-    background: url("images/laser.png") center top / cover no-repeat;
+    z-index:0;            /* establish stacking so ::after can sit under others */
+    overflow:visible;     /* allow the big ::after to overflow below */
   }
   
-  /* 1) gradient overlay (readability) */
-  #contact::before{
+  /* Big image that starts at #about and extends down (behind Enquiry & Contact) */
+  #about::after{
     content:"";
-    position:absolute; inset:0;
-    background: linear-gradient(180deg, rgba(11,18,32,.30), rgba(11,18,32,.55));
-    z-index:0;
+    position:absolute;
+    left:0; right:0; top:0;
+    /* extend WELL past the bottom so it covers Quick Enquiry + Contact */
+    bottom:-140vh;                         /* push far below About */
+    background: url("images/laser.png") no-repeat center bottom;
+    background-size: cover;
+    opacity:.55;                           /* requested ~0.55 */
+    pointer-events:none;
+    z-index:-1;                            /* behind #about content */
   }
   
-  /* 2) subtle dim layer so effective image opacity ≈ 0.75 */
-  #contact::after{
-    content:"";
-    position:absolute; inset:0;
-    background: rgba(11,18,32,.25);  /* ~25% dark layer */
-    z-index:0;
+  /* Ensure following sections appear above the big image */
+  #enquiry, #contact{
+    position:relative;
+    z-index:1;
   }
   
-  #contact .container{ position:relative; z-index:1; }
-  
-  /* Glassy contact card */
+  /* ---------- Contact (no separate bg; glass card only) ---------- */
   .contact-card{
     margin-top:16px;
     background: rgba(255,255,255,.10);
