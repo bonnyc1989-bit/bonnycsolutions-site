@@ -4,20 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bonny Contracting Solutions Pty Ltd | Federal Contract Consulting</title>
-  <meta name="description" content="We specialize in surfacing DoD & U.S. State Department opportunities and increasing your probability of award." />
+  <meta name="description" content="We surface DoD & U.S. State Department opportunities and raise your probability of award." />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Favicon (optional if you added images/favicon.png) -->
+  <!-- Favicon (optional if present) -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <!-- Cache-bust the stylesheet -->
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
-  <!-- Page wrapper adds the vertical white borders -->
+  <!-- Page wrapper (adds vertical borders) -->
   <div class="page">
 
     <!-- Header -->
@@ -37,10 +38,10 @@
     </header>
 
     <main class="page-inner">
-      <!-- HERO -->
+
+      <!-- HERO (large, at header) -->
       <section class="hero section">
         <div class="container">
-          <!-- “Glass” panel adds white into the upper layer so text stands out -->
           <div class="hero-panel">
             <h1>Find. Influence. Win.<br />U.S. Federal Contracts.</h1>
             <p>Pipeline development, early shaping, and compliant proposals—built for small businesses.</p>
@@ -98,9 +99,7 @@
         <div class="container">
           <h2>Our Process</h2>
           <h3 class="process-line">Finding <span class="highlight">Opportunities</span> → Pursuing → Winning.</h3>
-          <p class="muted">
-            Don’t know where to start? Overwhelmed by Federal Acquisition? I guide you from confusion to contract—supported by the BonnyCsolutions team where needed.
-          </p>
+          <p class="muted">Don’t know where to start? Overwhelmed by Federal Acquisition? I guide you from confusion to contract—supported by the BonnyCsolutions team where needed.</p>
 
           <div class="steps">
             <article class="step">
@@ -129,7 +128,7 @@
         </div>
       </section>
 
-      <!-- CONTACT (simple details) -->
+      <!-- CONTACT -->
       <section id="contact" class="section">
         <div class="container">
           <h2>Contact</h2>
@@ -152,7 +151,7 @@
       </section>
     </main>
 
-    <!-- FOOTER with logo watermark -->
+    <!-- FOOTER with big logo watermark -->
     <footer class="footer">
       <div class="footer-inner container">
         <p>© <span id="year"></span> BonnyCsolutions. All rights reserved.</p>
@@ -161,9 +160,6 @@
     </footer>
   </div>
 
-  <script>
-    // Inline so you don't need a separate script.js for this bit
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
