@@ -192,17 +192,31 @@
   .enquiry-actions{ display:flex; align-items:center; gap:12px; margin-top:12px }
   .enquiry-status{ color:#bdeafe; font-weight:600 }
   
-  /* Contact — section watermark (LASER) and single card */
-  #contact{ position:relative; overflow:hidden; }
-  #contact::before{
-    content:"";
-    position:absolute; inset:0;
-    background: var(--contact-watermark) no-repeat center bottom 10%;
-    background-size: clamp(700px, 90vw, 1800px) auto;
-    opacity:.22; filter:grayscale(100%) contrast(1.1) brightness(1.15);
-    pointer-events:none; z-index:0;
+/* === CONTACT SECTION WATERMARK (LASER) === */
+#contact { 
+    position: relative; 
+    overflow: hidden; 
   }
-  #contact .container{ position:relative; z-index:1; }
+  
+  #contact::before{
+    content: "";
+    position: absolute; 
+    inset: 0;
+    background: url("images/laser.png") no-repeat center bottom; /* your file */
+    background-size: clamp(900px, 95vw, 2000px) auto;           /* make it big */
+    opacity: .35;                                               /* visibility */
+    mix-blend-mode: screen;                                     /* brightens on dark bg */
+    filter: grayscale(100%) brightness(1.25) contrast(1.2);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  #contact .container{ 
+    position: relative; 
+    z-index: 1; 
+  }
+  
+
   
   .contact-card{
     margin-top:16px;
