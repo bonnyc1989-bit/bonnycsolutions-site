@@ -14,11 +14,11 @@
   <!-- Favicon (optional if present) -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
-  <!-- Cache-bust the stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <!-- Cache-bust -->
+  <link rel="stylesheet" href="styles.css?v=8" />
 </head>
 <body>
-  <!-- Page wrapper (adds vertical borders) -->
+  <!-- Page wrapper (adds vertical white borders) -->
   <div class="page">
 
     <!-- Header -->
@@ -39,8 +39,19 @@
 
     <main class="page-inner">
 
-      <!-- HERO (large, at header) -->
+      <!-- HERO (big, image is a real <img>) -->
       <section class="hero section">
+        <!-- Background image element (guaranteed to load if the path exists) -->
+        <img
+          class="hero-bg"
+          src="images/hero.jpg"
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          fetchpriority="high"
+        />
+
+        <!-- Content -->
         <div class="container">
           <div class="hero-panel">
             <h1>Find. Influence. Win.<br />U.S. Federal Contracts.</h1>
@@ -151,7 +162,7 @@
       </section>
     </main>
 
-    <!-- FOOTER with big logo watermark -->
+    <!-- FOOTER with BIG watermark -->
     <footer class="footer">
       <div class="footer-inner container">
         <p>© <span id="year"></span> BonnyCsolutions. All rights reserved.</p>

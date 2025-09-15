@@ -1,6 +1,6 @@
 /* ================================
-   BonnyCsolutions – styles.css (v7)
-   Large hero, big footer watermark, white borders/dividers, blue highlights
+   BonnyCsolutions – styles.css (v8)
+   Large hero (real <img>), big footer watermark, borders/dividers, blue highlights
    ================================ */
 
    :root{
@@ -99,34 +99,42 @@
   .btn-ghost{ color:var(--white); background:transparent; border:1px solid var(--white) }
   .btn-ghost:hover{ background:rgba(255,255,255,.06) }
   
-  /* HERO — large and directly under header */
+  /* ======================
+     HERO — big, image via <img>
+     ====================== */
   .hero{
-    /* big, tall hero: 70–85vh with cap */
-    min-height:clamp(560px, 80vh, 900px);
+    min-height:clamp(560px, 80vh, 900px); /* big hero */
     padding:72px 0 56px;
     display:flex;
-    align-items:flex-end;          /* keep panel low while image fills top */
-    background-image:
-      linear-gradient(180deg, rgba(15,23,42,.18), rgba(15,23,42,.58)), /* lighter so photo shows */
-      url("images/hero.jpg"),
+    align-items:flex-end;   /* keep panel low while photo fills the top */
+    position:relative;
+    overflow:hidden;
+  }
+  
+  /* actual photo */
+  .hero-bg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center top; /* push the image toward the header */
+    transform:translateZ(0);
+    z-index:0;
+  }
+  
+  /* overlay gradients ABOVE photo, BELOW text */
+  .hero::after{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(15,23,42,.18), rgba(15,23,42,.58)),
       radial-gradient(80rem 60rem at 50% -10%, rgba(255,255,255,.08), transparent 60%);
-    background-size:auto, cover, auto;
-    background-position:center top;   /* push image toward header area */
-    background-repeat:no-repeat;
+    z-index:0;
   }
-  @supports (background-image: image-set(url("images/hero.avif") type("image/avif"))){
-    .hero{
-      background-image:
-        linear-gradient(180deg, rgba(15,23,42,.18), rgba(15,23,42,.58)),
-        image-set(
-          url("images/hero.avif") type("image/avif"),
-          url("images/hero.webp") type("image/webp"),
-          url("images/hero.jpg")  type("image/jpeg")
-        ),
-        radial-gradient(80rem 60rem at 50% -10%, rgba(255,255,255,.08), transparent 60%);
-    }
-  }
-  /* “Glass” panel so words pop over the photo */
+  
+  /* content on top */
+  .hero .container{ position:relative; z-index:1; }
   .hero-panel{
     max-width: 940px;
     background: rgba(255,255,255,.09);
@@ -180,19 +188,19 @@
   .contact-list{ list-style:none; padding:0; margin:0 }
   .contact-list li{ margin:6px 0 }
   
-  /* Footer with LARGE watermark */
+  /* Footer with BIG watermark */
   .footer{
     border-top:2px solid var(--white);
     position:relative; overflow:hidden;
     background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-    padding: 18px 0;
+    padding: 24px 0;
   }
   .footer::before{
     content:""; position:absolute; inset:0;
     background:url("images/logo.png") no-repeat center bottom 24px;
-    /* Scale big: up to 1100px wide or 70vw, whichever smaller, but never < 520px */
-    background-size: clamp(520px, 70vw, 1100px) auto;
-    opacity:.14; filter:grayscale(100%); pointer-events:none;
+    /* Big! up to 1200px wide or 80vw (but never < 560px) */
+    background-size: clamp(560px, 80vw, 1200px) auto;
+    opacity:.16; filter:grayscale(100%); pointer-events:none;
   }
   .footer-inner{
     position:relative; z-index:1;
