@@ -109,7 +109,12 @@
     transition:transform .08s ease, background .2s ease, border-color .2s ease;
   }
   .btn:active{ transform:translateY(1px) scale(.99); }
-  .btn-primary{ color:#0b1220; background:var(--white); border-color:rgba(255,255,255,.9); }
+  .btn-primary {
+    color: #000000; /* black text */
+    background: var(--white);
+    border-color: rgba(255,255,255,.9);
+  }
+  
   .btn-primary:hover{ background:#f5f8ff; border-color:rgba(255,255,255,.95); }
   
   /* Focus styles */
@@ -306,5 +311,13 @@
       border: 1px solid #ccc !important;
       box-shadow: none !important;
     }
+  }
+  /* Ensure navbar CTA text matches other primary buttons */
+.nav .btn-primary {
+    color: #000 !important;              /* same as "Get Started" / "See Services" */
+  }
+  .nav .btn-primary:hover,
+  .nav .btn-primary:focus-visible {
+    color: #000;                         /* keep it dark on hover/focus */
   }
   
