@@ -12,3 +12,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   // Set current year in footer
   document.getElementById('year').textContent = new Date().getFullYear();
   
+  // Mark below-the-fold images as lazy (safety if you add more later)
+  document.querySelectorAll('img:not(.brand-mark)').forEach(img => {
+    if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
+  });
+  
