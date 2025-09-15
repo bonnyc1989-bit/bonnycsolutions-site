@@ -1,6 +1,6 @@
 /* ================================
-   BonnyCsolutions – styles.css (v8)
-   Large hero (real <img>), big footer watermark, borders/dividers, blue highlights
+   BonnyCsolutions – styles.css (v9)
+   Large hero (real <img>), big Contact watermark, borders/dividers, blue highlights
    ================================ */
 
    :root{
@@ -68,6 +68,8 @@
   .hero h1{ color:var(--brand-strong); }
   .section > .container > h2{ color:var(--brand); }  /* Services, Our Process, About, Contact */
   .card h3{ color:var(--brand); }                    /* card titles */
+  .process-line{ color:var(--brand); }               /* full line in blue */
+  .step h3{ color:var(--brand); }                    /* step titles in blue */
   
   /* Header */
   .nav{
@@ -101,12 +103,13 @@
   
   /* ======================
      HERO — big, image via <img>
+     (slightly shorter and centered so H1 sits higher)
      ====================== */
   .hero{
-    min-height:clamp(560px, 80vh, 900px); /* big hero */
-    padding:72px 0 56px;
+    min-height:clamp(520px, 70vh, 820px);  /* was 80vh; now slightly shorter */
+    padding:56px 0 48px;                   /* a bit less top padding */
     display:flex;
-    align-items:flex-end;   /* keep panel low while photo fills the top */
+    align-items:center;                     /* center content vertically (higher) */
     position:relative;
     overflow:hidden;
   }
@@ -118,7 +121,7 @@
     width:100%;
     height:100%;
     object-fit:cover;
-    object-position:center top; /* push the image toward the header */
+    object-position:center top; /* push image toward header */
     transform:translateZ(0);
     z-index:0;
   }
@@ -128,7 +131,7 @@
     content:"";
     position:absolute; inset:0;
     background:
-      linear-gradient(180deg, rgba(15,23,42,.18), rgba(15,23,42,.58)),
+      linear-gradient(180deg, rgba(15,23,42,.18), rgba(15,23,42,.54)),
       radial-gradient(80rem 60rem at 50% -10%, rgba(255,255,255,.08), transparent 60%);
     z-index:0;
   }
@@ -140,12 +143,12 @@
     background: rgba(255,255,255,.09);
     border: 1px solid rgba(255,255,255,.45);
     border-radius: 18px;
-    padding: 24px 22px 18px;
+    padding: 22px 22px 18px;
     backdrop-filter: blur(6px);
     box-shadow: 0 20px 40px rgba(0,0,0,.35);
   }
   .hero h1{
-    font-size:clamp(38px, 6vw, 64px);
+    font-size:clamp(36px, 5.6vw, 62px);
     line-height:1.1; font-weight:800;
   }
   .hero p{ max-width:820px; color:var(--white) }
@@ -179,28 +182,33 @@
     padding:18px;
     box-shadow:var(--shadow);
   }
-  .step h3{ margin:0 0 6px; font-size:18px; color:var(--white) }
-  .step p{ color:var(--white) }
   
-  /* Contact grid */
+  /* Contact grid + big watermark */
+  #contact{ position:relative; overflow:hidden; }
+  #contact::before{
+    content:"";
+    position:absolute; inset:0;
+    background:url("images/logo.png") no-repeat center center;
+    /* Fill the whole area with the logo (without repeating) */
+    background-size: clamp(600px, 90vw, 1600px) auto;
+    opacity:.12;
+    filter:grayscale(100%);
+    pointer-events:none;
+    z-index:0;
+  }
+  #contact .container{ position:relative; z-index:1; }
+  
   .contact-grid{ display:grid; gap:16px; grid-template-columns:1fr; margin-top:16px }
   @media (min-width:840px){ .contact-grid{ grid-template-columns:1fr 1fr } }
   .contact-list{ list-style:none; padding:0; margin:0 }
   .contact-list li{ margin:6px 0 }
   
-  /* Footer with BIG watermark */
+  /* Footer (no tagline) */
   .footer{
     border-top:2px solid var(--white);
     position:relative; overflow:hidden;
     background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
     padding: 24px 0;
-  }
-  .footer::before{
-    content:""; position:absolute; inset:0;
-    background:url("images/logo.png") no-repeat center bottom 24px;
-    /* Big! up to 1200px wide or 80vw (but never < 560px) */
-    background-size: clamp(560px, 80vw, 1200px) auto;
-    opacity:.16; filter:grayscale(100%); pointer-events:none;
   }
   .footer-inner{
     position:relative; z-index:1;
