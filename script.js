@@ -1,8 +1,13 @@
-document.getElementById("year").textContent = new Date().getFullYear();
+// script.js (optional niceties)
 
-document.getElementById("contact-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const data = Object.fromEntries(new FormData(e.target).entries());
-  alert(`Thanks ${data.name}! We’ll get back to you at ${data.email}.`);
-  e.target.reset();
-});
+// Smooth scroll fix for older browsers (most modern ones use CSS)
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length > 1) {
+        e.preventDefault();
+        document.querySelector(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+  
