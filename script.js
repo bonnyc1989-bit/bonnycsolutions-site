@@ -9,10 +9,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     });
   });
   
-  // Set current year in footer
-  document.getElementById('year').textContent = new Date().getFullYear();
-  
-  // Progressive enhancement for Netlify Forms (AJAX submit)
+  // Netlify Forms progressive enhancement (AJAX)
   const enquiryForm = document.querySelector('form[name="enquiry"]');
   const statusEl = document.getElementById('enquiryStatus');
   

@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <!-- Cache-bust -->
-  <link rel="stylesheet" href="styles.css?v=12" />
+  <link rel="stylesheet" href="styles.css?v=16" />
 </head>
 <body>
   <!-- Page wrapper (adds vertical white borders) -->
@@ -36,7 +36,7 @@
 
     <main class="page-inner">
 
-      <!-- HERO (big image via <img>) -->
+      <!-- HERO -->
       <section class="hero section">
         <img class="hero-bg" src="images/hero.jpg" alt="" aria-hidden="true" decoding="async" fetchpriority="high" />
         <div class="container">
@@ -126,7 +126,7 @@
         </div>
       </section>
 
-      <!-- QUICK ENQUIRY -->
+      <!-- QUICK ENQUIRY (Netlify Forms) -->
       <section id="enquiry" class="section">
         <div class="container">
           <h2>Quick Enquiry</h2>
@@ -161,7 +161,7 @@
         </div>
       </section>
 
-      <!-- CONTACT (single card with company details at bottom) -->
+      <!-- CONTACT (single card; LASER watermark behind entire section) -->
       <section id="contact" class="section">
         <div class="container">
           <h2>Contact</h2>
@@ -177,24 +177,16 @@
             <hr class="card-divider" />
 
             <div class="company-block">
-                <h4>Company</h4>
-                <p>Bonny Contracting Solutions Pty Ltd</p>
-                <p>ABN: 86 768 265 615</p>
-                <p>Brisbane, Australia</p>
-              </div>
-              
+              <h4>Company</h4>
+              <p>Bonny Contracting Solutions Pty Ltd</p>
+              <p>ABN: 86 768 265 615</p>
+              <p>Brisbane, Australia</p>
+            </div>
           </div>
-
         </div>
       </section>
+      <!-- No footer per your request -->
     </main>
-
-    <!-- FOOTER with LASER watermark -->
-    <footer class="footer">
-      <div class="footer-inner container">
-        <p>© <span id="year"></span> BonnyCsolutions. All rights reserved.</p>
-      </div>
-    </footer>
   </div>
 
   <script src="script.js"></script>

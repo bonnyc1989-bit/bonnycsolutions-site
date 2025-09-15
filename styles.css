@@ -1,6 +1,6 @@
 /* ================================
-   BonnyCsolutions – styles.css (v12)
-   Footer watermark uses images/laser.png; contact single card; borders/dividers
+   BonnyCsolutions – styles.css (v16)
+   LASER watermark behind #contact; everything else as requested
    ================================ */
 
    :root{
@@ -20,8 +20,9 @@
     --shadow:0 10px 30px rgba(0,0,0,.35);
     --inset:clamp(24px,4vw,56px);
   
-    /* Footer watermark image — if your file is JPEG, change .png to .jpg */
-    --footer-watermark: url("images/laser.png");
+    /* Watermarks */
+    --enquiry-watermark: url("images/logo.png");   /* used behind Quick Enquiry */
+    --contact-watermark: url("images/laser.png");  /* used behind Contact */
   }
   
   /* Base */
@@ -67,6 +68,7 @@
   .muted{color:var(--muted)}
   .highlight{color:var(--brand)}
   
+  /* Blue-highlight main points */
   .hero h1{ color:var(--brand-strong); }
   .section > .container > h2{ color:var(--brand); }
   .card h3{ color:var(--brand); }
@@ -100,7 +102,7 @@
   .btn-primary{ color:#0b1220; background:var(--white); border-color:rgba(255,255,255,.9) }
   .btn-primary:hover{ background:#f2f6ff }
   
-  /* HERO (shorter + centered) */
+  /* HERO */
   .hero{
     min-height:clamp(520px, 70vh, 820px);
     padding:56px 0 48px;
@@ -160,7 +162,18 @@
     box-shadow:var(--shadow);
   }
   
-  /* Enquiry form */
+  /* Enquiry (logo watermark behind entire section) */
+  #enquiry{ position:relative; overflow:hidden; }
+  #enquiry::before{
+    content:"";
+    position:absolute; inset:0;
+    background: var(--enquiry-watermark) no-repeat center center;
+    background-size: clamp(700px, 95vw, 1800px) auto;
+    opacity:.18; filter:grayscale(100%);
+    pointer-events:none; z-index:0;
+  }
+  #enquiry .container{ position:relative; z-index:1; }
+  
   .enquiry-form{ margin-top:16px }
   .enquiry-form .hp-field{ display:none }
   .enquiry-form .grid{ display:grid; gap:14px; grid-template-columns:1fr }
@@ -179,7 +192,18 @@
   .enquiry-actions{ display:flex; align-items:center; gap:12px; margin-top:12px }
   .enquiry-status{ color:#bdeafe; font-weight:600 }
   
-  /* Contact — single card */
+  /* Contact — section watermark (LASER) and single card */
+  #contact{ position:relative; overflow:hidden; }
+  #contact::before{
+    content:"";
+    position:absolute; inset:0;
+    background: var(--contact-watermark) no-repeat center bottom 10%;
+    background-size: clamp(700px, 90vw, 1800px) auto;
+    opacity:.22; filter:grayscale(100%) contrast(1.1) brightness(1.15);
+    pointer-events:none; z-index:0;
+  }
+  #contact .container{ position:relative; z-index:1; }
+  
   .contact-card{
     margin-top:16px;
     background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.04));
@@ -195,25 +219,4 @@
     margin:12px 0;
   }
   .company-block h4{ margin:0 0 6px; color:var(--brand) }
-  
-  /* Footer with LASER watermark */
-  .footer{
-    border-top:2px solid var(--white);
-    position:relative; overflow:hidden;
-    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-    padding: 24px 0;
-  }
-  .footer::before{
-    content:""; position:absolute; inset:0;
-    background: var(--footer-watermark) no-repeat center bottom 18px;
-    background-size: clamp(600px, 85vw, 1600px) auto;
-    opacity:.14; filter:grayscale(100%);
-    pointer-events:none;
-  }
-  .footer-inner{
-    position:relative; z-index:1;
-    display:flex; align-items:center; justify-content:space-between;
-    gap:12px;
-    color:#e9eefc;
-  }
   
