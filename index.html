@@ -11,11 +11,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Favicon (optional if present) -->
+  <!-- Favicon (optional) -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <!-- Cache-bust -->
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
   <!-- Page wrapper (adds vertical white borders) -->
@@ -25,7 +25,6 @@
     <header class="nav">
       <div class="nav-inner container">
         <a class="brand" href="#">
-          <img src="images/logo.png" alt="BonnyCsolutions logo" class="brand-mark" width="28" height="28" />
           <span>Bonny Contracting Solutions Pty Ltd</span>
         </a>
         <nav>
@@ -41,17 +40,7 @@
 
       <!-- HERO (big image via <img>) -->
       <section class="hero section">
-        <!-- Background image element -->
-        <img
-          class="hero-bg"
-          src="images/hero.jpg"
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-          fetchpriority="high"
-        />
-
-        <!-- Content -->
+        <img class="hero-bg" src="images/hero.jpg" alt="" aria-hidden="true" decoding="async" fetchpriority="high" />
         <div class="container">
           <div class="hero-panel">
             <h1>Find. Influence. Win.<br />U.S. Federal Contracts.</h1>
@@ -59,7 +48,6 @@
 
             <div class="cta-row">
               <a class="btn btn-primary" href="#contact">Get Started</a>
-              <!-- Make this match the primary button -->
               <a class="btn btn-primary" href="#services">See Services</a>
             </div>
 
@@ -130,16 +118,24 @@
         </div>
       </section>
 
-      <!-- ENQUIRY FORM (Netlify Forms) -->
+      <!-- ABOUT (now comes BEFORE Quick Enquiry) -->
+      <section id="about" class="section">
+        <div class="container">
+          <h2>About</h2>
+          <p>We have 15 years of experience across government procurement and commercial operations. That mix lets us translate requirements into clear, actionable work—so you’re pursuing the right opportunities, not just the loud ones.</p>
+          <p>Our role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling. When a project needs more hands, we bring in the right specialists to fulfill the requirements put forward by the federal government.</p>
+          <p>If you want growth without wasted effort, we’ll be a good fit. We meet you where you are, align strategy to your strengths, and push each opportunity forward with a calm, disciplined process.</p>
+        </div>
+      </section>
+
+      <!-- QUICK ENQUIRY (now AFTER About, WITH WATERMARK BACKGROUND) -->
       <section id="enquiry" class="section">
         <div class="container">
           <h2>Quick Enquiry</h2>
           <p>Have a question? Send us a note and we’ll reply within 1–3 business days.</p>
 
           <form name="enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="enquiry-form">
-            <!-- Netlify required hidden field -->
             <input type="hidden" name="form-name" value="enquiry" />
-            <!-- Honeypot -->
             <input type="text" name="bot-field" class="hp-field" aria-hidden="true" tabindex="-1" autocomplete="off" />
 
             <div class="grid">
@@ -164,21 +160,11 @@
               <span class="enquiry-status" id="enquiryStatus" aria-live="polite"></span>
             </div>
           </form>
-          <!-- Tip: In Netlify → Forms → Notifications, add an Email notification to info@bonnycsolutions.com -->
+          <!-- Netlify → Forms → Notifications: add Email notification to info@bonnycsolutions.com -->
         </div>
       </section>
 
-      <!-- ABOUT -->
-      <section id="about" class="section">
-        <div class="container">
-          <h2>About</h2>
-          <p>We have 15 years of experience across government procurement and commercial operations. That mix lets us translate requirements into clear, actionable work—so you’re pursuing the right opportunities, not just the loud ones.</p>
-          <p>Our role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling. When a project needs more hands, we bring in the right specialists to fulfill the requirements put forward by the federal government.</p>
-          <p>If you want growth without wasted effort, we’ll be a good fit. We meet you where you are, align strategy to your strengths, and push each opportunity forward with a calm, disciplined process.</p>
-        </div>
-      </section>
-
-      <!-- CONTACT (with large watermark) -->
+      <!-- CONTACT (no watermark here now) -->
       <section id="contact" class="section">
         <div class="container">
           <h2>Contact</h2>
@@ -201,7 +187,7 @@
       </section>
     </main>
 
-    <!-- FOOTER (no tagline) -->
+    <!-- FOOTER -->
     <footer class="footer">
       <div class="footer-inner container">
         <p>© <span id="year"></span> BonnyCsolutions. All rights reserved.</p>

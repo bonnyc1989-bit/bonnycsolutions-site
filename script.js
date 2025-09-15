@@ -24,7 +24,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   
   if (enquiryForm && statusEl) {
     enquiryForm.addEventListener('submit', async (e) => {
-      // Let Netlify handle it normally if JS fails
       e.preventDefault();
       const formData = new FormData(enquiryForm);
       try {
