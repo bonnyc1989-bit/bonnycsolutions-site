@@ -1,6 +1,4 @@
-// script.js (optional niceties)
-
-// Smooth scroll fix for older browsers (most modern ones use CSS)
+// Smooth scroll for in-page links
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const id = a.getAttribute('href');
@@ -10,4 +8,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
       }
     });
   });
+  
+  // Set current year in footer
+  document.getElementById('year').textContent = new Date().getFullYear();
   
