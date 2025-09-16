@@ -19,7 +19,7 @@ function scrollToTarget(target) {
   const y = rect.top + window.pageYOffset - (headerH + 8); // slight gap
   smoothScrollTo(y);
 
-  // Set focus for accessibility (without showing outline on click users)
+  // Set focus for accessibility
   target.setAttribute('tabindex', '-1');
   target.focus({ preventScroll: true });
   target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
@@ -64,6 +64,7 @@ window.addEventListener('load', () => {
 
 // -------------------------------
 // Netlify Forms — progressive enhancement (AJAX)
+// Always post to "/" to avoid redirect issues
 // -------------------------------
 const enquiryForm = document.querySelector('form[name="enquiry"]');
 const statusEl = document.getElementById('enquiryStatus');
@@ -76,13 +77,12 @@ function encode(obj) {
 
 if (enquiryForm && statusEl) {
   enquiryForm.addEventListener('submit', async (e) => {
-    // If JS fails, Netlify still accepts native post—so only prevent when we handle it here.
     e.preventDefault();
 
     const submitBtn = enquiryForm.querySelector('button[type="submit"]');
     const formData = new FormData(enquiryForm);
 
-    // Honeypot: if bot-field has a value, quietly succeed (don’t reveal anything)
+    // Honeypot: if bot-field has a value, quietly succeed
     if (formData.get('bot-field')) {
       statusEl.textContent = 'Thanks — your enquiry was sent.';
       statusEl.classList.remove('error');
@@ -91,7 +91,7 @@ if (enquiryForm && statusEl) {
       return;
     }
 
-    // Ensure Netlify sees the form name (works with your hidden input too)
+    // Ensure Netlify sees the form name
     if (!formData.get('form-name')) {
       formData.set('form-name', 'enquiry');
     }
@@ -102,24 +102,23 @@ if (enquiryForm && statusEl) {
     statusEl.classList.remove('error', 'success');
 
     try {
-      const res = await fetch(enquiryForm.getAttribute('action') || '/', {
+      const res = await fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode(Object.fromEntries(formData)),
-        credentials: 'same-origin',
-        redirect: 'follow'
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json' // prevents Netlify redirect responses
+        },
+        body: encode(Object.fromEntries(formData))
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      // Success
       statusEl.textContent = 'Thanks — your enquiry was sent.';
       statusEl.classList.remove('error');
       statusEl.classList.add('success');
       enquiryForm.reset();
 
-      // Optional: clear status after a few seconds
-      window.setTimeout(() => {
+      setTimeout(() => {
         statusEl.textContent = '';
         statusEl.classList.remove('success');
       }, 5000);
