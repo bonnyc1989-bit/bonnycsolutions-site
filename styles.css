@@ -1,5 +1,5 @@
 /* =========================================
-   BonnyCsolutions — styles.css (v21)
+   BonnyCsolutions — styles.css (v22)
    - Vertical page borders + section dividers
    - Hero with image overlay + glass panel
    - Services/Process cards
@@ -25,7 +25,6 @@
     --shadow:0 10px 30px rgba(0,0,0,.35);
     --inset:clamp(24px,4vw,56px);
   
-    /* Watermark used in Quick Enquiry */
     --enquiry-watermark: url("images/logo.png");
   }
   
@@ -109,13 +108,13 @@
     transition:transform .08s ease, background .2s ease, border-color .2s ease;
   }
   .btn:active{ transform:translateY(1px) scale(.99); }
-  .btn-primary {
-    color: #000000; /* black text */
-    background: var(--white);
-    border-color: rgba(255,255,255,.9);
-  }
-  
+  .btn-primary{ color:#000; background:var(--white); border-color:rgba(255,255,255,.9); }
   .btn-primary:hover{ background:#f5f8ff; border-color:rgba(255,255,255,.95); }
+  
+  /* Ensure navbar CTA stays dark */
+  .nav .btn-primary { color:#000 !important; }
+  .nav .btn-primary:hover,
+  .nav .btn-primary:focus-visible { color:#000; }
   
   /* Focus styles */
   :where(a, button, .btn, input, textarea, select):focus-visible {
@@ -160,12 +159,8 @@
   .cta-row{ display:flex; gap:12px; margin-top:16px; flex-wrap:wrap; }
   .support{ margin-top:14px; }
   
-  /* Small-screen legibility bump */
   @media (max-width: 640px) {
-    .hero-panel {
-      background: rgba(15,23,42,.45);
-      border-color: rgba(255,255,255,.35);
-    }
+    .hero-panel { background: rgba(15,23,42,.45); border-color: rgba(255,255,255,.35); }
     .hero h1 { line-height: 1.12; }
   }
   
@@ -298,7 +293,6 @@
   @media print {
     body {
       background: #ffffff !important;
-      color: #000 !important;
     }
     .page, .section::before, .hero::after, #enquiry::before {
       border: none !important;
@@ -311,13 +305,5 @@
       border: 1px solid #ccc !important;
       box-shadow: none !important;
     }
-  }
-  /* Ensure navbar CTA text matches other primary buttons */
-.nav .btn-primary {
-    color: #000 !important;              /* same as "Get Started" / "See Services" */
-  }
-  .nav .btn-primary:hover,
-  .nav .btn-primary:focus-visible {
-    color: #000;                         /* keep it dark on hover/focus */
   }
   

@@ -54,9 +54,9 @@ window.addEventListener('load', () => {
 });
 
 // -------------------------------
-// Netlify Forms — AJAX with native fallback
+// Netlify Forms — AJAX to current path, with fallback
 // -------------------------------
-const enquiryForm = document.querySelector('form[name="enquiry"]');
+const enquiryForm = document.getElementById('enquiryForm');
 const statusEl = document.getElementById('enquiryStatus');
 
 function encode(obj) {
@@ -65,13 +65,17 @@ function encode(obj) {
 
 async function submitViaAjax(form) {
   const formData = new FormData(form);
+  if (!formData.get('form-name')) formData.set('form-name', 'enquiry'); // ensure detection
 
-  // Ensure Netlify sees form name
-  if (!formData.get('form-name')) formData.set('form-name', 'enquiry');
+  // Post to the current page path (avoids domain/redirect quirks)
+  const postUrl = form.getAttribute('action') || window.location.pathname;
 
-  const res = await fetch('/', {
+  const res = await fetch(postUrl, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'application/json'
+    },
     body: encode(Object.fromEntries(formData))
   });
   return res;
@@ -82,10 +86,11 @@ if (enquiryForm && statusEl) {
     e.preventDefault();
 
     const submitBtn = enquiryForm.querySelector('button[type="submit"]');
-    const formData = new FormData(enquiryForm);
+    const honeypot = enquiryForm.querySelector('[name="bot-field"]');
+    const hpVal = honeypot ? honeypot.value : '';
 
     // Honeypot: if filled, pretend success
-    if (formData.get('bot-field')) {
+    if (hpVal) {
       statusEl.textContent = 'Thanks — your enquiry was sent.';
       statusEl.classList.remove('error');
       statusEl.classList.add('success');
@@ -107,15 +112,13 @@ if (enquiryForm && statusEl) {
         enquiryForm.reset();
         setTimeout(() => { statusEl.textContent = ''; statusEl.classList.remove('success'); }, 5000);
       } else {
-        // Fallback: native submit to Netlify (shows their default success page)
-        enquiryForm.setAttribute('action', '/');
-        enquiryForm.removeEventListener('submit', () => {});
+        // Fallback: native submit to Netlify default success page
+        enquiryForm.setAttribute('action', window.location.pathname);
         enquiryForm.submit();
       }
     } catch (err) {
-      // Fallback on network error as well
-      enquiryForm.setAttribute('action', '/');
-      enquiryForm.removeEventListener('submit', () => {});
+      // Network fallback
+      enquiryForm.setAttribute('action', window.location.pathname);
       enquiryForm.submit();
     } finally {
       submitBtn?.removeAttribute('disabled');
