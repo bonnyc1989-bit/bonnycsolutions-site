@@ -68,9 +68,9 @@ window.addEventListener('load', () => {
 const enquiryForm = document.querySelector('form[name="enquiry"]');
 const statusEl = document.getElementById('enquiryStatus');
 
-function encode(data) {
-  return Object.keys(data)
-    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))
+function encode(obj) {
+  return Object.entries(obj)
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
     .join('&');
 }
 
@@ -102,11 +102,10 @@ if (enquiryForm && statusEl) {
     statusEl.classList.remove('error', 'success');
 
     try {
-      const body = encode(Object.fromEntries(formData));
-      const res = await fetch('/', {
+      const res = await fetch(enquiryForm.getAttribute('action') || '/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body,
+        body: encode(Object.fromEntries(formData)),
         credentials: 'same-origin',
         redirect: 'follow'
       });

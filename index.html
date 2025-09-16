@@ -145,7 +145,13 @@
           <h2 id="enquiry-title">Quick Enquiry</h2>
           <p>Have a question? Send us a note and we’ll reply within 1–3 business days.</p>
 
-          <form name="enquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="enquiry-form" action="/thank-you">
+          <!-- Netlify form (detected on deploy) -->
+          <form name="enquiry"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                class="enquiry-form"
+                action="/thank-you">
             <input type="hidden" name="form-name" value="enquiry" />
             <input type="text" name="bot-field" class="hp-field" aria-hidden="true" tabindex="-1" autocomplete="off" />
 
