@@ -24,7 +24,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=31">
+  <link rel="stylesheet" href="styles.css?v=32">
 </head>
 
 <body>
@@ -48,16 +48,10 @@
 
     <main class="page-inner">
 
-      <!-- HERO — video-only, playlist controlled in JS -->
+      <!-- HERO — double-buffered videos for gapless playback -->
       <section id="hero" class="hero section" aria-label="Hero">
-        <video
-          id="heroVideo"
-          class="hero-video"
-          playsinline
-          muted
-          autoplay
-          preload="auto"
-        ></video>
+        <video id="heroA" class="hero-video active" playsinline muted autoplay preload="auto"></video>
+        <video id="heroB" class="hero-video" playsinline muted preload="auto"></video>
 
         <div class="container">
           <div class="hero-panel">
@@ -81,7 +75,7 @@
       <section id="stats" class="section" aria-labelledby="stats-title">
         <div class="container">
           <h2 id="stats-title">Annual Spend 2025</h2>
-          <p class="muted">Budget &amp; spending highlights. Hover a box to replay its animation.</p>
+          <p class="muted">Budget &amp; spending highlights. Hover a box to replay the animation.</p>
 
           <div class="stats-grid" role="list">
             <article class="stat" role="listitem" aria-label="US Federal Budget FY 2025 Total Outlays">
@@ -227,6 +221,6 @@
     </footer>
   </div>
 
-  <script src="script.js?v=31"></script>
+  <script src="script.js?v=32"></script>
 </body>
 </html>

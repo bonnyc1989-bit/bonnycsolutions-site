@@ -1,8 +1,8 @@
-// BonnyCsolutions — script.js (v31)
+// BonnyCsolutions — script.js (v32)
 // - Footer year
-// - Animated counters (isolated hover replay)
+// - Animated counters (independent hover replay)
 // - Netlify AJAX form
-// - HERO: robust 4-video playlist (no <source>; error/timeout skip)
+// - HERO: double-buffered playlist for gapless playback
 
 (function () {
   // Footer year
@@ -75,66 +75,96 @@
     });
   }
 
-  // ---------- HERO: robust playlist ----------
-  const vid = document.getElementById('heroVideo');
-  if (vid) {
-    const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"]; // /images
-    let i = 0;
-    let timeoutId = null;
+  // ---------- HERO: double-buffered playlist for gapless playback ----------
+  const vA = document.getElementById('heroA');
+  const vB = document.getElementById('heroB');
 
-    const nextIndex = () => (i = (i + 1) % playlist.length);
+  if (vA && vB) {
+    const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"];
+    let i = 0;         // index of the clip *currently visible / playing*
+    let active = 0;    // 0 -> vA is active; 1 -> vB is active
+    const vids = [vA, vB];
+    const NEAR_END_SEC = 0.20; // when to pre-start the next clip (200ms before end)
 
-    const clearGuards = () => {
-      if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
-      vid.oncanplay = vid.onerror = vid.onstalled = null;
+    const load = (el, file) => new Promise((resolve, reject) => {
+      const cleanup = () => {
+        el.removeEventListener('canplaythrough', onCan);
+        el.removeEventListener('error', onErr);
+        clearTimeout(tid);
+      };
+      const onCan = () => { cleanup(); resolve(); };
+      const onErr = () => { cleanup(); reject(new Error('video load error')); };
+      const tid = setTimeout(() => { cleanup(); reject(new Error('video load timeout')); }, 6000);
+
+      el.pause();
+      el.removeAttribute('src');
+      el.load();
+      el.src = `images/${file}`;
+      el.muted = true;
+      el.playsInline = true;
+      el.preload = 'auto';
+      el.addEventListener('canplaythrough', onCan, { once: true });
+      el.addEventListener('error', onErr, { once: true });
+    });
+
+    const swap = () => {
+      const cur = vids[active];
+      const nxt = vids[1 - active];
+      cur.classList.remove('active');
+      nxt.classList.add('active');
+      // let the new video keep playing; stop and reset the old one
+      setTimeout(() => { cur.pause(); cur.currentTime = 0; }, 50);
+      active = 1 - active;
     };
 
-    const loadAndPlay = (file) => {
-      clearGuards();
-
-      // Force a hard reload of the media element (important for Safari/Chrome)
-      vid.pause();
-      vid.removeAttribute('src');
-      vid.load();
-
-      // Set new source directly on the video element (no <source>)
-      vid.src = `images/${file}`;
-      vid.currentTime = 0;
-
-      // Guards:
-      vid.oncanplay = () => { /* ready to go */ };
-      vid.onerror = () => {
-        console.warn('Video error, skipping:', file, vid.error);
-        nextIndex();
-        loadAndPlay(playlist[i]);
-      };
-      vid.onstalled = () => {
-        console.warn('Video stalled, skipping:', file);
-        nextIndex();
-        loadAndPlay(playlist[i]);
-      };
-
-      // Timeout guard in case neither 'error' nor 'stalled' fires
-      timeoutId = setTimeout(() => {
-        if (vid.readyState < 2) {
-          console.warn('Video timeout, skipping:', file);
-          nextIndex();
-          loadAndPlay(playlist[i]);
-        }
-      }, 7000);
-
-      const p = vid.play?.();
-      if (p && typeof p.then === 'function') {
-        p.catch(() => console.warn('Autoplay blocked; playback will start after first interaction.'));
+    let prestarted = false;
+    const onTimeUpdate = () => {
+      const cur = vids[active];
+      const nxt = vids[1 - active];
+      if (!cur.duration || isNaN(cur.duration)) return;
+      if (!prestarted && (cur.duration - cur.currentTime) <= NEAR_END_SEC) {
+        prestarted = true;
+        // start next a fraction early, hidden, so swap is instantaneous
+        const p = nxt.play?.();
+        if (p && typeof p.then === 'function') p.catch(() => {});
       }
     };
 
-    vid.addEventListener('ended', () => {
-      nextIndex();
-      loadAndPlay(playlist[i]);
-    });
+    const onEnded = async () => {
+      // show the one that is already running
+      swap();
+      // prepare the following clip on the now-hidden element
+      prestarted = false;
+      i = (i + 1) % playlist.length; // we just moved to i+1; now preload i+2
+      const hidden = vids[1 - active];
+      const nextFile = playlist[(i + 1) % playlist.length];
+      try { await load(hidden, nextFile); hidden.pause(); hidden.currentTime = 0; }
+      catch { /* if it fails, the guard will skip next rotation */ }
+      // reattach listeners to the new active
+      attachHandlers();
+    };
 
-    // Kick off
-    loadAndPlay(playlist[i]);
+    const detachHandlers = () => {
+      vids[active].removeEventListener('timeupdate', onTimeUpdate);
+      vids[active].removeEventListener('ended', onEnded);
+    };
+    const attachHandlers = () => {
+      detachHandlers();
+      vids[active].addEventListener('timeupdate', onTimeUpdate);
+      vids[active].addEventListener('ended', onEnded);
+    };
+
+    (async () => {
+      // 1) load & play first
+      await load(vids[active], playlist[i]);
+      vids[active].classList.add('active');
+      vids[active].play().catch(() => {});
+      // 2) preload second on the hidden player
+      const hidden = vids[1 - active];
+      const nextFile = playlist[(i + 1) % playlist.length];
+      try { await load(hidden, nextFile); hidden.pause(); hidden.currentTime = 0; } catch {}
+      // 3) attach handlers
+      attachHandlers();
+    })();
   }
 })();
