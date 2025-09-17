@@ -1,9 +1,8 @@
-// BonnyCsolutions — script.js (v32)
+// BonnyCsolutions — script.js (v33)
 // - Footer year
-// - Animated counters (independent hover replay)
+// - Animated counters (independent hover replay) with better spacing handled in CSS
 // - Netlify AJAX form
 // - HERO: double-buffered playlist for gapless playback
-
 (function () {
   // Footer year
   const yearEl = document.getElementById('year');
@@ -81,28 +80,19 @@
 
   if (vA && vB) {
     const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"];
-    let i = 0;         // index of the clip *currently visible / playing*
-    let active = 0;    // 0 -> vA is active; 1 -> vB is active
+    let i = 0;         // current index of visible clip
+    let active = 0;    // 0 -> vA active; 1 -> vB active
     const vids = [vA, vB];
-    const NEAR_END_SEC = 0.20; // when to pre-start the next clip (200ms before end)
+    const NEAR_END_SEC = 0.20; // pre-start next ~200ms early
 
     const load = (el, file) => new Promise((resolve, reject) => {
-      const cleanup = () => {
-        el.removeEventListener('canplaythrough', onCan);
-        el.removeEventListener('error', onErr);
-        clearTimeout(tid);
-      };
+      const cleanup = () => { el.removeEventListener('canplaythrough', onCan); el.removeEventListener('error', onErr); clearTimeout(tid); };
       const onCan = () => { cleanup(); resolve(); };
       const onErr = () => { cleanup(); reject(new Error('video load error')); };
       const tid = setTimeout(() => { cleanup(); reject(new Error('video load timeout')); }, 6000);
 
-      el.pause();
-      el.removeAttribute('src');
-      el.load();
-      el.src = `images/${file}`;
-      el.muted = true;
-      el.playsInline = true;
-      el.preload = 'auto';
+      el.pause(); el.removeAttribute('src'); el.load();
+      el.src = `images/${file}`; el.muted = true; el.playsInline = true; el.preload = 'auto';
       el.addEventListener('canplaythrough', onCan, { once: true });
       el.addEventListener('error', onErr, { once: true });
     });
@@ -112,7 +102,6 @@
       const nxt = vids[1 - active];
       cur.classList.remove('active');
       nxt.classList.add('active');
-      // let the new video keep playing; stop and reset the old one
       setTimeout(() => { cur.pause(); cur.currentTime = 0; }, 50);
       active = 1 - active;
     };
@@ -124,23 +113,17 @@
       if (!cur.duration || isNaN(cur.duration)) return;
       if (!prestarted && (cur.duration - cur.currentTime) <= NEAR_END_SEC) {
         prestarted = true;
-        // start next a fraction early, hidden, so swap is instantaneous
-        const p = nxt.play?.();
-        if (p && typeof p.then === 'function') p.catch(() => {});
+        const p = nxt.play?.(); if (p && typeof p.then === 'function') p.catch(() => {});
       }
     };
 
     const onEnded = async () => {
-      // show the one that is already running
       swap();
-      // prepare the following clip on the now-hidden element
       prestarted = false;
-      i = (i + 1) % playlist.length; // we just moved to i+1; now preload i+2
+      i = (i + 1) % playlist.length; // prepare following clip on hidden element
       const hidden = vids[1 - active];
       const nextFile = playlist[(i + 1) % playlist.length];
-      try { await load(hidden, nextFile); hidden.pause(); hidden.currentTime = 0; }
-      catch { /* if it fails, the guard will skip next rotation */ }
-      // reattach listeners to the new active
+      try { await load(hidden, nextFile); hidden.pause(); hidden.currentTime = 0; } catch {}
       attachHandlers();
     };
 
@@ -155,15 +138,12 @@
     };
 
     (async () => {
-      // 1) load & play first
       await load(vids[active], playlist[i]);
       vids[active].classList.add('active');
       vids[active].play().catch(() => {});
-      // 2) preload second on the hidden player
       const hidden = vids[1 - active];
       const nextFile = playlist[(i + 1) % playlist.length];
       try { await load(hidden, nextFile); hidden.pause(); hidden.currentTime = 0; } catch {}
-      // 3) attach handlers
       attachHandlers();
     })();
   }
