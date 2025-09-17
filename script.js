@@ -1,9 +1,8 @@
-// BonnyCsolutions — script.js (v29)
+// BonnyCsolutions — script.js (v31)
 // - Footer year
-// - Animated counters: start on view; replay on hover (isolated)
-// - Lightbox
-// - Netlify form (AJAX)
-// - HERO: play 4 MP4s in sequence, loop the set
+// - Animated counters (isolated hover replay)
+// - Netlify AJAX form
+// - HERO: robust 4-video playlist (no <source>; error/timeout skip)
 
 (function () {
   // Footer year
@@ -17,31 +16,21 @@
     const suffix = el.getAttribute('data-suffix') || '';
     const prefix = el.getAttribute('data-prefix') || '';
     const dur = 1200;
-
-    const fmt = (n) => n.toLocaleString(undefined, {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
-    });
-
+    const fmt = (n) => n.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
     const start = performance.now();
     const step = (now) => {
       const t = Math.min(1, (now - start) / dur);
       const eased = 1 - Math.pow(1 - t, 3);
-      const val = to * eased;
-      el.textContent = `${prefix}${fmt(val)}${suffix}`;
+      el.textContent = `${prefix}${fmt(to * eased)}${suffix}`;
       if (t < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
   };
 
-  // Start when visible
   const statObserver = ('IntersectionObserver' in window)
     ? new IntersectionObserver((entries) => {
         entries.forEach(e => {
-          if (e.isIntersecting) {
-            animateCount(e.target);
-            statObserver.unobserve(e.target);
-          }
+          if (e.isIntersecting) { animateCount(e.target); statObserver.unobserve(e.target); }
         });
       }, { threshold: 0.6 })
     : null;
@@ -50,7 +39,6 @@
     if (statObserver) statObserver.observe(el); else animateCount(el);
   });
 
-  // Replay on hover (only the hovered card changes)
   document.querySelectorAll('.stat').forEach(card => {
     card.addEventListener('mouseenter', () => {
       const val = card.querySelector('.stat-value');
@@ -58,28 +46,6 @@
       val.textContent = '0';
       animateCount(val);
     });
-  });
-
-  // ---------- Lightbox ----------
-  const dlg = document.querySelector('.lightbox');
-  const dlgImg = document.querySelector('.lightbox-img');
-  const dlgCap = document.querySelector('.lightbox-caption');
-  const dlgClose = document.querySelector('.lightbox-close');
-
-  const openLightbox = (src, cap) => { if (!dlg) return; dlgImg.src = src; dlgCap.textContent = cap || ''; dlg.showModal(); };
-  const closeLightbox = () => { if (dlg?.open) dlg.close(); };
-
-  document.querySelectorAll('.gallery figure').forEach(fig => {
-    fig.addEventListener('click', () => {
-      const img = fig.querySelector('img');
-      const cap = fig.querySelector('figcaption')?.textContent || '';
-      if (img) openLightbox(img.src, cap);
-    });
-  });
-  dlgClose?.addEventListener('click', closeLightbox);
-  dlg?.addEventListener('click', (e) => {
-    const rect = dlg.querySelector('img')?.getBoundingClientRect();
-    if (!rect || e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) closeLightbox();
   });
 
   // ---------- Netlify AJAX form ----------
@@ -109,28 +75,66 @@
     });
   }
 
-  // ---------- HERO: sequential playlist (4 MP4s), loop the set ----------
-  const heroVideo = document.getElementById('heroVideo');
-  const srcEl = document.getElementById('heroSource');
-  if (heroVideo && srcEl) {
-    const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"]; // files in /images
-    let idx = 0;
+  // ---------- HERO: robust playlist ----------
+  const vid = document.getElementById('heroVideo');
+  if (vid) {
+    const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"]; // /images
+    let i = 0;
+    let timeoutId = null;
 
-    const playIndex = (i) => {
-      srcEl.src = `images/${playlist[i]}`;
-      heroVideo.load();
-      const p = heroVideo.play?.();
+    const nextIndex = () => (i = (i + 1) % playlist.length);
+
+    const clearGuards = () => {
+      if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
+      vid.oncanplay = vid.onerror = vid.onstalled = null;
+    };
+
+    const loadAndPlay = (file) => {
+      clearGuards();
+
+      // Force a hard reload of the media element (important for Safari/Chrome)
+      vid.pause();
+      vid.removeAttribute('src');
+      vid.load();
+
+      // Set new source directly on the video element (no <source>)
+      vid.src = `images/${file}`;
+      vid.currentTime = 0;
+
+      // Guards:
+      vid.oncanplay = () => { /* ready to go */ };
+      vid.onerror = () => {
+        console.warn('Video error, skipping:', file, vid.error);
+        nextIndex();
+        loadAndPlay(playlist[i]);
+      };
+      vid.onstalled = () => {
+        console.warn('Video stalled, skipping:', file);
+        nextIndex();
+        loadAndPlay(playlist[i]);
+      };
+
+      // Timeout guard in case neither 'error' nor 'stalled' fires
+      timeoutId = setTimeout(() => {
+        if (vid.readyState < 2) {
+          console.warn('Video timeout, skipping:', file);
+          nextIndex();
+          loadAndPlay(playlist[i]);
+        }
+      }, 7000);
+
+      const p = vid.play?.();
       if (p && typeof p.then === 'function') {
-        p.catch(() => console.warn('Autoplay blocked; poster remains until user interacts.'));
+        p.catch(() => console.warn('Autoplay blocked; playback will start after first interaction.'));
       }
     };
 
-    heroVideo.removeAttribute('loop'); // play each once, not one looping
-    heroVideo.addEventListener('ended', () => {
-      idx = (idx + 1) % playlist.length;
-      playIndex(idx);
+    vid.addEventListener('ended', () => {
+      nextIndex();
+      loadAndPlay(playlist[i]);
     });
 
-    playIndex(idx); // kick off
+    // Kick off
+    loadAndPlay(playlist[i]);
   }
 })();

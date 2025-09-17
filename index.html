@@ -24,7 +24,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=29">
+  <link rel="stylesheet" href="styles.css?v=31">
 </head>
 
 <body>
@@ -37,7 +37,6 @@
           <ul class="nav-list">
             <li><a href="#services">Services</a></li>
             <li><a href="#stats">Annual Spend 2025</a></li>
-            <li><a href="#showcase">Showcase</a></li>
             <li><a href="#process">Process</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#enquiry">Enquiry</a></li>
@@ -49,7 +48,7 @@
 
     <main class="page-inner">
 
-      <!-- HERO — 4 MP4s play sequentially, then loop -->
+      <!-- HERO — video-only, playlist controlled in JS -->
       <section id="hero" class="hero section" aria-label="Hero">
         <video
           id="heroVideo"
@@ -58,10 +57,7 @@
           muted
           autoplay
           preload="auto"
-          poster="images/hero.jpg"
-        >
-          <source id="heroSource" src="images/Soldiers.mp4" type="video/mp4" />
-        </video>
+        ></video>
 
         <div class="container">
           <div class="hero-panel">
@@ -81,134 +77,55 @@
         </div>
       </section>
 
-      <!-- STATS: Annual Spend 2025 (Fed total in Trillions; others in Billions) -->
+      <!-- STATS -->
       <section id="stats" class="section" aria-labelledby="stats-title">
         <div class="container">
           <h2 id="stats-title">Annual Spend 2025</h2>
-          <p class="muted">Budget &amp; spending highlights. Hover a box to replay the animation.</p>
+          <p class="muted">Budget &amp; spending highlights. Hover a box to replay its animation.</p>
 
           <div class="stats-grid" role="list">
-            <!-- Trillions -->
             <article class="stat" role="listitem" aria-label="US Federal Budget FY 2025 Total Outlays">
-              <div class="stat-value"
-                   data-count-to="7.0"
-                   data-decimals="1"
-                   data-prefix="$"
-                   data-suffix="T">0</div>
+              <div class="stat-value" data-count-to="7.0" data-decimals="1" data-prefix="$" data-suffix="T">0</div>
               <div class="stat-label">US Federal Budget FY 2025<br/>Total Outlays</div>
             </article>
-
-            <!-- Billions -->
             <article class="stat" role="listitem" aria-label="Department of Defense FY 2025 Budget">
-              <div class="stat-value"
-                   data-count-to="851.7"
-                   data-decimals="1"
-                   data-prefix="$"
-                   data-suffix="B">0</div>
+              <div class="stat-value" data-count-to="851.7" data-decimals="1" data-prefix="$" data-suffix="B">0</div>
               <div class="stat-label">Department of Defense (DoD)<br/>Annual Budget FY 2025</div>
             </article>
-
             <article class="stat" role="listitem" aria-label="Department of State FY 2025 Budget">
-              <div class="stat-value"
-                   data-count-to="58.8"
-                   data-decimals="1"
-                   data-prefix="$"
-                   data-suffix="B">0</div>
+              <div class="stat-value" data-count-to="58.8" data-decimals="1" data-prefix="$" data-suffix="B">0</div>
               <div class="stat-label">Department of State<br/>Annual Budget FY 2025</div>
             </article>
-
             <article class="stat" role="listitem" aria-label="Department of Homeland Security FY 2025 Budget">
-              <div class="stat-value"
-                   data-count-to="64.81"
-                   data-decimals="2"
-                   data-prefix="$"
-                   data-suffix="B">0</div>
+              <div class="stat-value" data-count-to="64.81" data-decimals="2" data-prefix="$" data-suffix="B">0</div>
               <div class="stat-label">Department of Homeland Security (DHS)<br/>Annual Budget FY 2025</div>
             </article>
-
             <article class="stat" role="listitem" aria-label="Small Business Federal Spending FY 2025 (approx.)">
-              <div class="stat-value"
-                   data-count-to="180"
-                   data-decimals="0"
-                   data-prefix="$"
-                   data-suffix="B">0</div>
+              <div class="stat-value" data-count-to="180" data-decimals="0" data-prefix="$" data-suffix="B">0</div>
               <div class="stat-label">Small Business Federal Spending<br/>FY 2025 (approx.)</div>
             </article>
           </div>
         </div>
       </section>
 
-      <!-- SERVICES (three tiers) -->
+      <!-- SERVICES (streamlined) -->
       <section id="services" class="section" aria-labelledby="services-title">
         <div class="container">
           <h2 id="services-title">Services</h2>
-          <p>I focus on practical, outcomes-first support. When needed, we bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
+          <p>I focus on practical, outcomes-first support. When needed, I bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
 
-          <!-- Tier 1: Feature plays (large image cards) -->
           <div class="features">
             <article class="feature-card">
-              <img class="feature-img" src="images/svc-bd.jpg" alt="Jet over terrain illustrating business development" />
-              <h3>Business Development &amp; Sales</h3>
-              <p>We position your company for sustainable federal growth—building a simple BD rhythm that surfaces winnable meetings, targets the right buyers, and converts activity into qualified pipeline.</p>
+              <img class="feature-img" src="images/services-roadmap.jpg" alt="Analyst planning a federal pursuit roadmap" />
+              <h3>Roadmapping &amp; Strategic Placement</h3>
+              <p>We sequence time and effort where it moves the score—mapping buyer demand, competitors, and vehicles to build a pursuit plan that maximizes probability of award (PWin) and avoids low-yield bids.</p>
             </article>
-
             <article class="feature-card">
-              <img class="feature-img" src="images/svc-roadmap.jpg" alt="Advanced lab illustrating strategic roadmapping" />
-              <h3>Strategic Roadmapping &amp; Pipeline Development</h3>
-              <p>We map your offerings to real government demand, forecast spend, and create a prioritized pursuit plan—so your team focuses on opportunities with the highest probability of award.</p>
+              <img class="feature-img" src="images/services-bd.jpg" alt="Business development outreach with a government buyer" />
+              <h3>Business Development for Federal Consulting</h3>
+              <p>We operationalize BD: who to call, what to say, and how to convert meetings into qualified pipeline—target lists, outreach rhythms, capture handoffs, and metrics that show progress, not motion.</p>
             </article>
           </div>
-
-          <!-- Tier 2: Core service lines (2×3) -->
-          <h3 class="tier-heading">Core Service Lines</h3>
-          <div class="svc-grid">
-            <article class="svc-card"><h4>Agency Targeting &amp; Spend Analysis</h4><p>Identify who buys what you sell; analyze history, vehicles, and buyer behavior.</p></article>
-            <article class="svc-card"><h4>Capture Management &amp; Shaping</h4><p>Early “ghosting,” Sources Sought/RFI responses, outreach, and discriminator development.</p></article>
-            <article class="svc-card"><h4>Opportunity Qualification (Bid/No-Bid)</h4><p>Fit, readiness, competitive posture, team strength, and pricing realism—no vanity bids.</p></article>
-            <article class="svc-card"><h4>Proposal Management &amp; Writing</h4><p>Compliance matrix, annotated outlines, volume ownership, and color-team reviews.</p></article>
-            <article class="svc-card"><h4>Subcontracting &amp; Teaming</h4><p>Prime/sub alignment, gap coverage, teaming agreements, and partner value narratives.</p></article>
-            <article class="svc-card"><h4>Post-Award Transition &amp; Quality</h4><p>Transition plans, kickoff, reporting rhythms, QASP/metrics, and CPARS stewardship.</p></article>
-          </div>
-
-          <!-- Tier 3: Government contracting toolkit (3×4) -->
-          <h3 class="tier-heading">Government Contracting Toolkit</h3>
-          <div class="toolkit-grid">
-            <article class="tool"><h5>SAM, Reps &amp; Certs Setup</h5><p>Clean registrations and representations to stay award-ready.</p></article>
-            <article class="tool"><h5>NAICS / PSC Alignment</h5><p>Map offerings to the codes contracting officers actually use.</p></article>
-            <article class="tool"><h5>Small-Business Programs</h5><p>8(a), SDVOSB, WOSB, HUBZone—eligibility, pathways, documentation.</p></article>
-            <article class="tool"><h5>Contract Vehicles</h5><p>GSA MAS, GWACs, IDIQs—assess fit, prep packages, position for on-ramp.</p></article>
-            <article class="tool"><h5>Sources Sought &amp; RFIs</h5><p>Credible shaping responses that steer requirements toward your strengths.</p></article>
-            <article class="tool"><h5>Capability Statement &amp; Past Performance</h5><p>Buyer-ready collateral and curated past performance write-ups.</p></article>
-            <article class="tool"><h5>Competitive &amp; Black-Hat Reviews</h5><p>Competitor POV, eval risks, and win-theme ghosting.</p></article>
-            <article class="tool"><h5>Pricing Strategy &amp; BOE Support</h5><p>Price-to-win inputs, BOE scaffolding, cost/fee compliance.</p></article>
-            <article class="tool"><h5>Compliance Matrix &amp; Outlines</h5><p>Bullet-proof compliance from day one—no red-pen rescues later.</p></article>
-            <article class="tool"><h5>Color-Team Reviews</h5><p>Pink/Red/Gold with comments tied to the scoring model.</p></article>
-            <article class="tool"><h5>Risk &amp; Mitigation Planning</h5><p>Real risks, realistic mitigations, and how they score.</p></article>
-            <article class="tool"><h5>Transition &amp; Reporting Kits</h5><p>30/60/90 plans, deliverable trackers, reporting templates.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <!-- SHOWCASE (images; click to enlarge) -->
-      <section id="showcase" class="section" aria-labelledby="showcase-title">
-        <div class="container">
-          <h2 id="showcase-title">Showcase</h2>
-          <p class="muted">Swap these placeholders with your visuals. Click to preview.</p>
-
-          <div class="gallery">
-            <figure><img src="images/showcase-1.jpg" alt="Showcase 1"><figcaption>Targeting map</figcaption></figure>
-            <figure><img src="images/showcase-2.jpg" alt="Showcase 2"><figcaption>Pipeline view</figcaption></figure>
-            <figure><img src="images/showcase-3.jpg" alt="Showcase 3"><figcaption>Capture actions</figcaption></figure>
-            <figure><img src="images/showcase-4.jpg" alt="Showcase 4"><figcaption>Teaming matrix</figcaption></figure>
-            <figure><img src="images/showcase-5.jpg" alt="Showcase 5"><figcaption>Win room</figcaption></figure>
-            <figure><img src="images/showcase-6.jpg" alt="Showcase 6"><figcaption>Post-award plan</figcaption></figure>
-          </div>
-
-          <dialog class="lightbox" aria-label="Image preview">
-            <button class="lightbox-close" aria-label="Close preview">×</button>
-            <img class="lightbox-img" src="" alt="">
-            <p class="lightbox-caption"></p>
-          </dialog>
         </div>
       </section>
 
@@ -236,13 +153,13 @@
         </div>
       </section>
 
-      <!-- ABOUT -->
+      <!-- ABOUT (first person) -->
       <section id="about" class="section" aria-labelledby="about-title">
         <div class="container">
           <h2 id="about-title">About</h2>
-          <p>We have 15 years of experience across government procurement and commercial operations. That mix lets us translate requirements into clear, actionable work—so you’re pursuing the right opportunities, not just the loud ones.</p>
-          <p>Our role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling. When a project needs more hands, we bring in the right specialists to fulfill the requirements put forward by the federal government.</p>
-          <p>If you want growth without wasted effort, we’ll be a good fit. We meet you where you are, align strategy to your strengths, and push each opportunity forward with a calm, disciplined process.</p>
+          <p>I bring 15 years across government procurement and commercial operations. That mix lets me translate requirements into clear, actionable work—so you’re pursuing the right opportunities, not just the loud ones.</p>
+          <p>My role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling. When a project needs more hands, I bring in trusted specialists to fulfill the requirements put forward by the federal government.</p>
+          <p>If you want growth without wasted effort, we’ll be a good fit. I meet you where you are, align strategy to your strengths, and push each opportunity forward with a calm, disciplined process.</p>
         </div>
       </section>
 
@@ -310,6 +227,6 @@
     </footer>
   </div>
 
-  <script src="script.js?v=29"></script>
+  <script src="script.js?v=31"></script>
 </body>
 </html>
