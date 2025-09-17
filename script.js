@@ -1,127 +1,138 @@
-// -------------------------------
-// Utilities
-// -------------------------------
-const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+// BonnyCsolutions — script.js (v24)
+// - Footer year
+// - Reveal on scroll (IntersectionObserver)
+// - Animated stats counters
+// - Lightbox for showcase images
+// - Enquiry form AJAX (Netlify)
+// - HERO: play 4 videos sequentially, loop the set
 
-// Smooth scroll with offset (for sticky header)
-function smoothScrollTo(y) {
-  if (prefersReduced) window.scrollTo(0, y);
-  else window.scrollTo({ top: y, behavior: 'smooth' });
-}
+(function () {
+  // Footer year
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-function scrollToTarget(target) {
-  const header = document.querySelector('.nav');
-  const rect = target.getBoundingClientRect();
-  const headerH = header ? header.offsetHeight : 0;
-  const y = rect.top + window.pageYOffset - (headerH + 8);
-  smoothScrollTo(y);
-
-  target.setAttribute('tabindex', '-1');
-  target.focus({ preventScroll: true });
-  target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
-}
-
-function updateHash(id) {
-  const hash = id.startsWith('#') ? id : `#${id}`;
-  history.pushState(null, '', hash);
-}
-
-// Current year in footer
-(function setYear(){
-  const y = document.getElementById('year');
-  if (y) y.textContent = new Date().getFullYear();
-})();
-
-// -------------------------------
-// In-page smooth links
-// -------------------------------
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const id = a.getAttribute('href');
-    if (!id || id.length <= 1) return;
-    const target = document.querySelector(id);
-    if (!target) return;
-    e.preventDefault();
-    scrollToTarget(target);
-    updateHash(id);
+  // Reveal on scroll
+  const io = ('IntersectionObserver' in window)
+    ? new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.2 })
+    : null;
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (io) io.observe(el); else el.classList.add('visible');
   });
-});
 
-window.addEventListener('load', () => {
-  const hash = window.location.hash;
-  const target = hash && document.querySelector(hash);
-  if (target) scrollToTarget(target);
-});
-
-// -------------------------------
-// Netlify Forms — AJAX to current path, with fallback
-// -------------------------------
-const enquiryForm = document.getElementById('enquiryForm');
-const statusEl = document.getElementById('enquiryStatus');
-
-function encode(obj) {
-  return Object.entries(obj).map(([k,v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
-}
-
-async function submitViaAjax(form) {
-  const formData = new FormData(form);
-  if (!formData.get('form-name')) formData.set('form-name', 'enquiry'); // ensure detection
-
-  // Post to the current page path (avoids domain/redirect quirks)
-  const postUrl = form.getAttribute('action') || window.location.pathname;
-
-  const res = await fetch(postUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/json'
-    },
-    body: encode(Object.fromEntries(formData))
+  // Animated stats counters
+  const animateCount = (el) => {
+    const toRaw = el.getAttribute('data-count-to');
+    if (!toRaw) return;
+    const to = parseFloat(toRaw);
+    const suffix = el.getAttribute('data-suffix') || '';
+    const prefix = el.getAttribute('data-prefix') || '';
+    const dur = 1200;
+    const start = performance.now();
+    const from = 0;
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = Math.round(from + (to - from) * eased);
+      el.textContent = `${prefix}${val.toLocaleString()}${suffix}`;
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  const statObserver = ('IntersectionObserver' in window)
+    ? new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            animateCount(e.target);
+            statObserver.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.6 })
+    : null;
+  document.querySelectorAll('.stat-value').forEach(el => {
+    if (statObserver) statObserver.observe(el); else animateCount(el);
   });
-  return res;
-}
 
-if (enquiryForm && statusEl) {
-  enquiryForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const submitBtn = enquiryForm.querySelector('button[type="submit"]');
-    const honeypot = enquiryForm.querySelector('[name="bot-field"]');
-    const hpVal = honeypot ? honeypot.value : '';
-
-    // Honeypot: if filled, pretend success
-    if (hpVal) {
-      statusEl.textContent = 'Thanks — your enquiry was sent.';
-      statusEl.classList.remove('error');
-      statusEl.classList.add('success');
-      enquiryForm.reset();
-      return;
+  // Lightbox
+  const dlg = document.querySelector('.lightbox');
+  const dlgImg = document.querySelector('.lightbox-img');
+  const dlgCap = document.querySelector('.lightbox-caption');
+  const dlgClose = document.querySelector('.lightbox-close');
+  const openLightbox = (src, cap) => { if (dlg) { dlgImg.src = src; dlgCap.textContent = cap || ''; dlg.showModal(); } };
+  const closeLightbox = () => { if (dlg && dlg.open) dlg.close(); };
+  document.querySelectorAll('.gallery figure').forEach(fig => {
+    fig.addEventListener('click', () => {
+      const img = fig.querySelector('img');
+      const cap = fig.querySelector('figcaption')?.textContent || '';
+      if (img) openLightbox(img.src, cap);
+    });
+  });
+  if (dlgClose) dlgClose.addEventListener('click', closeLightbox);
+  if (dlg) dlg.addEventListener('click', (e) => {
+    const rect = dlg.querySelector('img')?.getBoundingClientRect();
+    if (!rect || (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)) {
+      closeLightbox();
     }
+  });
 
-    submitBtn?.setAttribute('disabled', 'true');
-    statusEl.textContent = 'Sending…';
-    statusEl.classList.remove('error', 'success');
-
-    try {
-      const res = await submitViaAjax(enquiryForm);
-
-      if (res.ok) {
-        statusEl.textContent = 'Thanks — your enquiry was sent.';
-        statusEl.classList.remove('error');
-        statusEl.classList.add('success');
-        enquiryForm.reset();
-        setTimeout(() => { statusEl.textContent = ''; statusEl.classList.remove('success'); }, 5000);
-      } else {
-        // Fallback: native submit to Netlify default success page
-        enquiryForm.setAttribute('action', window.location.pathname);
-        enquiryForm.submit();
+  // Enquiry form AJAX (Netlify)
+  const form = document.getElementById('enquiryForm');
+  const status = document.getElementById('enquiryStatus');
+  const encode = (data) => new URLSearchParams(data).toString();
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (status) { status.textContent = 'Sending…'; status.classList.remove('success', 'error'); }
+      const formData = new FormData(form);
+      if (formData.get('bot-field')) { if (status) { status.textContent = 'Submission blocked.'; status.classList.add('error'); } return; }
+      try {
+        await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: encode({ 'form-name': form.getAttribute('name') || 'enquiry', ...Object.fromEntries(formData.entries()) }),
+        });
+        if (status) { status.textContent = 'Thanks — we’ll be in touch within 1–3 business days.'; status.classList.add('success'); }
+        form.reset();
+      } catch (err) {
+        if (status) { status.textContent = 'Something went wrong. Please email info@bonnycsolutions.com.'; status.classList.add('error'); }
+        console.error(err);
       }
-    } catch (err) {
-      // Network fallback
-      enquiryForm.setAttribute('action', window.location.pathname);
-      enquiryForm.submit();
-    } finally {
-      submitBtn?.removeAttribute('disabled');
-    }
-  });
-}
+    });
+  }
+
+  // HERO: sequential playlist of 4 videos, loop the set
+  const heroVideo = document.getElementById('heroVideo');
+  if (heroVideo) {
+    const srcEl = document.getElementById('heroSource');
+    // Ensure these filenames exist in /images
+    const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"];
+    let idx = 0;
+
+    const playIndex = (i) => {
+      srcEl.src = `images/${playlist[i]}`;
+      heroVideo.load();
+      const p = heroVideo.play?.();
+      if (p && typeof p.then === 'function') {
+        p.catch(() => {
+          // Autoplay might be blocked on some devices; poster image remains visible.
+          console.warn('Autoplay blocked; video will remain paused until user interacts.');
+        });
+      }
+    };
+
+    heroVideo.removeAttribute('loop'); // important: we play each once, not loop one video
+    heroVideo.addEventListener('ended', () => {
+      idx = (idx + 1) % playlist.length;
+      playIndex(idx);
+    });
+
+    // Kick off sequence
+    playIndex(idx);
+  }
+})();
