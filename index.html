@@ -24,7 +24,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=25">
+  <link rel="stylesheet" href="styles.css?v=26">
 </head>
 
 <body>
@@ -36,7 +36,7 @@
         <nav aria-label="Primary">
           <ul class="nav-list">
             <li><a href="#services">Services</a></li>
-            <li><a href="#stats">Stats</a></li>
+            <li><a href="#stats">Annual Spend 2025</a></li>
             <li><a href="#showcase">Showcase</a></li>
             <li><a href="#process">Process</a></li>
             <li><a href="#about">About</a></li>
@@ -81,17 +81,57 @@
         </div>
       </section>
 
-      <!-- STATS -->
+      <!-- STATS: Annual Spend 2025 (hover to replay animation) -->
       <section id="stats" class="section" aria-labelledby="stats-title">
         <div class="container">
-          <h2 id="stats-title">Proof In Motion</h2>
-          <p class="muted">Replace these placeholders later. They animate on scroll.</p>
+          <h2 id="stats-title">Annual Spend 2025</h2>
+          <p class="muted">Budget &amp; spending highlights. Hover a box to replay the animation.</p>
 
-          <div class="stats-grid">
-            <article class="stat"><div class="stat-value" data-count-to="128">0</div><div class="stat-label">Opportunities Surfaced</div></article>
-            <article class="stat"><div class="stat-value" data-count-to="46">0</div><div class="stat-label">Avg. Days Shaping Before RFP</div></article>
-            <article class="stat"><div class="stat-value" data-count-to="37" data-suffix="%">0</div><div class="stat-label">Recent Win Rate</div></article>
-            <article class="stat"><div class="stat-value" data-count-to="86" data-prefix="$" data-suffix="M+">0</div><div class="stat-label">Total Value Influenced</div></article>
+          <div class="stats-grid" role="list">
+            <article class="stat" role="listitem" aria-label="US Federal Budget FY 2025 Total Outlays">
+              <div class="stat-value"
+                   data-count-to="7.0"
+                   data-decimals="1"
+                   data-prefix="$"
+                   data-suffix="T">0</div>
+              <div class="stat-label">US Federal Budget FY 2025<br/>Total Outlays</div>
+            </article>
+
+            <article class="stat" role="listitem" aria-label="Department of Defense FY 2025 Budget">
+              <div class="stat-value"
+                   data-count-to="851.7"
+                   data-decimals="1"
+                   data-prefix="$"
+                   data-suffix="B">0</div>
+              <div class="stat-label">Department of Defense (DoD)<br/>Annual Budget FY 2025</div>
+            </article>
+
+            <article class="stat" role="listitem" aria-label="Department of State FY 2025 Budget">
+              <div class="stat-value"
+                   data-count-to="58.8"
+                   data-decimals="1"
+                   data-prefix="$"
+                   data-suffix="B">0</div>
+              <div class="stat-label">Department of State<br/>Annual Budget FY 2025</div>
+            </article>
+
+            <article class="stat" role="listitem" aria-label="Department of Homeland Security FY 2025 Budget">
+              <div class="stat-value"
+                   data-count-to="64.81"
+                   data-decimals="2"
+                   data-prefix="$"
+                   data-suffix="B">0</div>
+              <div class="stat-label">Department of Homeland Security (DHS)<br/>Annual Budget FY 2025</div>
+            </article>
+
+            <article class="stat" role="listitem" aria-label="Small Business Federal Spending FY 2025 (approx.)">
+              <div class="stat-value"
+                   data-count-to="180"
+                   data-decimals="0"
+                   data-prefix="$"
+                   data-suffix="B">0</div>
+              <div class="stat-label">Small Business Federal Spending<br/>FY 2025 (approx.)</div>
+            </article>
           </div>
         </div>
       </section>
@@ -102,18 +142,36 @@
           <h2 id="services-title">Services</h2>
           <p>I focus on practical, outcomes-first support. When needed, we bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
 
-          <div class="cards">
-            <article class="card"><h3>Agency Targeting & Pipeline</h3><p>Identify who buys what you sell, analyze history, and prioritize winnable work.</p></article>
-            <article class="card"><h3>Capture & Positioning</h3><p>Shape requirements early via Sources Sought/RFI, credible outreach, and partner alignment.</p></article>
-            <article class="card"><h3>Proposal Management</h3><p>Compliant, compelling proposals with disciplined reviews and coordinated pricing.</p></article>
-            <article class="card"><h3>Subcontracting & Teaming</h3><p>Build the right team, negotiate fair terms, and align past performance to the ask.</p></article>
-            <article class="card"><h3>Readiness & Certifications</h3><p>SAM, reps &amp; certs, small-business programs, and NAICS/PSC alignment done right.</p></article>
-            <article class="card"><h3>Post-Award Hand-off</h3><p>From award to kickoff—transition plans, reporting rhythms, and quality baselines.</p></article>
+          <div class="cards" role="list">
+            <article class="card" role="listitem">
+              <h3>Agency Targeting & Pipeline</h3>
+              <p>Identify who buys what you sell, analyze history, and prioritize winnable work.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Capture & Positioning</h3>
+              <p>Shape requirements early via Sources Sought/RFI, credible outreach, and partner alignment.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Proposal Management</h3>
+              <p>Compliant, compelling proposals with disciplined reviews and coordinated pricing.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Subcontracting & Teaming</h3>
+              <p>Build the right team, negotiate fair terms, and align past performance to the ask.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Readiness & Certifications</h3>
+              <p>SAM, reps &amp; certs, small-business programs, and NAICS/PSC alignment done right.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Post-Award Hand-off</h3>
+              <p>From award to kickoff—transition plans, reporting rhythms, and quality baselines.</p>
+            </article>
           </div>
         </div>
       </section>
 
-      <!-- SHOWCASE -->
+      <!-- SHOWCASE (images; click to enlarge) -->
       <section id="showcase" class="section" aria-labelledby="showcase-title">
         <div class="container">
           <h2 id="showcase-title">Showcase</h2>
@@ -143,10 +201,19 @@
           <h3 class="process-line">Finding Opportunities → Pursuing → Winning.</h3>
           <p class="muted">Don’t know where to start? Overwhelmed by Federal Acquisition? I guide you from confusion to contract—supported by the BonnyCsolutions team where needed.</p>
 
-          <div class="steps">
-            <article class="step"><h3>1. Find Opportunities</h3><p>Targeted agency research, historical spend, contract vehicles, and early signals.</p></article>
-            <article class="step"><h3>2. Pursue Smart</h3><p>Bid/No-Bid rigor, capture actions, and disciplined proposal execution.</p></article>
-            <article class="step"><h3>3. Win &amp; Deliver</h3><p>Close strong, plan the hand-off, and set up reporting so delivery starts clean.</p></article>
+          <div class="steps" role="list">
+            <article class="step" role="listitem">
+              <h3>1. Find Opportunities</h3>
+              <p>Targeted agency research, historical spend, contract vehicles, and early signals.</p>
+            </article>
+            <article class="step" role="listitem">
+              <h3>2. Pursue Smart</h3>
+              <p>Bid/No-Bid rigor, capture actions, and disciplined proposal execution.</p>
+            </article>
+            <article class="step" role="listitem">
+              <h3>3. Win &amp; Deliver</h3>
+              <p>Close strong, plan the hand-off, and set up reporting so delivery starts clean.</p>
+            </article>
           </div>
         </div>
       </section>
@@ -161,7 +228,7 @@
         </div>
       </section>
 
-      <!-- QUICK ENQUIRY (Netlify) -->
+      <!-- QUICK ENQUIRY (Netlify Forms) -->
       <section id="enquiry" class="section" aria-labelledby="enquiry-title">
         <div class="container">
           <h2 id="enquiry-title">Quick Enquiry</h2>
@@ -184,7 +251,6 @@
             </div>
           </form>
 
-          <!-- Hidden detection form for first deploy -->
           <form name="enquiry-detect" netlify data-netlify="true" hidden>
             <input type="text" name="name" />
             <input type="email" name="email" />
@@ -226,6 +292,6 @@
     </footer>
   </div>
 
-  <script src="script.js?v=25"></script>
+  <script src="script.js?v=26"></script>
 </body>
 </html>
