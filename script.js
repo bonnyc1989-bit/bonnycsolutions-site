@@ -1,6 +1,6 @@
-// BonnyCsolutions — script.js (v26)
+// BonnyCsolutions — script.js (v29)
 // - Footer year
-// - Annual Spend counters: decimals/prefix/suffix, start on view, replay on hover
+// - Animated counters: start on view; replay on hover (isolated)
 // - Lightbox
 // - Netlify form (AJAX)
 // - HERO: play 4 MP4s in sequence, loop the set
@@ -10,13 +10,13 @@
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // ---------- Animated stats (supports decimals; hover to replay) ----------
+  // ---------- Animated stats ----------
   const animateCount = (el) => {
     const to = parseFloat(el.getAttribute('data-count-to') || '0');
     const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
     const suffix = el.getAttribute('data-suffix') || '';
     const prefix = el.getAttribute('data-prefix') || '';
-    const dur = 1200; // ms
+    const dur = 1200;
 
     const fmt = (n) => n.toLocaleString(undefined, {
       minimumFractionDigits: decimals,
@@ -34,7 +34,7 @@
     requestAnimationFrame(step);
   };
 
-  // Start counters when visible
+  // Start when visible
   const statObserver = ('IntersectionObserver' in window)
     ? new IntersectionObserver((entries) => {
         entries.forEach(e => {
@@ -50,7 +50,7 @@
     if (statObserver) statObserver.observe(el); else animateCount(el);
   });
 
-  // Replay counters on hover
+  // Replay on hover (only the hovered card changes)
   document.querySelectorAll('.stat').forEach(card => {
     card.addEventListener('mouseenter', () => {
       const val = card.querySelector('.stat-value');
@@ -60,18 +60,13 @@
     });
   });
 
-  // ---------- Showcase lightbox ----------
+  // ---------- Lightbox ----------
   const dlg = document.querySelector('.lightbox');
   const dlgImg = document.querySelector('.lightbox-img');
   const dlgCap = document.querySelector('.lightbox-caption');
   const dlgClose = document.querySelector('.lightbox-close');
 
-  const openLightbox = (src, cap) => {
-    if (!dlg) return;
-    dlgImg.src = src;
-    dlgCap.textContent = cap || '';
-    dlg.showModal();
-  };
+  const openLightbox = (src, cap) => { if (!dlg) return; dlgImg.src = src; dlgCap.textContent = cap || ''; dlg.showModal(); };
   const closeLightbox = () => { if (dlg?.open) dlg.close(); };
 
   document.querySelectorAll('.gallery figure').forEach(fig => {
@@ -118,8 +113,7 @@
   const heroVideo = document.getElementById('heroVideo');
   const srcEl = document.getElementById('heroSource');
   if (heroVideo && srcEl) {
-    // These filenames must exist in /images
-    const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"];
+    const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"]; // files in /images
     let idx = 0;
 
     const playIndex = (i) => {
@@ -131,12 +125,12 @@
       }
     };
 
-    heroVideo.removeAttribute('loop'); // each video plays once
+    heroVideo.removeAttribute('loop'); // play each once, not one looping
     heroVideo.addEventListener('ended', () => {
       idx = (idx + 1) % playlist.length;
       playIndex(idx);
     });
 
-    playIndex(idx); // start sequence
+    playIndex(idx); // kick off
   }
 })();

@@ -24,7 +24,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles.css?v=26">
+  <link rel="stylesheet" href="styles.css?v=29">
 </head>
 
 <body>
@@ -49,7 +49,7 @@
 
     <main class="page-inner">
 
-      <!-- HERO — 4 MP4s play sequentially, then loop the set -->
+      <!-- HERO — 4 MP4s play sequentially, then loop -->
       <section id="hero" class="hero section" aria-label="Hero">
         <video
           id="heroVideo"
@@ -81,13 +81,14 @@
         </div>
       </section>
 
-      <!-- STATS: Annual Spend 2025 (hover to replay animation) -->
+      <!-- STATS: Annual Spend 2025 (Fed total in Trillions; others in Billions) -->
       <section id="stats" class="section" aria-labelledby="stats-title">
         <div class="container">
           <h2 id="stats-title">Annual Spend 2025</h2>
           <p class="muted">Budget &amp; spending highlights. Hover a box to replay the animation.</p>
 
           <div class="stats-grid" role="list">
+            <!-- Trillions -->
             <article class="stat" role="listitem" aria-label="US Federal Budget FY 2025 Total Outlays">
               <div class="stat-value"
                    data-count-to="7.0"
@@ -97,6 +98,7 @@
               <div class="stat-label">US Federal Budget FY 2025<br/>Total Outlays</div>
             </article>
 
+            <!-- Billions -->
             <article class="stat" role="listitem" aria-label="Department of Defense FY 2025 Budget">
               <div class="stat-value"
                    data-count-to="851.7"
@@ -136,37 +138,53 @@
         </div>
       </section>
 
-      <!-- SERVICES -->
+      <!-- SERVICES (three tiers) -->
       <section id="services" class="section" aria-labelledby="services-title">
         <div class="container">
           <h2 id="services-title">Services</h2>
           <p>I focus on practical, outcomes-first support. When needed, we bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
 
-          <div class="cards" role="list">
-            <article class="card" role="listitem">
-              <h3>Agency Targeting & Pipeline</h3>
-              <p>Identify who buys what you sell, analyze history, and prioritize winnable work.</p>
+          <!-- Tier 1: Feature plays (large image cards) -->
+          <div class="features">
+            <article class="feature-card">
+              <img class="feature-img" src="images/svc-bd.jpg" alt="Jet over terrain illustrating business development" />
+              <h3>Business Development &amp; Sales</h3>
+              <p>We position your company for sustainable federal growth—building a simple BD rhythm that surfaces winnable meetings, targets the right buyers, and converts activity into qualified pipeline.</p>
             </article>
-            <article class="card" role="listitem">
-              <h3>Capture & Positioning</h3>
-              <p>Shape requirements early via Sources Sought/RFI, credible outreach, and partner alignment.</p>
+
+            <article class="feature-card">
+              <img class="feature-img" src="images/svc-roadmap.jpg" alt="Advanced lab illustrating strategic roadmapping" />
+              <h3>Strategic Roadmapping &amp; Pipeline Development</h3>
+              <p>We map your offerings to real government demand, forecast spend, and create a prioritized pursuit plan—so your team focuses on opportunities with the highest probability of award.</p>
             </article>
-            <article class="card" role="listitem">
-              <h3>Proposal Management</h3>
-              <p>Compliant, compelling proposals with disciplined reviews and coordinated pricing.</p>
-            </article>
-            <article class="card" role="listitem">
-              <h3>Subcontracting & Teaming</h3>
-              <p>Build the right team, negotiate fair terms, and align past performance to the ask.</p>
-            </article>
-            <article class="card" role="listitem">
-              <h3>Readiness & Certifications</h3>
-              <p>SAM, reps &amp; certs, small-business programs, and NAICS/PSC alignment done right.</p>
-            </article>
-            <article class="card" role="listitem">
-              <h3>Post-Award Hand-off</h3>
-              <p>From award to kickoff—transition plans, reporting rhythms, and quality baselines.</p>
-            </article>
+          </div>
+
+          <!-- Tier 2: Core service lines (2×3) -->
+          <h3 class="tier-heading">Core Service Lines</h3>
+          <div class="svc-grid">
+            <article class="svc-card"><h4>Agency Targeting &amp; Spend Analysis</h4><p>Identify who buys what you sell; analyze history, vehicles, and buyer behavior.</p></article>
+            <article class="svc-card"><h4>Capture Management &amp; Shaping</h4><p>Early “ghosting,” Sources Sought/RFI responses, outreach, and discriminator development.</p></article>
+            <article class="svc-card"><h4>Opportunity Qualification (Bid/No-Bid)</h4><p>Fit, readiness, competitive posture, team strength, and pricing realism—no vanity bids.</p></article>
+            <article class="svc-card"><h4>Proposal Management &amp; Writing</h4><p>Compliance matrix, annotated outlines, volume ownership, and color-team reviews.</p></article>
+            <article class="svc-card"><h4>Subcontracting &amp; Teaming</h4><p>Prime/sub alignment, gap coverage, teaming agreements, and partner value narratives.</p></article>
+            <article class="svc-card"><h4>Post-Award Transition &amp; Quality</h4><p>Transition plans, kickoff, reporting rhythms, QASP/metrics, and CPARS stewardship.</p></article>
+          </div>
+
+          <!-- Tier 3: Government contracting toolkit (3×4) -->
+          <h3 class="tier-heading">Government Contracting Toolkit</h3>
+          <div class="toolkit-grid">
+            <article class="tool"><h5>SAM, Reps &amp; Certs Setup</h5><p>Clean registrations and representations to stay award-ready.</p></article>
+            <article class="tool"><h5>NAICS / PSC Alignment</h5><p>Map offerings to the codes contracting officers actually use.</p></article>
+            <article class="tool"><h5>Small-Business Programs</h5><p>8(a), SDVOSB, WOSB, HUBZone—eligibility, pathways, documentation.</p></article>
+            <article class="tool"><h5>Contract Vehicles</h5><p>GSA MAS, GWACs, IDIQs—assess fit, prep packages, position for on-ramp.</p></article>
+            <article class="tool"><h5>Sources Sought &amp; RFIs</h5><p>Credible shaping responses that steer requirements toward your strengths.</p></article>
+            <article class="tool"><h5>Capability Statement &amp; Past Performance</h5><p>Buyer-ready collateral and curated past performance write-ups.</p></article>
+            <article class="tool"><h5>Competitive &amp; Black-Hat Reviews</h5><p>Competitor POV, eval risks, and win-theme ghosting.</p></article>
+            <article class="tool"><h5>Pricing Strategy &amp; BOE Support</h5><p>Price-to-win inputs, BOE scaffolding, cost/fee compliance.</p></article>
+            <article class="tool"><h5>Compliance Matrix &amp; Outlines</h5><p>Bullet-proof compliance from day one—no red-pen rescues later.</p></article>
+            <article class="tool"><h5>Color-Team Reviews</h5><p>Pink/Red/Gold with comments tied to the scoring model.</p></article>
+            <article class="tool"><h5>Risk &amp; Mitigation Planning</h5><p>Real risks, realistic mitigations, and how they score.</p></article>
+            <article class="tool"><h5>Transition &amp; Reporting Kits</h5><p>30/60/90 plans, deliverable trackers, reporting templates.</p></article>
           </div>
         </div>
       </section>
@@ -228,7 +246,7 @@
         </div>
       </section>
 
-      <!-- QUICK ENQUIRY (Netlify Forms) -->
+      <!-- ENQUIRY -->
       <section id="enquiry" class="section" aria-labelledby="enquiry-title">
         <div class="container">
           <h2 id="enquiry-title">Quick Enquiry</h2>
@@ -292,6 +310,6 @@
     </footer>
   </div>
 
-  <script src="script.js?v=26"></script>
+  <script src="script.js?v=29"></script>
 </body>
 </html>
