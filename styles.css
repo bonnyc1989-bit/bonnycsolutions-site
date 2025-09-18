@@ -25,9 +25,10 @@
 
   /* Agencies marquee sizing */
   --seal-size:128px;     /* circle diameter */
-  --seal-gap:42px;       /* even spacing */
-  --edge-fade:28px;      /* gentle edge fade inside the window */
-  --window-pad:10px;     /* tiny breathing room */
+  --seal-gap:64px;       /* even spacing between seals */
+  --edge-space:64px;     /* inner side space so seals aren't jammed to edges */
+  --edge-fade:64px;      /* fade width, aligned with edge-space */
+  --window-pad:10px;     /* tiny vertical breathing room */
   --seal-speed:28s;      /* loop duration */
 }
 
@@ -222,7 +223,7 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
 .stat-live{ display:inline-block; white-space:nowrap; }
 .stat-caption{ color:#dbe6f4; font-weight:600; line-height:1.5; min-height: var(--stats-caption-h); }
 
-/* ---------- Target Agencies (4-seal window, 5-seal loop) ---------- */
+/* ---------- Target Agencies (4-seal window; 5-seal loop) ---------- */
 .seal-track{
   position:relative;
   overflow:hidden;
@@ -230,12 +231,16 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   border-radius:12px;
   background:rgba(255,255,255,.06);
 
-  /* exact 4-seal window */
-  width: calc( (4 * var(--seal-size)) + (3 * var(--seal-gap)) + (2 * var(--window-pad)) );
-  height: calc(var(--seal-size) + 20px);
+  /* exact 4-seal window (no partial 5th) */
+  width: calc( (4 * var(--seal-size)) + (3 * var(--seal-gap)) );
+  height: calc(var(--seal-size) + (2 * var(--window-pad)));
   margin: 0 auto;
 
-  /* gentle edge fade inside the window */
+  /* inner left/right space so seals aren't jammed to edges */
+  padding-left: var(--edge-space);
+  padding-right: var(--edge-space);
+
+  /* gentle edge fade that starts at the inner space */
   -webkit-mask-image: linear-gradient(90deg,
     transparent 0,
     #000 var(--edge-fade),
@@ -253,7 +258,9 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   animation: seal-loop var(--seal-speed) linear infinite;
   will-change: transform;
 }
-.seal-row[aria-hidden="true"]{ animation-delay: calc(-1 * (var(--seal-speed) / 2)); }
+.seal-row[aria-hidden="true"]{
+  animation-delay: calc(-1 * (var(--seal-speed) / 2));
+}
 
 .seal{
   width:var(--seal-size);
@@ -324,8 +331,9 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
 @media (max-width: 640px) {
   :root{
     --seal-size:96px;
-    --seal-gap:32px;
-    --edge-fade:22px;
+    --seal-gap:36px;
+    --edge-space:36px;
+    --edge-fade:36px;
   }
 }
 
