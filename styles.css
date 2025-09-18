@@ -1,14 +1,5 @@
 /* =========================================
-   BonnyCsolutions — styles.css (v29)
-   - Theme, base, layout
-   - Sticky nav + CTA stays dark
-   - Hero with full-bleed video loop + glass panel (2-layer swap)
-   - Services (2 cards)
-   - Annual Spend stats (independent hovers)
-   - Target Agencies marquee (peel-in, continuous loop)
-   - Quick Enquiry (watermark-safe)
-   - Uniform section dividers
-   - Print & reduced motion
+   BonnyCsolutions — styles.css (final)
    ========================================= */
 
 /* ---------- Theme & tokens ---------- */
@@ -28,6 +19,9 @@
   --radius:16px;
   --shadow:0 10px 30px rgba(0,0,0,.35);
   --inset:clamp(24px,4vw,56px);
+
+  --stats-caption-h:auto;
+  --stats-line-h:auto;
 }
 
 /* ---------- Base ---------- */
@@ -81,7 +75,6 @@ a{ color:inherit; text-decoration:none; }
 /* Blue accents */
 .hero h1{ color:var(--brand-strong); }
 .section > .container > h2{ color:var(--brand); }
-.card h3{ color:var(--brand); }
 .process-line{ color:var(--brand); }
 .step h3{ color:var(--brand); }
 
@@ -142,19 +135,22 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
 }
 .hero-video{ position:absolute; inset:0; z-index:0; overflow:hidden; }
 
-/* Both video layers (for #videoA and #videoB) */
+/* Both video layers */
 .hero-video .hero-video-el{
   position:absolute; inset:0;
   width:100%; height:100%;
   object-fit:cover; object-position:center;
   transform:translateZ(0);
-  opacity:0; /* hidden by default */
+  opacity:0;
+  backface-visibility:hidden;
+  will-change:opacity;
+  contain:paint;
 }
 
-/* The visible (front) layer */
+/* Visible (front) layer */
 .hero-video .hero-video-el.is-front{
   opacity:1;
-  transition:opacity 60ms linear; /* matches JS swap timing */
+  transition:opacity .18s linear;
 }
 
 /* Overlay gradient */
@@ -186,7 +182,7 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   .hero h1 { line-height: 1.12; }
 }
 
-/* ---------- Services (two cards) ---------- */
+/* ---------- Services (text-only cards) ---------- */
 .services-grid{
   display:grid; gap:22px;
   grid-template-columns: 1fr;
@@ -201,21 +197,8 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   overflow:hidden;
   box-shadow: var(--shadow);
 }
-.service-media{
-  position:relative;
-  background:#0a1020;
-  overflow:hidden;
-}
-.service-media img{
-  width:100%; height: clamp(220px, 34vw, 360px);
-  object-fit:cover;
-  display:block;
-  transform: translateZ(0);
-}
-.service-body{
-  padding:16px 18px 18px;
-}
-.service-body h3{ margin-bottom:8px; }
+.service-body{ padding:16px 18px 18px; }
+.service-body h3{ margin-bottom:8px; color:var(--brand); }
 
 /* ---------- Process ---------- */
 .process-line{ margin-top:8px; font-size:clamp(18px,2.2vw,26px); font-weight:800; }
@@ -249,6 +232,9 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   padding:18px 16px 16px;
   box-shadow: var(--shadow);
   text-align:center;
+
+  /* Isolate layout so internal changes never push siblings */
+  contain: content;
   will-change: transform, border-color, background;
   transition: transform .18s ease, border-color .2s ease, background .2s ease;
   transform: translateZ(0);
@@ -258,16 +244,41 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   border-color: rgba(255,255,255,.85);
   background: rgba(255,255,255,.10);
 }
-.stat-value{
+
+/* Number line: tabular numerals; width/height fixed via JS */
+.stat-value,
+.stat-ghost{
   font-weight:800;
   font-size: clamp(32px, 4.2vw, 44px);
   letter-spacing:.5px;
-  margin-bottom: 12px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  line-height:1.15;
 }
+.stat-stack{
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  min-height: var(--stats-line-h); /* set by JS */
+}
+.stat-ghost{
+  visibility:hidden;
+  pointer-events:none;
+  position:absolute;
+  inset:auto auto 0 auto;
+}
+.stat-live{
+  display:inline-block;           /* JS sets width/height */
+  white-space:nowrap;
+}
+
+/* Caption */
 .stat-caption{
   color:#dbe6f4;
   font-weight:600;
   line-height:1.5;
+  min-height: var(--stats-caption-h); /* set by JS */
 }
 
 /* ---------- Target Agencies (marquee) ---------- */
@@ -279,7 +290,6 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   padding:16px;
   background:rgba(255,255,255,.06);
 
-  /* peel-in from right, fade out left */
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
           mask-image: linear-gradient(90deg, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
 }
@@ -291,29 +301,24 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   will-change: transform;
 }
 .seal-row[aria-hidden="true"]{ animation-delay:-14s; }
-
 .seal{
   width:112px; height:112px; 
   object-fit:contain;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
   flex:0 0 auto;
 }
-
 @keyframes seal-loop{
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-
-/* Pause marquee on hover (UX nicety) */
 .seal-track:hover .seal-row { animation-play-state: paused; }
 
-/* ---------- Quick Enquiry (no watermark artifacts) ---------- */
+/* ---------- Quick Enquiry ---------- */
 #enquiry{ position:relative; overflow:hidden; z-index:1; }
-#enquiry::before{ content:none; }
 #enquiry .container{ position:relative; z-index:1; }
 
 .enquiry-form{ margin-top:16px; }
-.enquiry-form .hp-field{ display:none; } /* honeypot off the UI */
+.enquiry-form .hp-field{ display:none; }
 .enquiry-form .grid{ display:grid; gap:14px; grid-template-columns:1fr; }
 @media (min-width:780px){ .enquiry-form .grid{ grid-template-columns:1fr 1fr; } }
 .field{ display:flex; flex-direction:column; gap:8px; }
@@ -340,32 +345,13 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Inputs: error/success utilities */
+/* Inputs: state utilities */
 .field input.is-error, .field textarea.is-error { border-color: #ff6b6b !important; }
 .field input.is-success, .field textarea.is-success { border-color: #34d399 !important; }
 .enquiry-status.success { color: #86efac; }
 .enquiry-status.error { color: #fecaca; }
 
-/* ---------- Contact (glass card) ---------- */
-.contact-card{
-  margin-top:16px;
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.55);
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.35);
-  backdrop-filter: blur(6px);
-}
-.contact-list{ list-style:none; padding:0; margin:0 0 10px; }
-.contact-list li{ margin:6px 0; }
-.card-divider{
-  border:0; height:1px; background:rgba(255,255,255,.55);
-  margin:12px 0;
-}
-.company-block h4{ margin:0 0 6px; color:var(--brand); }
-.contact-list a:hover { text-decoration: underline; }
-
-/* ---------- Footer (tight) ---------- */
+/* ---------- Footer ---------- */
 .site-footer{
   margin-top:auto;
   border-top: 2px solid rgba(255,255,255,.95);
@@ -391,7 +377,7 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
 @media print {
   body { background: #ffffff !important; }
   .page, .section::before, .hero::after { border: none !important; background: none !important; box-shadow: none !important; }
-  .btn, .card, .step, .contact-card, .hero-panel, .service-card, .stat-card {
+  .btn, .step, .contact-card, .hero-panel, .service-card, .stat-card {
     background: #fff !important; color: #000 !important; border: 1px solid #ccc !important; box-shadow: none !important;
   }
   .seal-track, .seal-row, .seal { animation: none !important; filter:none !important; }

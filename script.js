@@ -1,9 +1,9 @@
 /* =========================================================
-   BonnyCsolutions — script.js (v29)
-   - Gapless 4-video hero loop (double-buffer swap, class-based)
-   - Hover count-up for Annual Spend cards
-   - Marquee: pause for reduced motion (+ CSS hover pause)
-   - Enquiry form status (demo)
+   BonnyCsolutions — script.js (final)
+   - Gapless 4-video hero loop (requestVideoFrameCallback swap)
+   - Stats: hover-only count-up; default = final; no reset; zero-jitter
+   - Marquee respects reduced motion
+   - Enquiry form demo
    ========================================================= */
 
 /* ---------- Utils ---------- */
@@ -13,7 +13,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 /* ---------- Footer year ---------- */
 (() => { const y = new Date().getFullYear(); const el = $('#year'); if (el) el.textContent = y; })();
 
-/* ---------- HERO: gapless 4-video loop (fixed) ---------- */
+/* ---------- HERO: gapless 4-video loop (rVFC-based) ---------- */
 (() => {
   const playlist = [
     'images/Soldiers.mp4',
@@ -33,7 +33,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     v.preload = 'auto';
   });
 
-  let cur = 0;          // index for currently visible video in playlist
+  let cur = 0;          // index of currently visible video in playlist
   let front = a;        // video on top (visible)
   let back = b;         // preloading the next one
   let swapping = false;
@@ -44,11 +44,13 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       vid.load();
     }
   };
+  const nextIndex = () => (cur + 1) % playlist.length;
 
   // prepare first two
   setSrc(front, playlist[cur]);
-  const nextIndex = () => (cur + 1) % playlist.length;
   setSrc(back, playlist[nextIndex()]);
+
+  const primeDecode = (v) => { try { v.play(); v.pause(); } catch {} };
 
   // show first frame as soon as it can play
   front.addEventListener('canplay', () => {
@@ -56,63 +58,68 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     front.classList.add('is-front');
   }, { once: true });
 
-  const SWAP_EARLY_SEC = 0.25; // start swap ~250ms before end
+  const SWAP_EARLY_SEC = 0.18; // crossfade ~180ms before end
+  const useRvfc = typeof front.requestVideoFrameCallback === 'function';
 
-  const onTime = () => {
-    if (swapping) return;
-    const remain = (front.duration || 0) - (front.currentTime || 0);
-    if (remain > 0 && remain <= SWAP_EARLY_SEC) {
-      swapping = true;
-
-      const expectedBack = back; // guard against stale listener
-
-      const doSwap = () => {
-        if (back !== expectedBack) return; // stale handler; ignore
-
-        try { back.currentTime = 0; back.play(); } catch {}
-
-        // CSS crossfade via class flip
-        back.classList.add('is-front');
-
-        setTimeout(() => {
-          front.classList.remove('is-front');
-
-          // rotate references
-          const tmp = front;
-          front = back;
-          back = tmp;
-
-          // prepare new "back"
-          cur = nextIndex();
-          setSrc(back, playlist[nextIndex()]);
-          try { back.pause(); back.currentTime = 0; } catch {}
-
-          // rebind listener to the new front
-          bindTime();
-
-          swapping = false;
-        }, 70);
+  const watchFront = () => {
+    if (useRvfc) {
+      const cb = (_, meta) => {
+        if (swapping) return;
+        const remain = (front.duration || 0) - (meta.mediaTime || front.currentTime || 0);
+        if (remain > 0 && remain <= SWAP_EARLY_SEC) startSwap();
+        else front.requestVideoFrameCallback(cb);
       };
-
-      if (back.readyState >= 3) {
-        doSwap();
-      } else {
-        const handler = () => { back.removeEventListener('canplaythrough', handler); doSwap(); };
-        back.addEventListener('canplaythrough', handler, { once: true });
-        try { back.play(); back.pause(); } catch {}
-      }
+      front.requestVideoFrameCallback(cb);
+    } else {
+      const onTime = () => {
+        if (swapping) return;
+        const remain = (front.duration || 0) - (front.currentTime || 0);
+        if (remain > 0 && remain <= SWAP_EARLY_SEC) { front.removeEventListener('timeupdate', onTime); startSwap(); }
+      };
+      a.removeEventListener('timeupdate', onTime);
+      b.removeEventListener('timeupdate', onTime);
+      front.addEventListener('timeupdate', onTime);
     }
   };
 
-  // bind timeupdate to the current 'front'
-  const bindTime = () => {
-    a.removeEventListener('timeupdate', onTime);
-    b.removeEventListener('timeupdate', onTime);
-    front.addEventListener('timeupdate', onTime);
-  };
-  bindTime();
+  const startSwap = () => {
+    if (swapping) return;
+    swapping = true;
 
-  // Autoplay kickstart for iOS/Safari if blocked
+    const expectedBack = back;
+
+    const doSwap = () => {
+      if (back !== expectedBack) return;
+
+      try { back.currentTime = 0; back.play(); } catch {}
+      back.classList.add('is-front');
+
+      setTimeout(() => {
+        front.classList.remove('is-front');
+
+        const tmp = front; front = back; back = tmp;
+
+        cur = nextIndex();
+        setSrc(back, playlist[nextIndex()]);
+        try { back.pause(); back.currentTime = 0; } catch {}
+        primeDecode(back);
+
+        watchFront();
+        swapping = false;
+      }, 180); // keep in sync with CSS transition
+    };
+
+    if (back.readyState >= 3) doSwap();
+    else {
+      const handler = () => { back.removeEventListener('canplaythrough', handler); doSwap(); };
+      back.addEventListener('canplaythrough', handler, { once: true });
+      primeDecode(back);
+    }
+  };
+
+  watchFront();
+
+  // Autoplay nudge (iOS/Safari)
   const tryStart = () => {
     a.play().catch(()=>{});
     b.play().then(() => b.pause()).catch(()=>{});
@@ -120,7 +127,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   document.addEventListener('touchstart', tryStart, { once: true, passive: true });
   document.addEventListener('click', tryStart, { once: true });
 
-  // Respect reduced motion: freeze on first frame
+  // Reduced motion: freeze
   const mq = matchMedia('(prefers-reduced-motion: reduce)');
   const applyMotionPref = () => {
     const vids = [a, b];
@@ -136,57 +143,115 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   applyMotionPref();
 })();
 
-/* ---------- Annual Spend: count-up on hover ---------- */
+/* ---------- Annual Spend: hover-only, no-jitter count-up ---------- */
 (() => {
+  const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const easeOut = t => 1 - Math.pow(1 - t, 3);
 
-  const formatVal = (n, suffix) => {
+  const finalFormat = (target, suffix) => {
+    if (suffix === 'T') return `$${target.toFixed(1)}T`;
+    if (suffix === 'B') {
+      const isInt = Number.isInteger(target);
+      return `$${isInt ? target.toFixed(0) : target.toFixed(2)}B`;
+    }
+    return `$${Math.round(target).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+  };
+
+  const formatVal = (n, target, suffix) => {
     if (suffix === 'T') return `$${n.toFixed(1)}T`;
-    if (suffix === 'B') return `$${Number.isInteger(n) ? n.toFixed(0) : n.toFixed(2)}B`;
-    // thousands separator for whole numbers
+    if (suffix === 'B') {
+      const isInt = Number.isInteger(target);
+      return `$${n.toFixed(isInt ? 0 : 2)}B`;
+    }
     return `$${Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
   };
 
+  const COOLDOWN = 1200;
+
+  const animState = new WeakMap(); // stat-value -> { animating, rafId, lastRun, target, suffix }
+
+  // Build ghost + lock dimensions; set final values by default
+  const captionHeights = [];
+  const lineHeights = [];
+
   $$('.stat-card').forEach(card => {
     const v = $('.stat-value', card);
-    if (!v) return;
+    const g = $('.stat-ghost', card);
+    const cap = $('.stat-caption', card);
+    if (!v || !g) return;
 
     const target = parseFloat(v.dataset.target || '0');
     const suffix = v.dataset.suffix || '';
-    v.textContent = formatVal(0, suffix);
+    const finalText = finalFormat(target, suffix);
 
-    let animating = false;
-    const animateTo = () => {
-      if (animating) return;
-      animating = true;
+    // show final value by default
+    v.textContent = finalText;
 
-      const start = performance.now();
-      const dur = 900; // ms
+    // lock width/height to ghost metrics once
+    requestAnimationFrame(() => {
+      g.textContent = finalText;
+      const w = Math.ceil(g.offsetWidth);
+      const h = Math.ceil(g.offsetHeight);
+      v.classList.add('stat-live');
+      v.style.width  = w + 'px';
+      v.style.height = h + 'px';
+      lineHeights.push(h);
+      if (cap) captionHeights.push(Math.ceil(cap.offsetHeight));
+      v.dataset.final = finalText;
+      v.dataset.targetNum = String(target);
+      v.dataset.suffix = suffix;
+    });
 
-      const step = (now) => {
-        const p = Math.min(1, (now - start) / dur);
-        const val = target * easeOut(p);
-        v.textContent = formatVal(val, suffix);
-        if (p < 1) requestAnimationFrame(step);
-        else animating = false;
-      };
-      requestAnimationFrame(step);
-    };
+    animState.set(v, { animating:false, rafId:0, lastRun:0, target, suffix });
 
-    card.addEventListener('mouseenter', animateTo);
-    card.addEventListener('click', animateTo); // tap to replay on touch
+    // Hover-only: replay 0 -> final, then stay final
+    const playHover = () => startAnim(v);
+    card.addEventListener('mouseenter', playHover);
+    card.addEventListener('click', playHover);
   });
+
+  // unify caption & number-line heights across all cards
+  requestAnimationFrame(() => {
+    const maxCap = captionHeights.length ? Math.max(...captionHeights) : 0;
+    const maxLine = lineHeights.length ? Math.max(...lineHeights) : 0;
+    document.documentElement.style.setProperty('--stats-caption-h', maxCap ? `${maxCap}px` : 'auto');
+    document.documentElement.style.setProperty('--stats-line-h',    maxLine ? `${maxLine}px` : 'auto');
+  });
+
+  function startAnim(v){
+    const st = animState.get(v);
+    if (!st) return;
+    const now = performance.now();
+    if (st.animating || (now - st.lastRun) < COOLDOWN) return;
+    st.lastRun = now;
+
+    if (mqReduce.matches) { v.textContent = v.dataset.final; return; }
+
+    st.animating = true;
+    const target = parseFloat(v.dataset.targetNum || '0');
+    const suffix = v.dataset.suffix || '';
+    const start = now;
+    const dur = 900;
+
+    // start from visible 0
+    v.textContent = suffix ? (suffix === 'T' ? '$0.0T' : '$0B') : '$0';
+
+    const step = (t) => {
+      const p = Math.min(1, (t - start) / dur);
+      const n = target * easeOut(p);
+      v.textContent = formatVal(n, target, suffix);
+      if (p < 1) st.rafId = requestAnimationFrame(step);
+      else { st.animating = false; v.textContent = v.dataset.final; }
+    };
+    st.rafId = requestAnimationFrame(step);
+  }
 })();
 
 /* ---------- Marquee: respect reduced motion ---------- */
 (() => {
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
   const rows = $$('.seal-row');
-  const apply = () => {
-    rows.forEach(r => {
-      r.style.animationPlayState = mq.matches ? 'paused' : 'running';
-    });
-  };
+  const apply = () => { rows.forEach(r => { r.style.animationPlayState = mq.matches ? 'paused' : 'running'; }); };
   if (rows.length) {
     mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
     apply();

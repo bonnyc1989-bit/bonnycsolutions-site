@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bonny Contracting Solutions Pty Ltd</title>
 
-  <!-- Preload first-pass hero videos for smoother start -->
+  <!-- Preload hero videos for a smoother start -->
   <link rel="preload" as="video" href="images/Soldiers.mp4" type="video/mp4">
   <link rel="preload" as="video" href="images/Iwojima.mp4" type="video/mp4">
   <link rel="preload" as="video" href="images/Boots.mp4" type="video/mp4">
@@ -38,8 +38,8 @@
     <section id="hero" class="hero section">
       <div class="hero-video" aria-hidden="true">
         <!-- double-buffer videos for gapless swap -->
-        <video id="videoA" class="hero-video-el" playsinline muted preload="auto" poster="images/hero-poster.jpg"></video>
-        <video id="videoB" class="hero-video-el" playsinline muted preload="auto" poster="images/hero-poster.jpg"></video>
+        <video id="videoA" class="hero-video-el" playsinline muted preload="auto"></video>
+        <video id="videoB" class="hero-video-el" playsinline muted preload="auto"></video>
       </div>
 
       <div class="container">
@@ -58,32 +58,26 @@
       </div>
     </section>
 
-    <!-- SERVICES -->
+    <!-- SERVICES (text-only cards) -->
     <section id="services" class="section">
       <div class="container">
         <h2>Services</h2>
-        <p class="muted">I focus on practical, outcomes-first support. When needed, I bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
+        <p class="muted">Practical, outcomes-first support. When needed, I bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
 
         <div class="services-grid" style="margin-top:16px;">
           <article class="service-card">
-            <div class="service-media">
-              <img src="images/Strategic-Planning.jpg" alt="Strategic planning workshop for federal pursuit roadmap" onerror="this.src='images/services-roadmap.jpg'">
-            </div>
             <div class="service-body">
               <h3>Roadmapping & Strategic Placement</h3>
-              <p>We sequence time and effort where it moves the score—mapping buyer demand, competitors, and vehicles to build a pursuit plan that maximizes probability of award (PWin) and avoids low-yield bids.</p>
+              <p>Map buyer demand, competitors, and vehicles to build a pursuit plan that maximizes probability of award (PWin) and avoids low-yield bids.</p>
             </div>
           </article>
 
-          <article class="service-card">
-            <div class="service-media">
-              <img src="images/Business-Development.jpg" alt="Business development outreach with a government buyer" onerror="this.src='images/services-bd.jpg'">
-            </div>
-            <div class="service-body">
-              <h3>Business Development for Federal Consulting</h3>
-              <p>We operationalize BD: who to call, what to say, and how to convert meetings into qualified pipeline—target lists, outreach rhythms, capture handoffs, and metrics that show progress, not motion.</p>
-            </div>
-          </article>
+            <article class="service-card">
+              <div class="service-body">
+                <h3>Business Development for Federal Consulting</h3>
+                <p>Operationalize BD: target lists, outreach rhythms, capture handoffs, and metrics that show progress—not motion.</p>
+              </div>
+            </article>
         </div>
       </div>
     </section>
@@ -93,7 +87,7 @@
       <div class="container">
         <h2>Our Process</h2>
         <div class="process-line">Finding Opportunities → Pursuing → Winning.</div>
-        <p class="muted">Don’t know where to start? Overwhelmed by Federal Acquisition? I guide you from confusion to contract—supported by the BonnyCsolutions team where needed.</p>
+        <p class="muted">From confusion to contract—supported by the BonnyCsolutions team where needed.</p>
 
         <div class="steps">
           <div class="step">
@@ -106,7 +100,7 @@
           </div>
           <div class="step">
             <h3>3. Win & Deliver</h3>
-            <p>Close strong, plan the hand-off, and set up reporting so delivery starts clean.</p>
+            <p>Close strong, plan the handoff, and set up reporting so delivery starts clean.</p>
           </div>
         </div>
       </div>
@@ -120,36 +114,51 @@
 
         <div class="stats" style="margin-top:10px;">
           <!-- Trillions -->
-          <div class="stat-card" data-replay="true">
-            <div class="stat-value" data-target="7.0" data-suffix="T">0</div>
-            <div class="stat-caption">US Federal Budget<br>FY 2025<br><strong>Total Outlays</strong></div>
+          <div class="stat-card">
+            <div class="stat-stack">
+              <span class="stat-ghost" aria-hidden="true">$7.0T</span>
+              <div class="stat-value" data-target="7.0" data-suffix="T">$7.0T</div>
+            </div>
+            <div class="stat-caption">US Federal<br>Budget<br>FY 2025<br><strong>Total Outlays</strong></div>
           </div>
 
           <!-- Billions -->
-          <div class="stat-card" data-replay="true">
-            <div class="stat-value" data-target="851.7" data-suffix="B">0</div>
+          <div class="stat-card">
+            <div class="stat-stack">
+              <span class="stat-ghost" aria-hidden="true">$851.70B</span>
+              <div class="stat-value" data-target="851.7" data-suffix="B">$851.70B</div>
+            </div>
             <div class="stat-caption">Department of<br>Defense (DoD)<br><strong>Annual Budget FY 2025</strong></div>
           </div>
 
-          <div class="stat-card" data-replay="true">
-            <div class="stat-value" data-target="58.8" data-suffix="B">0</div>
+          <div class="stat-card">
+            <div class="stat-stack">
+              <span class="stat-ghost" aria-hidden="true">$58.80B</span>
+              <div class="stat-value" data-target="58.8" data-suffix="B">$58.80B</div>
+            </div>
             <div class="stat-caption">Department of<br>State<br><strong>Annual Budget FY 2025</strong></div>
           </div>
 
-          <div class="stat-card" data-replay="true">
-            <div class="stat-value" data-target="64.81" data-suffix="B">0</div>
+          <div class="stat-card">
+            <div class="stat-stack">
+              <span class="stat-ghost" aria-hidden="true">$64.81B</span>
+              <div class="stat-value" data-target="64.81" data-suffix="B">$64.81B</div>
+            </div>
             <div class="stat-caption">Department of<br>Homeland Security (DHS)<br><strong>Annual Budget FY 2025</strong></div>
           </div>
 
-          <div class="stat-card" data-replay="true">
-            <div class="stat-value" data-target="180" data-suffix="B">0</div>
+          <div class="stat-card">
+            <div class="stat-stack">
+              <span class="stat-ghost" aria-hidden="true">$180B</span>
+              <div class="stat-value" data-target="180" data-suffix="B">$180B</div>
+            </div>
             <div class="stat-caption">Small Business<br>Federal Spending<br>FY 2025 (approx.)</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TARGET AGENCIES -->
+    <!-- TARGET AGENCIES (only 5 seals, seamless loop) -->
     <section id="agencies" class="section">
       <div class="container">
         <h2>Target Agencies</h2>
@@ -157,31 +166,31 @@
         <div class="seal-track" style="margin-top:14px;">
           <!-- Row A -->
           <div class="seal-row">
-            <img class="seal" src="images/Department/dhs.png" alt="U.S. Department of Homeland Security seal">
-            <img class="seal" src="images/Department/airforce.png" alt="U.S. Department of the Air Force seal">
-            <img class="seal" src="images/Department/state.png" alt="U.S. Department of State seal">
-            <img class="seal" src="images/Department/army.png" alt="U.S. Department of the Army seal">
-            <img class="seal" src="images/Department/navy.png" alt="U.S. Department of the Navy seal">
-            <!-- duplicate sequence for seamless 50% loop -->
-            <img class="seal" src="images/Department/dhs.png" alt="" aria-hidden="true">
-            <img class="seal" src="images/Department/airforce.png" alt="" aria-hidden="true">
-            <img class="seal" src="images/Department/state.png" alt="" aria-hidden="true">
-            <img class="seal" src="images/Department/army.png" alt="" aria-hidden="true">
-            <img class="seal" src="images/Department/navy.png" alt="" aria-hidden="true">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/army.png" alt="U.S. Department of the Army">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/navy.png" alt="U.S. Department of the Navy">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/airforce.png" alt="U.S. Department of the Air Force">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/dhs.png" alt="U.S. Department of Homeland Security">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/state.png" alt="U.S. Department of State">
+            <!-- duplicate for seamless loop -->
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/army.png" alt="" aria-hidden="true">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/navy.png" alt="" aria-hidden="true">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/airforce.png" alt="" aria-hidden="true">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/dhs.png" alt="" aria-hidden="true">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/state.png" alt="" aria-hidden="true">
           </div>
 
           <!-- Row B (phase-shifted for continuous stream) -->
           <div class="seal-row" aria-hidden="true">
-            <img class="seal" src="images/Department/dhs.png" alt="">
-            <img class="seal" src="images/Department/airforce.png" alt="">
-            <img class="seal" src="images/Department/state.png" alt="">
-            <img class="seal" src="images/Department/army.png" alt="">
-            <img class="seal" src="images/Department/navy.png" alt="">
-            <img class="seal" src="images/Department/dhs.png" alt="">
-            <img class="seal" src="images/Department/airforce.png" alt="">
-            <img class="seal" src="images/Department/state.png" alt="">
-            <img class="seal" src="images/Department/army.png" alt="">
-            <img class="seal" src="images/Department/navy.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/army.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/navy.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/airforce.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/dhs.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/state.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/army.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/navy.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/airforce.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/dhs.png" alt="">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/state.png" alt="">
           </div>
         </div>
       </div>
@@ -191,9 +200,9 @@
     <section id="about" class="section">
       <div class="container">
         <h2>About</h2>
-        <p>I bring 15 years of combined military and commercial operations experience together in engineering. Using these skills, I’ve leveraged that knowledge into helping small businesses <strong>find</strong>, <strong>pursue</strong>, and <strong>win</strong> Federal contracts.</p>
-        <p>My role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling. When a project needs more hands, I bring in trusted specialists to fulfill the requirements put forward by the federal government.</p>
-        <p>If you want growth without wasted effort, we’ll be a good fit. I meet you where you are, align strategy to your strengths, and push each opportunity forward with a calm, disciplined process.</p>
+        <p>I bring 15 years of combined military and commercial operations experience together in engineering. Using these skills, I help small businesses <strong>find</strong>, <strong>pursue</strong>, and <strong>win</strong> Federal contracts.</p>
+        <p>My role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling.</p>
+        <p>If you want growth without wasted effort, we’ll be a good fit. I align strategy to your strengths and push each opportunity forward with a calm, disciplined process.</p>
       </div>
     </section>
 
