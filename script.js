@@ -1,18 +1,11 @@
-/* =========================================
-   BonnyCsolutions — script.js (v24)
-   - Seamless 4-video background loop (dual video cross-fade)
-   - Per-card hover count-up (isolated)
-   - Enquiry form helper + footer year
-   ========================================= */
+/* ========= helpers ========= */
+const qs  = (s, el=document) => el.querySelector(s);
+const qsa = (s, el=document) => Array.from(el.querySelectorAll(s));
 
-/* ---------- Utils ---------- */
-const qs = (s, el = document) => el.querySelector(s);
-const qsa = (s, el = document) => Array.from(el.querySelectorAll(s));
+/* footer year */
+const y = qs('#year'); if (y) y.textContent = new Date().getFullYear();
 
-/* ---------- Footer year ---------- */
-qs('#year').textContent = new Date().getFullYear();
-
-/* ---------- Enquiry form (basic success/fail) ---------- */
+/* enquiry form */
 const form = qs('#enquiryForm');
 if (form) {
   const status = qs('#enquiryStatus');
@@ -21,158 +14,62 @@ if (form) {
     status.textContent = 'Sending…';
     try {
       const fd = new FormData(form);
-      const res = await fetch(form.action, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: fd
-      });
+      const res = await fetch(form.action, { method:'POST', headers:{Accept:'application/json'}, body: fd });
       if (res.ok) {
         status.textContent = 'Thanks — we’ll be in touch within 1–3 business days.';
-        status.classList.add('success');
-        form.reset();
+        status.classList.add('success'); form.reset();
       } else {
         status.textContent = 'Something went wrong. Please email info@bonnycsolutions.com.';
         status.classList.add('error');
       }
-    } catch (err) {
-      status.textContent = 'Network error. Please try again shortly.';
-      status.classList.add('error');
+    } catch {
+      status.textContent = 'Network error. Please try again shortly.'; status.classList.add('error');
     }
   });
 }
 
-/* =========================================
-   HERO: seamless loop of 4 videos via dual elements
-   ========================================= */
-(function setupHeroLoop(){
-  const list = [
-    'images/Soldiers.mp4',
-    'images/Iwojima.mp4',
-    'images/Boots.mp4',
-    'images/B1.mp4'
-  ];
+/* ========= HERO: seamless 4-video loop (dual cross-fade) ========= */
+(function heroLoop(){
+  const files = ['images/Soldiers.mp4','images/Iwojima.mp4','images/Boots.mp4','images/B1.mp4'];
+  const A = qs('#heroVideoA'), B = qs('#heroVideoB'); if (!A || !B) return;
+  [A,B].forEach(v => { v.muted = true; v.loop = false; v.playsInline = true; });
 
-  const vidA = qs('#heroVideoA');
-  const vidB = qs('#heroVideoB');
-  if (!vidA || !vidB) return;
+  let i = 0, active = A, standby = B;
 
-  // set attributes (muted for autoplay)
-  [vidA, vidB].forEach(v => {
-    v.muted = true;
-    v.loop = false;
-    v.playsInline = true;
-  });
+  function setSrc(v, url){ v.src = url; try{ v.load(); }catch{} }
+  function swap(){ active.classList.remove('is-active'); standby.classList.add('is-active'); const t = active; active = standby; standby = t; }
+  function queue(){ const n=(i+1)%files.length; setSrc(standby, files[n]); }
 
-  let idx = 0;
-  let active = vidA;     // currently visible video
-  let standby = vidB;    // preloading next
-
-  function source(el, url){
-    el.src = url;
-    try { el.load(); } catch(_) {}
+  function start(){
+    setSrc(active, files[i]);
+    active.onended = () => { swap(); i=(i+1)%files.length; active.play().catch(()=>{}); queue(); };
+    active.play().then(()=>{ queue(); active.classList.add('is-active'); })
+      .catch(()=>{ const go=()=>{ active.play().then(()=>{active.classList.add('is-active');queue();}); window.removeEventListener('pointerdown',go); window.removeEventListener('keydown',go); }; window.addEventListener('pointerdown',go); window.addEventListener('keydown',go); });
   }
-
-  function crossfade(){
-    active.classList.remove('is-active');
-    standby.classList.add('is-active');
-    // swap refs
-    const tmp = active;
-    active = standby;
-    standby = tmp;
-  }
-
-  function queueNext(){
-    const nextIdx = (idx + 1) % list.length;
-    source(standby, list[nextIdx]);
-  }
-
-  function playCurrent(){
-    source(active, list[idx]);
-    // when active reaches end, crossfade and advance
-    active.onended = () => {
-      // small guard: if readyState is low, delay briefly
-      crossfade();
-      idx = (idx + 1) % list.length;
-      // after crossfade, make sure the newly-visible "active" continues
-      active.play().catch(()=>{});
-      // prepare the following clip
-      queueNext();
-    };
-
-    // start playback
-    active.play().then(()=>{
-      // preload the very next clip immediately
-      queueNext();
-      // show the first video
-      active.classList.add('is-active');
-    }).catch(()=>{
-      // Autoplay blocked — show panel and wait for a user action
-      console.warn('Autoplay blocked; video will begin after user interacts.');
-      const resume = () => {
-        active.play().then(()=>{
-          active.classList.add('is-active');
-          queueNext();
-          window.removeEventListener('pointerdown', resume);
-          window.removeEventListener('keydown', resume);
-        }).catch(()=>{});
-      };
-      window.addEventListener('pointerdown', resume);
-      window.addEventListener('keydown', resume);
-    });
-  }
-
-  playCurrent();
+  start();
 })();
 
-/* =========================================
-   STATS: per-card hover count-up (independent)
-   ========================================= */
-(function setupStats(){
-  // quick sanity: ensure page contains the section header (already checked true by you)
+/* ========= STATS: independent hover count-up ========= */
+(function stats(){
   if (!/Annual\s+Spend\s+2025/i.test(document.body.textContent)) return;
+  const cards = qsa('.card.stat'); if (!cards.length) return;
+  const fmt = n => n.toFixed(2).replace(/\.00$/,'').replace(/(\.\d)0$/, '$1');
 
-  const cards = qsa('.card.stat');
-  if (!cards.length) return;
-
-  // format number with up to 2 decimals, trimming trailing zeros
-  function format(n){
-    const s = n.toFixed(2);
-    return s.replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
-  }
-
-  cards.forEach(card => {
-    const valueEl = qs('.stat-value', card);
-    const suffixEl = qs('.stat-suffix', card);
-    const target = parseFloat(card.dataset.target);
-    const suffix = card.dataset.suffix || '';
-
-    // ensure suffix shows correctly even before hover
-    if (suffixEl) suffixEl.textContent = suffix;
-
-    let animId = null;
-
-    function animate(){
-      cancelAnimationFrame(animId);
-      const duration = 900; // ms per hover
-      const start = performance.now();
-
-      function tick(t){
-        const p = Math.min(1, (t - start) / duration);
-        const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
-        const current = target * eased;
-        valueEl.textContent = format(current);
-        if (p < 1) {
-          animId = requestAnimationFrame(tick);
-        }
-      }
-      animId = requestAnimationFrame(tick);
-    }
-
-    // restart from 0 on each hover
-    card.addEventListener('mouseenter', () => {
-      valueEl.textContent = '0';
-      animate();
+  cards.forEach(c=>{
+    const vEl = qs('.stat-value', c);
+    const target = parseFloat(c.dataset.target);
+    let raf;
+    c.addEventListener('mouseenter', ()=>{
+      cancelAnimationFrame(raf);
+      vEl.textContent = '0';
+      const dur = 900, t0 = performance.now();
+      const tick = t=>{
+        const p = Math.min(1, (t - t0)/dur);
+        const eased = 1 - Math.pow(1-p,3);
+        vEl.textContent = fmt(target*eased);
+        if (p<1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
     });
   });
 })();
-
