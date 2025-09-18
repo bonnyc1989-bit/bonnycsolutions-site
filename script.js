@@ -1,150 +1,161 @@
-// BonnyCsolutions — script.js (v33)
-// - Footer year
-// - Animated counters (independent hover replay) with better spacing handled in CSS
-// - Netlify AJAX form
-// - HERO: double-buffered playlist for gapless playback
-(function () {
-  // Footer year
-  const yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+/* =========================================
+   BonnyCsolutions — script.js (v26)
+   - Gapless 4-video hero rotation
+   - Stats hover replay independence
+   - Single-row seals continuous loop (no duplicates visible)
+   ========================================= */
 
-  // ---------- Animated stats ----------
-  const animateCount = (el) => {
-    const to = parseFloat(el.getAttribute('data-count-to') || '0');
-    const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
-    const suffix = el.getAttribute('data-suffix') || '';
-    const prefix = el.getAttribute('data-prefix') || '';
-    const dur = 1200;
-    const fmt = (n) => n.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-    const start = performance.now();
-    const step = (now) => {
-      const t = Math.min(1, (now - start) / dur);
-      const eased = 1 - Math.pow(1 - t, 3);
-      el.textContent = `${prefix}${fmt(to * eased)}${suffix}`;
-      if (t < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-
-  const statObserver = ('IntersectionObserver' in window)
-    ? new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) { animateCount(e.target); statObserver.unobserve(e.target); }
-        });
-      }, { threshold: 0.6 })
-    : null;
-
-  document.querySelectorAll('.stat-value').forEach(el => {
-    if (statObserver) statObserver.observe(el); else animateCount(el);
-  });
-
-  document.querySelectorAll('.stat').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      const val = card.querySelector('.stat-value');
-      if (!val) return;
-      val.textContent = '0';
-      animateCount(val);
-    });
-  });
-
-  // ---------- Netlify AJAX form ----------
-  const form = document.getElementById('enquiryForm');
-  const status = document.getElementById('enquiryStatus');
-  const encode = (data) => new URLSearchParams(data).toString();
-
-  if (form) {
+   (function () {
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+  })();
+  
+  /* ---------- Netlify form UX ---------- */
+  (function () {
+    const form = document.getElementById('enquiryForm');
+    if (!form) return;
+    const status = document.getElementById('enquiryStatus');
+  
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (status) { status.textContent = 'Sending…'; status.className = 'enquiry-status'; }
-      const formData = new FormData(form);
-      if (formData.get('bot-field')) { if (status) { status.textContent = 'Submission blocked.'; status.classList.add('error'); } return; }
-
+      if (!status) return;
+  
+      status.textContent = 'Sending…';
+      status.className = 'enquiry-status';
+  
       try {
-        await fetch('/', {
+        const fd = new FormData(form);
+        const body = new URLSearchParams(fd).toString();
+  
+        const res = await fetch('/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: encode({ 'form-name': form.getAttribute('name') || 'enquiry', ...Object.fromEntries(formData.entries()) })
+          body: body
         });
-        if (status) { status.textContent = 'Thanks — we’ll be in touch within 1–3 business days.'; status.classList.add('success'); }
-        form.reset();
+  
+        if (res.ok) {
+          status.textContent = 'Thanks — I’ll be in touch within 1–3 business days.';
+          status.classList.add('success');
+          form.reset();
+        } else {
+          status.textContent = 'Something went wrong. Please email info@bonnycsolutions.com.';
+          status.classList.add('error');
+        }
       } catch (err) {
-        if (status) { status.textContent = 'Something went wrong. Please email info@bonnycsolutions.com.'; status.classList.add('error'); }
         console.error(err);
+        status.textContent = 'Network error. Please email info@bonnycsolutions.com.';
+        status.classList.add('error');
       }
     });
-  }
-
-  // ---------- HERO: double-buffered playlist for gapless playback ----------
-  const vA = document.getElementById('heroA');
-  const vB = document.getElementById('heroB');
-
-  if (vA && vB) {
-    const playlist = ["Soldiers.mp4", "Iwojima.mp4", "Boots.mp4", "B1.mp4"];
-    let i = 0;         // current index of visible clip
-    let active = 0;    // 0 -> vA active; 1 -> vB active
-    const vids = [vA, vB];
-    const NEAR_END_SEC = 0.20; // pre-start next ~200ms early
-
-    const load = (el, file) => new Promise((resolve, reject) => {
-      const cleanup = () => { el.removeEventListener('canplaythrough', onCan); el.removeEventListener('error', onErr); clearTimeout(tid); };
-      const onCan = () => { cleanup(); resolve(); };
-      const onErr = () => { cleanup(); reject(new Error('video load error')); };
-      const tid = setTimeout(() => { cleanup(); reject(new Error('video load timeout')); }, 6000);
-
-      el.pause(); el.removeAttribute('src'); el.load();
-      el.src = `images/${file}`; el.muted = true; el.playsInline = true; el.preload = 'auto';
-      el.addEventListener('canplaythrough', onCan, { once: true });
-      el.addEventListener('error', onErr, { once: true });
-    });
-
-    const swap = () => {
-      const cur = vids[active];
-      const nxt = vids[1 - active];
-      cur.classList.remove('active');
-      nxt.classList.add('active');
-      setTimeout(() => { cur.pause(); cur.currentTime = 0; }, 50);
-      active = 1 - active;
+  })();
+  
+  /* ---------- HERO: sequential playlist of 4 videos, gapless loop ---------- */
+  (function () {
+    const heroVideo = document.getElementById('heroVideo');
+    if (!heroVideo) return;
+  
+    // Ensure these filenames exist in /images
+    const playlist = ['Soldiers.mp4', 'Iwojima.mp4', 'Boots.mp4', 'B1.mp4'].map(n => `images/${n}`);
+    let idx = 0;
+  
+    // Prepare for fast switches
+    heroVideo.playsInline = true;
+    heroVideo.muted = true;
+    heroVideo.autoplay = true;
+  
+    const setSrc = (src) => {
+      // Using src and load keeps memory low; preloading via fetch improves gap
+      heroVideo.src = src;
+      heroVideo.load();
     };
-
-    let prestarted = false;
-    const onTimeUpdate = () => {
-      const cur = vids[active];
-      const nxt = vids[1 - active];
-      if (!cur.duration || isNaN(cur.duration)) return;
-      if (!prestarted && (cur.duration - cur.currentTime) <= NEAR_END_SEC) {
-        prestarted = true;
-        const p = nxt.play?.(); if (p && typeof p.then === 'function') p.catch(() => {});
+  
+    const playIndex = (i) => {
+      setSrc(playlist[i]);
+      heroVideo.play().catch(() => {
+        console.warn('Autoplay blocked; user interaction may be required.');
+      });
+    };
+  
+    // Kick off
+    playIndex(idx);
+  
+    // Slightly pre-buffer the next video to reduce switch delay
+    let nextBuff = null;
+    const prebuffer = (src) => {
+      try {
+        nextBuff = document.createElement('link');
+        nextBuff.rel = 'preload';
+        nextBuff.as = 'video';
+        nextBuff.href = src;
+        document.head.appendChild(nextBuff);
+      } catch {}
+    };
+  
+    heroVideo.addEventListener('timeupdate', () => {
+      if (!nextBuff && heroVideo.duration && heroVideo.currentTime > heroVideo.duration - 2) {
+        const next = playlist[(idx + 1) % playlist.length];
+        prebuffer(next);
       }
-    };
-
-    const onEnded = async () => {
-      swap();
-      prestarted = false;
-      i = (i + 1) % playlist.length; // prepare following clip on hidden element
-      const hidden = vids[1 - active];
-      const nextFile = playlist[(i + 1) % playlist.length];
-      try { await load(hidden, nextFile); hidden.pause(); hidden.currentTime = 0; } catch {}
-      attachHandlers();
-    };
-
-    const detachHandlers = () => {
-      vids[active].removeEventListener('timeupdate', onTimeUpdate);
-      vids[active].removeEventListener('ended', onEnded);
-    };
-    const attachHandlers = () => {
-      detachHandlers();
-      vids[active].addEventListener('timeupdate', onTimeUpdate);
-      vids[active].addEventListener('ended', onEnded);
-    };
-
-    (async () => {
-      await load(vids[active], playlist[i]);
-      vids[active].classList.add('active');
-      vids[active].play().catch(() => {});
-      const hidden = vids[1 - active];
-      const nextFile = playlist[(i + 1) % playlist.length];
-      try { await load(hidden, nextFile); hidden.pause(); hidden.currentTime = 0; } catch {}
-      attachHandlers();
-    })();
-  }
-})();
+    });
+  
+    heroVideo.addEventListener('ended', () => {
+      idx = (idx + 1) % playlist.length;
+      if (nextBuff && nextBuff.parentNode) nextBuff.parentNode.removeChild(nextBuff), (nextBuff = null);
+      playIndex(idx);
+    });
+  })();
+  
+  /* ---------- Stats: replay animation only on the hovered box ---------- */
+  (function () {
+    const boxes = document.querySelectorAll('.stat-box');
+    if (!boxes.length) return;
+  
+    boxes.forEach((box) => {
+      box.addEventListener('mouseenter', () => {
+        box.style.animation = 'none';
+        // Force reflow to restart any CSS keyframes (if added later)
+        void box.offsetHeight;
+        box.style.animation = '';
+      });
+      box.addEventListener('focus', () => {
+        box.style.animation = 'none';
+        void box.offsetHeight;
+        box.style.animation = '';
+      });
+    });
+  })();
+  
+  /* ---------- Departments seals: single unique row, continuous loop ---------- */
+  (function () {
+    const row = document.getElementById('sealRow');
+    if (!row) return;
+  
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const gap = parseFloat(getComputedStyle(row).gap || getComputedStyle(row).columnGap || '32');
+    const sealSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--seal-size')) || 138;
+    const itemWidth = sealSize + gap;
+  
+    let offset = 0;
+    const pxPerSec = 28; // readable pace
+    let last = performance.now();
+  
+    function tick(now) {
+      const dt = (now - last) / 1000;
+      last = now;
+  
+      if (!prefersReduced) {
+        offset -= pxPerSec * dt;
+        // Move first emblem to the end only after fully out of view
+        while (-offset >= itemWidth) {
+          row.appendChild(row.firstElementChild);
+          offset += itemWidth;
+        }
+        row.style.transform = `translateX(${offset}px)`;
+      }
+  
+      requestAnimationFrame(tick);
+    }
+  
+    requestAnimationFrame(tick);
+  })();
+  
