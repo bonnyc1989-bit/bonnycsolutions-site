@@ -23,8 +23,8 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
-  <!-- Cache-bust -->
-  <link rel="stylesheet" href="styles.css?v=26" />
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css?v=29" />
 </head>
 
 <body>
@@ -38,8 +38,8 @@
           <ul class="nav-list">
             <li><a href="#services">Services</a></li>
             <li><a href="#spend">Annual Spend 2025</a></li>
-            <li><a href="#departments">Showcase</a></li>
             <li><a href="#process">Process</a></li>
+            <li><a href="#departments">Departments We Help You Sell To</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#enquiry">Enquiry</a></li>
             <li><a href="#contact" class="btn btn-primary">Book a Free Call</a></li>
@@ -52,8 +52,9 @@
 
       <!-- HERO -->
       <section id="hero" class="hero section" aria-label="Hero">
-        <!-- Full-bleed background video, single tag; script rotates playlist gaplessly -->
         <video id="heroVideo" class="hero-video" playsinline muted autoplay preload="auto"></video>
+        <!-- overlay gradient -->
+        <div class="hero-scrim" aria-hidden="true"></div>
 
         <div class="container">
           <div class="hero-panel">
@@ -79,17 +80,45 @@
           <h2 id="services-title">Services</h2>
           <p>I focus on practical, outcomes-first support. When needed, I bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
 
-          <div class="cards" role="list">
-            <article class="card service-card" role="listitem">
-              <img class="service-img" src="images/Strategic-Planning.jpg" alt="Strategic planning workshop for federal pursuit roadmap" />
+          <div class="cards cards-feature" role="list">
+            <article class="card feature" role="listitem">
+              <img src="images/Strategic-Planning.jpg" alt="Strategic planning workshop for federal pursuit roadmap" loading="lazy" />
               <h3>Roadmapping & Strategic Placement</h3>
               <p>We sequence time and effort where it moves the score—mapping buyer demand, competitors, and vehicles to build a pursuit plan that maximizes probability of award (PWin) and avoids low-yield bids.</p>
             </article>
 
-            <article class="card service-card" role="listitem">
-              <img class="service-img" src="images/Business-Development.jpg" alt="Business development outreach with a government buyer" />
+            <article class="card feature" role="listitem">
+              <img src="images/Business-Development.jpg" alt="Business development outreach with a government buyer" loading="lazy" />
               <h3>Business Development for Federal Consulting</h3>
               <p>We operationalize BD: who to call, what to say, and how to convert meetings into qualified pipeline—target lists, outreach rhythms, capture handoffs, and metrics that show progress, not motion.</p>
+            </article>
+          </div>
+
+          <h3 class="muted" style="margin-top:20px;">Core Service Lines</h3>
+          <div class="cards" role="list">
+            <article class="card" role="listitem">
+              <h3>Agency Targeting & Spend Analysis</h3>
+              <p>Identify who buys what you sell; analyze history, vehicles, and buyer behavior.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Capture Management & Shaping</h3>
+              <p>Early “ghosting,” Sources Sought/RFI responses, outreach, and discriminator development.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Opportunity Qualification (Bid/No-Bid)</h3>
+              <p>Fit, readiness, posture, team strength, and pricing realism—no vanity bids.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Proposal Management & Writing</h3>
+              <p>Compliance matrix, annotated outlines, volume ownership, and color-team reviews.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Subcontracting & Teaming</h3>
+              <p>Prime/sub alignment, gap coverage, teaming agreements, and partner narratives.</p>
+            </article>
+            <article class="card" role="listitem">
+              <h3>Post-Award Transition & Quality</h3>
+              <p>Transition plans, kickoff, reporting rhythms, QASP/metrics, and CPARS stewardship.</p>
             </article>
           </div>
         </div>
@@ -101,58 +130,31 @@
           <h2 id="spend-title">Annual Spend 2025</h2>
           <p>Budget &amp; spending highlights. Hover a box to replay the animation.</p>
 
-          <div class="stats-grid">
-            <div class="stat-box" tabindex="0" aria-label="US Federal Budget FY 2025 Total Outlays: $7.0 Trillion">
-              <div class="stat-figure">$7.0T</div>
-              <div class="stat-caption">
-                US Federal Budget<br/>FY 2025<br/>Total Outlays
-              </div>
-            </div>
+          <div class="stats-grid" role="list">
+            <article class="stat card" role="listitem" tabindex="0">
+              <div class="value">$7.0T</div>
+              <div class="label">US Federal Budget<br/>FY 2025<br/>Total Outlays</div>
+            </article>
 
-            <div class="stat-box" tabindex="0" aria-label="Department of Defense Annual Budget FY 2025: $851.7 Billion">
-              <div class="stat-figure">$851.7B</div>
-              <div class="stat-caption">
-                Department of<br/>Defense (DoD)<br/>Annual Budget FY<br/>2025
-              </div>
-            </div>
+            <article class="stat card" role="listitem" tabindex="0">
+              <div class="value">$851.7B</div>
+              <div class="label">Department of<br/>Defense (DoD)<br/>Annual Budget FY<br/>2025</div>
+            </article>
 
-            <div class="stat-box" tabindex="0" aria-label="Department of State Annual Budget FY 2025: $58.8 Billion">
-              <div class="stat-figure">$58.8B</div>
-              <div class="stat-caption">
-                Department of<br/>State<br/>Annual Budget FY<br/>2025
-              </div>
-            </div>
+            <article class="stat card" role="listitem" tabindex="0">
+              <div class="value">$58.8B</div>
+              <div class="label">Department of<br/>State<br/>Annual Budget FY<br/>2025</div>
+            </article>
 
-            <div class="stat-box" tabindex="0" aria-label="Department of Homeland Security Annual Budget FY 2025: $64.81 Billion">
-              <div class="stat-figure">$64.81B</div>
-              <div class="stat-caption">
-                Department of<br/>Homeland Security<br/>(DHS)<br/>Annual Budget FY<br/>2025
-              </div>
-            </div>
+            <article class="stat card" role="listitem" tabindex="0">
+              <div class="value">$64.81B</div>
+              <div class="label">Department of<br/>Homeland Security<br/>(DHS)<br/>Annual Budget FY<br/>2025</div>
+            </article>
 
-            <div class="stat-box" tabindex="0" aria-label="Small Business Federal Spending FY 2025: $180 Billion (approx)">
-              <div class="stat-figure">$180B</div>
-              <div class="stat-caption">
-                Small Business<br/>Federal Spending<br/>FY 2025 (approx.)
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- DEPARTMENTS (Emblems marquee, single unique loop) -->
-      <section id="departments" class="section" aria-labelledby="dept-title">
-        <div class="container">
-          <h2 id="dept-title">Showcase</h2>
-
-          <div class="seal-strip" aria-label="Department seals continuous loop">
-            <div class="seal-row" id="sealRow">
-              <img class="seal" src="images/Department/army.png"     alt="U.S. Department of the Army seal" />
-              <img class="seal" src="images/Department/dhs.png"      alt="U.S. Department of Homeland Security seal" />
-              <img class="seal" src="images/Department/airforce.png" alt="U.S. Department of the Air Force seal" />
-              <img class="seal" src="images/Department/navy.png"     alt="U.S. Department of the Navy seal" />
-              <img class="seal" src="images/Department/state.png"    alt="U.S. Department of State seal" />
-            </div>
+            <article class="stat card" role="listitem" tabindex="0">
+              <div class="value">$180B</div>
+              <div class="label">Small Business<br/>Federal Spending<br/>FY 2025 (approx.)</div>
+            </article>
           </div>
         </div>
       </section>
@@ -181,6 +183,32 @@
         </div>
       </section>
 
+      <!-- DEPARTMENTS WE HELP YOU SELL TO (marquee) -->
+      <section id="departments" class="section" aria-labelledby="dept-title">
+        <div class="container">
+          <h2 id="dept-title">Departments We Help You Sell To</h2>
+
+          <div class="marquee card">
+            <!-- belt content duplicated inside once for seamless loop -->
+            <div class="belt" aria-hidden="false">
+              <!-- set A (unique 5) -->
+              <img class="seal" src="images/Department/dhs.png"      alt="U.S. Department of Homeland Security seal" loading="lazy">
+              <img class="seal" src="images/Department/state.png"    alt="U.S. Department of State seal" loading="lazy">
+              <img class="seal" src="images/Department/airforce.png" alt="U.S. Department of the Air Force seal" loading="lazy">
+              <img class="seal" src="images/Department/army.png"     alt="U.S. Department of the Army seal" loading="lazy">
+              <img class="seal" src="images/Department/navy.png"     alt="U.S. Department of the Navy seal" loading="lazy">
+
+              <!-- set B (duplicate for seamlessness only; hidden from AT by aria-hidden parent in CSS alt approach) -->
+              <img class="seal" src="images/Department/dhs.png"      alt="" aria-hidden="true" loading="lazy">
+              <img class="seal" src="images/Department/state.png"    alt="" aria-hidden="true" loading="lazy">
+              <img class="seal" src="images/Department/airforce.png" alt="" aria-hidden="true" loading="lazy">
+              <img class="seal" src="images/Department/army.png"     alt="" aria-hidden="true" loading="lazy">
+              <img class="seal" src="images/Department/navy.png"     alt="" aria-hidden="true" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ABOUT -->
       <section id="about" class="section" aria-labelledby="about-title">
         <div class="container">
@@ -197,14 +225,7 @@
           <h2 id="enquiry-title">Quick Enquiry</h2>
           <p>Have a question? Send us a note and we’ll reply within 1–3 business days.</p>
 
-          <!-- Netlify form -->
-          <form id="enquiryForm"
-                name="enquiry"
-                method="POST"
-                netlify
-                data-netlify="true"
-                netlify-honeypot="bot-field"
-                class="enquiry-form">
+          <form id="enquiryForm" name="enquiry" method="POST" netlify data-netlify="true" netlify-honeypot="bot-field" class="enquiry-form">
             <input type="hidden" name="form-name" value="enquiry" />
             <input type="text" name="bot-field" class="hp-field" aria-hidden="true" tabindex="-1" autocomplete="off" />
 
@@ -231,7 +252,7 @@
             </div>
           </form>
 
-          <!-- Hidden detection form for Netlify -->
+          <!-- Hidden template form to guarantee Netlify detection -->
           <form name="enquiry-detect" netlify data-netlify="true" hidden>
             <input type="text" name="name" />
             <input type="email" name="email" />
@@ -267,6 +288,7 @@
 
     </main>
 
+    <!-- FOOTER -->
     <footer class="site-footer" role="contentinfo">
       <div class="container footer-inner">
         <p>© <span id="year"></span> Bonny Contracting Solutions Pty Ltd — All rights reserved.</p>
@@ -275,6 +297,6 @@
 
   </div>
 
-  <script src="script.js?v=26"></script>
+  <script src="script.js?v=29"></script>
 </body>
 </html>
