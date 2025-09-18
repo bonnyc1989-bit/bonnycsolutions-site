@@ -1,67 +1,178 @@
-/* ----------------------------
-   Annual Spend 2025 – count-up
------------------------------*/
-(function () {
-  const cards = document.querySelectorAll('.stat-card');       // each box
-  const values = document.querySelectorAll('.stat-card .stat-value'); // the $7.0T text
+/* =========================================
+   BonnyCsolutions — script.js (v24)
+   - Seamless 4-video background loop (dual video cross-fade)
+   - Per-card hover count-up (isolated)
+   - Enquiry form helper + footer year
+   ========================================= */
 
-  if (!cards.length || !values.length) return;
+/* ---------- Utils ---------- */
+const qs = (s, el = document) => el.querySelector(s);
+const qsa = (s, el = document) => Array.from(el.querySelectorAll(s));
 
-  // Parse current text like "$58.8B" -> {num:58.8, suffix:"B"}
-  values.forEach(el => {
-    const m = el.textContent.trim().match(/\$?\s*([\d.,]+)\s*([BT])/i);
-    if (m) {
-      el.dataset.target = m[1].replace(/,/g, '');
-      el.dataset.suffix = m[2].toUpperCase();     // B or T
-      // Keep how many decimals were in the original (e.g., 1 for 58.8, 2 if 64.81)
-      const decMatch = m[1].split('.')[1];
-      el.dataset.decimals = decMatch ? decMatch.length : 0;
+/* ---------- Footer year ---------- */
+qs('#year').textContent = new Date().getFullYear();
+
+/* ---------- Enquiry form (basic success/fail) ---------- */
+const form = qs('#enquiryForm');
+if (form) {
+  const status = qs('#enquiryStatus');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.textContent = 'Sending…';
+    try {
+      const fd = new FormData(form);
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: fd
+      });
+      if (res.ok) {
+        status.textContent = 'Thanks — we’ll be in touch within 1–3 business days.';
+        status.classList.add('success');
+        form.reset();
+      } else {
+        status.textContent = 'Something went wrong. Please email info@bonnycsolutions.com.';
+        status.classList.add('error');
+      }
+    } catch (err) {
+      status.textContent = 'Network error. Please try again shortly.';
+      status.classList.add('error');
     }
   });
+}
 
-  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+/* =========================================
+   HERO: seamless loop of 4 videos via dual elements
+   ========================================= */
+(function setupHeroLoop(){
+  const list = [
+    'images/Soldiers.mp4',
+    'images/Iwojima.mp4',
+    'images/Boots.mp4',
+    'images/B1.mp4'
+  ];
 
-  function runCount(el, { duration = 1200 } = {}) {
-    // Stop any previous run on this element
-    if (el._raf) cancelAnimationFrame(el._raf);
+  const vidA = qs('#heroVideoA');
+  const vidB = qs('#heroVideoB');
+  if (!vidA || !vidB) return;
 
-    const target = parseFloat(el.dataset.target || '0');
-    const suffix  = el.dataset.suffix || '';
-    const decimals = parseInt(el.dataset.decimals || '0', 10);
+  // set attributes (muted for autoplay)
+  [vidA, vidB].forEach(v => {
+    v.muted = true;
+    v.loop = false;
+    v.playsInline = true;
+  });
 
-    const start  = performance.now();
-    const from   = 0;
+  let idx = 0;
+  let active = vidA;     // currently visible video
+  let standby = vidB;    // preloading next
 
-    function tick(now) {
-      const t = Math.min(1, (now - start) / duration);
-      const v = from + (target - from) * easeOutCubic(t);
-      el.textContent = `$${v.toFixed(decimals)}${suffix}`;
-      if (t < 1) {
-        el._raf = requestAnimationFrame(tick);
-      } else {
-        el.textContent = `$${target.toFixed(decimals)}${suffix}`;
-      }
-    }
-    el._raf = requestAnimationFrame(tick);
+  function source(el, url){
+    el.src = url;
+    try { el.load(); } catch(_) {}
   }
 
-  // Start once when the boxes first come into view
-  const once = new IntersectionObserver((entries) => {
-    entries.forEach(({ isIntersecting, target }) => {
-      if (isIntersecting && !target.dataset.played) {
-        const valueEl = target.querySelector('.stat-value');
-        if (valueEl) runCount(valueEl);
-        target.dataset.played = '1';
-      }
+  function crossfade(){
+    active.classList.remove('is-active');
+    standby.classList.add('is-active');
+    // swap refs
+    const tmp = active;
+    active = standby;
+    standby = tmp;
+  }
+
+  function queueNext(){
+    const nextIdx = (idx + 1) % list.length;
+    source(standby, list[nextIdx]);
+  }
+
+  function playCurrent(){
+    source(active, list[idx]);
+    // when active reaches end, crossfade and advance
+    active.onended = () => {
+      // small guard: if readyState is low, delay briefly
+      crossfade();
+      idx = (idx + 1) % list.length;
+      // after crossfade, make sure the newly-visible "active" continues
+      active.play().catch(()=>{});
+      // prepare the following clip
+      queueNext();
+    };
+
+    // start playback
+    active.play().then(()=>{
+      // preload the very next clip immediately
+      queueNext();
+      // show the first video
+      active.classList.add('is-active');
+    }).catch(()=>{
+      // Autoplay blocked — show panel and wait for a user action
+      console.warn('Autoplay blocked; video will begin after user interacts.');
+      const resume = () => {
+        active.play().then(()=>{
+          active.classList.add('is-active');
+          queueNext();
+          window.removeEventListener('pointerdown', resume);
+          window.removeEventListener('keydown', resume);
+        }).catch(()=>{});
+      };
+      window.addEventListener('pointerdown', resume);
+      window.addEventListener('keydown', resume);
     });
-  }, { threshold: 0.35 });
+  }
 
-  cards.forEach(card => once.observe(card));
+  playCurrent();
+})();
 
-  // Replay only the hovered box
+/* =========================================
+   STATS: per-card hover count-up (independent)
+   ========================================= */
+(function setupStats(){
+  // quick sanity: ensure page contains the section header (already checked true by you)
+  if (!/Annual\s+Spend\s+2025/i.test(document.body.textContent)) return;
+
+  const cards = qsa('.card.stat');
+  if (!cards.length) return;
+
+  // format number with up to 2 decimals, trimming trailing zeros
+  function format(n){
+    const s = n.toFixed(2);
+    return s.replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
+  }
+
   cards.forEach(card => {
-    const valueEl = card.querySelector('.stat-value');
-    if (!valueEl) return;
-    card.addEventListener('mouseenter', () => runCount(valueEl, { duration: 900 }));
+    const valueEl = qs('.stat-value', card);
+    const suffixEl = qs('.stat-suffix', card);
+    const target = parseFloat(card.dataset.target);
+    const suffix = card.dataset.suffix || '';
+
+    // ensure suffix shows correctly even before hover
+    if (suffixEl) suffixEl.textContent = suffix;
+
+    let animId = null;
+
+    function animate(){
+      cancelAnimationFrame(animId);
+      const duration = 900; // ms per hover
+      const start = performance.now();
+
+      function tick(t){
+        const p = Math.min(1, (t - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+        const current = target * eased;
+        valueEl.textContent = format(current);
+        if (p < 1) {
+          animId = requestAnimationFrame(tick);
+        }
+      }
+      animId = requestAnimationFrame(tick);
+    }
+
+    // restart from 0 on each hover
+    card.addEventListener('mouseenter', () => {
+      valueEl.textContent = '0';
+      animate();
+    });
   });
 })();
+
