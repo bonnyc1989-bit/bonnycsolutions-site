@@ -22,6 +22,11 @@
 
   --stats-caption-h:auto;
   --stats-line-h:auto;
+
+  /* Agencies marquee sizing */
+  --seal-size:128px;     /* emblem circle size */
+  --seal-gap:48px;       /* even spacing between emblems */
+  --edge-fade:120px;     /* fade width at left/right edges */
 }
 
 /* ---------- Base ---------- */
@@ -287,30 +292,46 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   overflow:hidden;
   border:1px solid rgba(255,255,255,.45);
   border-radius:12px;
-  padding:16px;
   background:rgba(255,255,255,.06);
 
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
-          mask-image: linear-gradient(90deg, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%);
+  /* taller track so full circles are visible */
+  height: calc(var(--seal-size) + 24px);
+
+  /* soften left/right edges, no top/bottom crop */
+  -webkit-mask-image: linear-gradient(90deg,
+    transparent 0,
+    #000 var(--edge-fade),
+    #000 calc(100% - var(--edge-fade)),
+    transparent 100%);
+          mask-image: linear-gradient(90deg,
+    transparent 0,
+    #000 var(--edge-fade),
+    #000 calc(100% - var(--edge-fade)),
+    transparent 100%);
 }
 .seal-row{
   display:flex; align-items:center;
-  gap:42px;
-  position:absolute; inset:0 auto 0 0;
+  gap:var(--seal-gap);
+  position:absolute; left:0; right:auto; top:50%;
+  /* Keep the row vertically centered while it scrolls horizontally */
   animation: seal-loop 28s linear infinite;
   will-change: transform;
 }
 .seal-row[aria-hidden="true"]{ animation-delay:-14s; }
+
 .seal{
-  width:112px; height:112px; 
+  width:var(--seal-size);
+  height:var(--seal-size);
   object-fit:contain;
   filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
   flex:0 0 auto;
 }
+
 @keyframes seal-loop{
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0%   { transform: translateY(-50%) translateX(0); }
+  100% { transform: translateY(-50%) translateX(-50%); }
 }
+/* Pause marquee on hover */
 .seal-track:hover .seal-row { animation-play-state: paused; }
 
 /* ---------- Quick Enquiry ---------- */
@@ -370,6 +391,15 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
     transition: none !important;
     animation: none !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Responsive tweak for agencies ---------- */
+@media (max-width: 640px) {
+  :root{
+    --seal-size:96px;
+    --seal-gap:36px;
+    --edge-fade:72px;
   }
 }
 
