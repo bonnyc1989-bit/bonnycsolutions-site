@@ -1,131 +1,98 @@
-/* ==================================================
-   BonnyCsolutions — script.js (v26)
-   - Hero: seamless 4-video loop with preloading
-   - Netlify form (status UX)
-   - Target Agencies marquee: one set, continuous loop, peel-in
-   ================================================== */
+/* =========================================
+   BonnyCsolutions — script.js (v30)
+   - Seamless dual-video hero playlist (no gap)
+   - Simple form status (front-end only)
+   ========================================= */
 
-   (function() {
-    /* ---------- Year in footer ---------- */
+   (function () {
+    /* Year in footer */
     const y = document.getElementById('year');
     if (y) y.textContent = new Date().getFullYear();
   
-    /* ---------- Netlify form UX ---------- */
+    /* -----------------------------
+       HERO: 4-video playlist, seamless
+       We use two <video> tags and crossfade.
+       ----------------------------- */
+    const vids = ['images/Soldiers.mp4', 'images/Iwojima.mp4', 'images/Boots.mp4', 'images/B1.mp4'];
+    const a = document.getElementById('heroVideoA');
+    const b = document.getElementById('heroVideoB');
+    if (a && b) {
+      const els = [a, b];
+      let cur = 0;     // which element is currently visible
+      let idx = 0;     // index in playlist
+  
+      function setSrc(el, src) {
+        if (!src) return;
+        if (el.src !== location.origin + '/' + src && el.getAttribute('src') !== src) {
+          el.setAttribute('src', src);
+          el.load();
+        }
+      }
+  
+      function play(el) {
+        const p = el.play();
+        if (p && typeof p.then === 'function') p.catch(() => {});
+      }
+  
+      // Prepare both with first two videos
+      setSrc(a, vids[idx % vids.length]); idx++;
+      setSrc(b, vids[idx % vids.length]);
+  
+      // Start the first one when ready
+      a.addEventListener('canplay', () => play(a), { once: true });
+  
+      function queueNext(nextEl) {
+        // Preload the next-in-queue for the other tag
+        const nextSrc = vids[(idx + 1) % vids.length];
+        setSrc(nextEl, nextSrc);
+      }
+  
+      function swap() {
+        const visible = els[cur];
+        const hidden  = els[1 - cur];
+  
+        // Ensure hidden el is ready; if not, wait for canplay
+        const readyOrPlay = () => {
+          // fade
+          visible.classList.remove('visible');
+          hidden.classList.add('visible');
+          play(hidden);
+          // advance playlist position
+          idx = (idx + 1) % vids.length;
+          // queue next on the now-hidden element
+          queueNext(visible);
+          cur = 1 - cur;
+        };
+  
+        if (hidden.readyState >= 3) { // HAVE_FUTURE_DATA
+          readyOrPlay();
+        } else {
+          hidden.addEventListener('canplay', readyOrPlay, { once: true });
+        }
+      }
+  
+      // When current ends, swap immediately
+      a.addEventListener('ended', swap);
+      b.addEventListener('ended', swap);
+  
+      // Also pre-queue the third video
+      queueNext(a);
+    }
+  
+    /* -----------------------------
+       Enquiry form (front-end only)
+       ----------------------------- */
     const form = document.getElementById('enquiryForm');
     if (form) {
       const status = document.getElementById('enquiryStatus');
-      form.addEventListener('submit', async (e) => {
+      form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const data = new FormData(form);
-        status.textContent = 'Sending…';
-        try {
-          const res = await fetch('/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ 'form-name': 'enquiry', ...Object.fromEntries(data) }).toString()
-          });
-          if (res.ok) {
-            status.textContent = 'Thanks — I’ll be in touch within 1–3 business days.';
-            status.classList.add('success');
-            form.reset();
-          } else {
-            status.textContent = 'Something went wrong. Please email info@bonnycsolutions.com.';
-            status.classList.add('error');
-          }
-        } catch(err) {
-          status.textContent = 'Network error. Please email info@bonnycsolutions.com.';
-          status.classList.add('error');
+        if (status) {
+          status.textContent = 'Thanks — I’ll be in touch within 1–3 business days.';
+          setTimeout(() => (status.textContent = ''), 6000);
         }
+        form.reset();
       });
     }
-  
-    /* ---------- HERO: seamless 4-video loop ---------- */
-    const heroVideo = document.getElementById('heroVideo');
-    const heroSource = document.getElementById('heroSource');
-    const playlist = [
-      'images/Soldiers.mp4',
-      'images/Iwojima.mp4',
-      'images/Boots.mp4',
-      'images/B1.mp4'
-    ];
-    let vidIdx = 0;
-  
-    function setSource(ix) {
-      heroSource.src = playlist[ix];
-      heroVideo.load();
-    }
-  
-    // Start immediately
-    if (heroVideo && heroSource) {
-      setSource(vidIdx);
-      heroVideo.play().catch(() => {
-        // Autoplay blocked: will play on user gesture
-        console.warn('Autoplay blocked; video will start on interaction.');
-      });
-  
-      // Preload next by swapping source at 'ended' without delay
-      heroVideo.addEventListener('ended', () => {
-        vidIdx = (vidIdx + 1) % playlist.length;
-        setSource(vidIdx);
-        const p = heroVideo.play();
-        if (p && typeof p.then === 'function') {
-          p.catch(() => {});
-        }
-      });
-    }
-  
-    /* ---------- Target Agencies marquee ---------- */
-    const trackA = document.getElementById('sealsTrackA');
-    const trackB = document.getElementById('sealsTrackB');
-  
-    function startMarquee() {
-      if (!trackA || !trackB) return;
-  
-      // Clone A into B (one time) so there’s exactly one set duplicated
-      if (!trackB.hasChildNodes()) {
-        trackB.innerHTML = trackA.innerHTML;
-      }
-  
-      // Lay out: place A at x=0, B immediately to the right of A
-      const wrap = trackA.parentElement; // .seals-mask
-      const aWidth = trackA.scrollWidth;
-      const gapBetweenRows = 0; // rows touch end-to-start
-      trackA.style.transform = 'translateX(0px)';
-      trackB.style.transform = `translateX(${aWidth + gapBetweenRows}px)`;
-  
-      // Animation speed: pixels per second (tuned for “nice and easy”)
-      const speed = 40; // adjust if needed
-      let lastTs = performance.now();
-      let posA = 0;
-      let posB = aWidth + gapBetweenRows;
-  
-      function step(ts) {
-        const dt = (ts - lastTs) / 1000; // seconds
-        lastTs = ts;
-  
-        posA -= speed * dt;
-        posB -= speed * dt;
-  
-        // Loop when a row fully exits left
-        if (posA <= -aWidth - gapBetweenRows) {
-          posA = posB + aWidth + gapBetweenRows;
-        }
-        if (posB <= -aWidth - gapBetweenRows) {
-          posB = posA + aWidth + gapBetweenRows;
-        }
-  
-        trackA.style.transform = `translateX(${posA}px)`;
-        trackB.style.transform = `translateX(${posB}px)`;
-  
-        requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-  
-    // Start marquee after fonts/layout settle
-    window.addEventListener('load', () => {
-      // Small timeout helps ensure scrollWidth is accurate after images load
-      setTimeout(startMarquee, 200);
-    });
   })();
   
