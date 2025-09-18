@@ -1,117 +1,131 @@
-/* =========================================
+/* ==================================================
    BonnyCsolutions — script.js (v26)
-   - Netlify form UX
-   - Hero video: seamless 4-video loop
-   - Stat cards: hover replay
-   ========================================= */
-   (function () {
-    // YEAR
+   - Hero: seamless 4-video loop with preloading
+   - Netlify form (status UX)
+   - Target Agencies marquee: one set, continuous loop, peel-in
+   ================================================== */
+
+   (function() {
+    /* ---------- Year in footer ---------- */
     const y = document.getElementById('year');
     if (y) y.textContent = new Date().getFullYear();
   
-    // ----- Netlify form UX -----
+    /* ---------- Netlify form UX ---------- */
     const form = document.getElementById('enquiryForm');
     if (form) {
       const status = document.getElementById('enquiryStatus');
-      const encode = (data) =>
-        Object.keys(data)
-          .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-          .join('&');
-  
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (status) status.textContent = 'Sending…';
+        const data = new FormData(form);
+        status.textContent = 'Sending…';
         try {
-          const formData = new FormData(form);
-          const body = encode({
-            'form-name': form.getAttribute('name') || 'enquiry',
-            ...Object.fromEntries(formData),
-          });
           const res = await fetch('/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body,
+            body: new URLSearchParams({ 'form-name': 'enquiry', ...Object.fromEntries(data) }).toString()
           });
           if (res.ok) {
+            status.textContent = 'Thanks — I’ll be in touch within 1–3 business days.';
+            status.classList.add('success');
             form.reset();
-            if (status) {
-              status.textContent = 'Thanks — we’ll be in touch within 1–3 business days.';
-              status.classList.remove('error');
-              status.classList.add('success');
-            }
-          } else throw new Error('Network error');
-        } catch (err) {
-          if (status) {
+          } else {
             status.textContent = 'Something went wrong. Please email info@bonnycsolutions.com.';
-            status.classList.remove('success');
             status.classList.add('error');
           }
-          console.error(err);
+        } catch(err) {
+          status.textContent = 'Network error. Please email info@bonnycsolutions.com.';
+          status.classList.add('error');
         }
       });
     }
   
-    // ----- HERO: seamless sequential playlist of 4 videos -----
+    /* ---------- HERO: seamless 4-video loop ---------- */
     const heroVideo = document.getElementById('heroVideo');
-    if (heroVideo) {
-      const sourceDir = 'images/';
-      const playlist = ['Soldiers.mp4', 'Iwojima.mp4', 'Boots.mp4', 'B1.mp4'];
-      let idx = 0;
+    const heroSource = document.getElementById('heroSource');
+    const playlist = [
+      'images/Soldiers.mp4',
+      'images/Iwojima.mp4',
+      'images/Boots.mp4',
+      'images/B1.mp4'
+    ];
+    let vidIdx = 0;
   
-      // pre-create hidden buffers to cut switch gap
-      const buffers = playlist.map(() => document.createElement('video'));
-      buffers.forEach(v => { v.muted = true; v.preload = 'auto'; v.playsInline = true; });
-  
-      const loadIntoBuffer = (i) => {
-        const v = buffers[i];
-        if (v.getAttribute('data-loaded') === '1') return v;
-        v.src = sourceDir + playlist[i];
-        v.load();
-        v.setAttribute('data-loaded', '1');
-        return v;
-      };
-  
-      // start: load first two
-      loadIntoBuffer(0);
-      loadIntoBuffer(1);
-  
-      const playIndex = (i) => {
-        const buf = loadIntoBuffer(i);
-        // copy currentTime 0 for crisp start
-        heroVideo.src = buf.src;
-        heroVideo.currentTime = 0;
-        heroVideo.play().catch(()=>{});
-        // warm next buffer
-        const next = (i + 1) % playlist.length;
-        loadIntoBuffer(next);
-      };
-  
-      heroVideo.addEventListener('ended', () => {
-        idx = (idx + 1) % playlist.length;
-        playIndex(idx);
-      });
-  
-      // Autoplay might be blocked on some devices; poster image remains visible.
-      heroVideo.addEventListener('error', () => {
-        console.warn('Video error; check filenames and formats.');
-      });
-  
-      playIndex(idx);
+    function setSource(ix) {
+      heroSource.src = playlist[ix];
+      heroVideo.load();
     }
   
-    // ----- Stats hover replay -----
-    const nums = document.querySelectorAll('.stat [data-replay]');
-    nums.forEach(el => {
-      const text = el.textContent;
-      const replay = () => {
-        el.style.animation = 'none';
-        // force reflow
-        void el.offsetWidth;
-        el.style.animation = '';
-        el.textContent = text;
-      };
-      el.parentElement.addEventListener('mouseenter', replay);
-      el.parentElement.addEventListener('focus', replay, true);
+    // Start immediately
+    if (heroVideo && heroSource) {
+      setSource(vidIdx);
+      heroVideo.play().catch(() => {
+        // Autoplay blocked: will play on user gesture
+        console.warn('Autoplay blocked; video will start on interaction.');
+      });
+  
+      // Preload next by swapping source at 'ended' without delay
+      heroVideo.addEventListener('ended', () => {
+        vidIdx = (vidIdx + 1) % playlist.length;
+        setSource(vidIdx);
+        const p = heroVideo.play();
+        if (p && typeof p.then === 'function') {
+          p.catch(() => {});
+        }
+      });
+    }
+  
+    /* ---------- Target Agencies marquee ---------- */
+    const trackA = document.getElementById('sealsTrackA');
+    const trackB = document.getElementById('sealsTrackB');
+  
+    function startMarquee() {
+      if (!trackA || !trackB) return;
+  
+      // Clone A into B (one time) so there’s exactly one set duplicated
+      if (!trackB.hasChildNodes()) {
+        trackB.innerHTML = trackA.innerHTML;
+      }
+  
+      // Lay out: place A at x=0, B immediately to the right of A
+      const wrap = trackA.parentElement; // .seals-mask
+      const aWidth = trackA.scrollWidth;
+      const gapBetweenRows = 0; // rows touch end-to-start
+      trackA.style.transform = 'translateX(0px)';
+      trackB.style.transform = `translateX(${aWidth + gapBetweenRows}px)`;
+  
+      // Animation speed: pixels per second (tuned for “nice and easy”)
+      const speed = 40; // adjust if needed
+      let lastTs = performance.now();
+      let posA = 0;
+      let posB = aWidth + gapBetweenRows;
+  
+      function step(ts) {
+        const dt = (ts - lastTs) / 1000; // seconds
+        lastTs = ts;
+  
+        posA -= speed * dt;
+        posB -= speed * dt;
+  
+        // Loop when a row fully exits left
+        if (posA <= -aWidth - gapBetweenRows) {
+          posA = posB + aWidth + gapBetweenRows;
+        }
+        if (posB <= -aWidth - gapBetweenRows) {
+          posB = posA + aWidth + gapBetweenRows;
+        }
+  
+        trackA.style.transform = `translateX(${posA}px)`;
+        trackB.style.transform = `translateX(${posB}px)`;
+  
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+  
+    // Start marquee after fonts/layout settle
+    window.addEventListener('load', () => {
+      // Small timeout helps ensure scrollWidth is accurate after images load
+      setTimeout(startMarquee, 200);
     });
   })();
   
