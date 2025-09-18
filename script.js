@@ -202,7 +202,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       v.dataset.suffix = suffix;
     });
 
-    animState.set(v, { animating:false, rafId:0, lastRun:0, target, suffix });
+    animState.set(v, { animating: false, rafId: 0, lastRun: 0, target, suffix });
 
     // Hover-only: replay 0 -> final, then stay final
     const playHover = () => startAnim(v);
@@ -218,7 +218,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     document.documentElement.style.setProperty('--stats-line-h',    maxLine ? `${maxLine}px` : 'auto');
   });
 
-  function startAnim(v){
+  function startAnim(v) {
     const st = animState.get(v);
     if (!st) return;
     const now = performance.now();
@@ -266,7 +266,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (status) {
-      status.classList.remove('error','success');
+      status.classList.remove('error', 'success');
       status.textContent = 'Sending…';
     }
 
