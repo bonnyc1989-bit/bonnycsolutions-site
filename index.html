@@ -1,22 +1,30 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bonny Contracting Solutions Pty Ltd</title>
+
+  <link rel="preload" as="video" href="images/Soldiers.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="images/Iwojima.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="images/Boots.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="images/B1.mp4" type="video/mp4">
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page">
+
     <!-- NAV -->
     <header class="nav">
       <div class="container nav-inner">
-        <a class="brand" href="#">Bonny Contracting Solutions Pty Ltd</a>
+        <div class="brand">Bonny Contracting Solutions Pty Ltd</div>
         <nav>
           <ul class="nav-list">
             <li><a href="#services">Services</a></li>
             <li><a href="#spend">Annual Spend 2025</a></li>
             <li><a href="#process">Process</a></li>
+            <li><a href="#agencies">Target Agencies</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#enquiry">Enquiry</a></li>
           </ul>
@@ -25,20 +33,23 @@
       </div>
     </header>
 
-    <!-- HERO (4-video cross-fade loop) -->
-    <section id="hero" class="hero section" aria-label="Hero">
-      <video id="heroVideoA" class="hero-video" playsinline muted preload="auto"></video>
-      <video id="heroVideoB" class="hero-video" playsinline muted preload="auto"></video>
+    <!-- HERO -->
+    <section id="hero" class="hero section">
+      <div class="hero-video" aria-hidden="true">
+        <!-- double-buffer videos for gapless swap -->
+        <video id="videoA" class="hero-video-el" playsinline muted preload="auto"></video>
+        <video id="videoB" class="hero-video-el" playsinline muted preload="auto" style="opacity:0;"></video>
+      </div>
 
       <div class="container">
         <div class="hero-panel">
-          <h1 class="hero-title">Find. Influence. Win.<br />U.S. Federal Contracts.</h1>
-          <p class="hero-sub">Pipeline development, early shaping, and compliant proposals—built for small businesses.</p>
+          <h1>Find. Influence. Win.<br>U.S. Federal Contracts.</h1>
+          <p>Pipeline development, early shaping, and compliant proposals—built for small businesses.</p>
           <div class="cta-row">
             <a class="btn btn-primary" href="#enquiry">Get Started</a>
-            <a class="btn btn-outline" href="#services">See Services</a>
+            <a class="btn" style="border-color:rgba(255,255,255,.55);color:#e8f3ff;" href="#services">See Services</a>
           </div>
-          <p class="support muted">
+          <p class="support muted" style="max-width:920px;">
             We specialize in bringing the right <strong>DoD</strong> and <strong>U.S. State Department</strong> solicitations forward and increasing
             your probability of award—through focused targeting, disciplined capture, and sharp proposals.
           </p>
@@ -50,52 +61,51 @@
     <section id="services" class="section">
       <div class="container">
         <h2>Services</h2>
+        <p class="muted">I focus on practical, outcomes-first support. When needed, I bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
 
-        <div class="cards cards-2col">
-          <article class="card service">
-            <img src="images/Strategic-Planning.jpg" alt="Strategic planning workshop for federal pursuit roadmap" class="card-img" />
-            <div class="card-body">
-              <h3>Roadmapping &amp; Strategic Placement</h3>
-              <p>
-                We sequence time and effort where it moves the score—mapping buyer demand, competitors, and vehicles to build a
-                pursuit plan that maximizes probability of award (Pwin) and avoids low-yield bids.
-              </p>
+        <div class="services-grid" style="margin-top:16px;">
+          <article class="service-card">
+            <div class="service-media">
+              <img src="images/Strategic-Planning.jpg" alt="Strategic planning workshop for federal pursuit roadmap" onerror="this.src='images/services-roadmap.jpg'">
+            </div>
+            <div class="service-body">
+              <h3>Roadmapping & Strategic Placement</h3>
+              <p>We sequence time and effort where it moves the score—mapping buyer demand, competitors, and vehicles to build a pursuit plan that maximizes probability of award (PWin) and avoids low-yield bids.</p>
             </div>
           </article>
 
-          <article class="card service">
-            <img src="images/Business-Development.jpg" alt="Business development outreach with a government buyer" class="card-img" />
-            <div class="card-body">
+          <article class="service-card">
+            <div class="service-media">
+              <img src="images/Business-Development.jpg" alt="Business development outreach with a government buyer" onerror="this.src='images/services-bd.jpg'">
+            </div>
+            <div class="service-body">
               <h3>Business Development for Federal Consulting</h3>
-              <p>
-                We operationalize BD: who to call, what to say, and how to convert meetings into qualified pipeline—target lists,
-                outreach rhythms, capture handoffs, and metrics that show progress, not motion.
-              </p>
+              <p>We operationalize BD: who to call, what to say, and how to convert meetings into qualified pipeline—target lists, outreach rhythms, capture handoffs, and metrics that show progress, not motion.</p>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- TARGET AGENCIES (continuous loop) -->
-    <section id="agencies" class="section">
+    <!-- PROCESS -->
+    <section id="process" class="section">
       <div class="container">
-        <h2>Target Agencies</h2>
+        <h2>Our Process</h2>
+        <div class="process-line">Finding Opportunities → Pursuing → Winning.</div>
+        <p class="muted">Don’t know where to start? Overwhelmed by Federal Acquisition? I guide you from confusion to contract—supported by the BonnyCsolutions team where needed.</p>
 
-        <div class="seal-marquee">
-          <div class="seal-track">
-            <!-- one set -->
-            <img class="seal" src="images/dhs.png"       alt="U.S. Department of Homeland Security seal" />
-            <img class="seal" src="images/airforce.png"  alt="U.S. Department of the Air Force seal" />
-            <img class="seal" src="images/state.png"     alt="U.S. Department of State seal" />
-            <img class="seal" src="images/army.png"      alt="U.S. Department of the Army seal" />
-            <img class="seal" src="images/navy.png"      alt="U.S. Department of the Navy seal" />
-            <!-- duplicate once for seamless loop; still only one of each per cycle on screen -->
-            <img class="seal" src="images/dhs.png"       alt="" aria-hidden="true" />
-            <img class="seal" src="images/airforce.png"  alt="" aria-hidden="true" />
-            <img class="seal" src="images/state.png"     alt="" aria-hidden="true" />
-            <img class="seal" src="images/army.png"      alt="" aria-hidden="true" />
-            <img class="seal" src="images/navy.png"      alt="" aria-hidden="true" />
+        <div class="steps">
+          <div class="step">
+            <h3>1. Find Opportunities</h3>
+            <p>Targeted agency research, historical spend, contract vehicles, and early signals.</p>
+          </div>
+          <div class="step">
+            <h3>2. Pursue Smart</h3>
+            <p>Bid/No-Bid rigor, capture actions, and disciplined proposal execution.</p>
+          </div>
+          <div class="step">
+            <h3>3. Win & Deliver</h3>
+            <p>Close strong, plan the hand-off, and set up reporting so delivery starts clean.</p>
           </div>
         </div>
       </div>
@@ -107,64 +117,71 @@
         <h2>Annual Spend 2025</h2>
         <p class="muted">Budget &amp; spending highlights. Hover a box to replay the animation.</p>
 
-        <div class="cards stat-cards">
-          <article class="card stat" data-target="7.0" data-suffix="T">
-            <div class="stat-top">
-              <span class="stat-currency">$</span><span class="stat-value">0</span><span class="stat-suffix">T</span>
-            </div>
-            <div class="stat-label">US Federal Budget<br/>FY 2025<br/>Total Outlays</div>
-          </article>
+        <div class="stats" style="margin-top:10px;">
+          <!-- Trillions -->
+          <div class="stat-card" data-replay="true">
+            <div class="stat-value" data-target="7.0" data-suffix="T">0</div>
+            <div class="stat-caption">US Federal Budget<br>FY 2025<br><strong>Total Outlays</strong></div>
+          </div>
 
-          <article class="card stat" data-target="851.7" data-suffix="B">
-            <div class="stat-top">
-              <span class="stat-currency">$</span><span class="stat-value">0</span><span class="stat-suffix">B</span>
-            </div>
-            <div class="stat-label">Department of<br/>Defense (DoD)<br/>Annual Budget FY<br/>2025</div>
-          </article>
+          <!-- Billions -->
+          <div class="stat-card" data-replay="true">
+            <div class="stat-value" data-target="851.7" data-suffix="B">0</div>
+            <div class="stat-caption">Department of<br>Defense (DoD)<br><strong>Annual Budget FY 2025</strong></div>
+          </div>
 
-          <article class="card stat" data-target="58.8" data-suffix="B">
-            <div class="stat-top">
-              <span class="stat-currency">$</span><span class="stat-value">0</span><span class="stat-suffix">B</span>
-            </div>
-            <div class="stat-label">Department of<br/>State<br/>Annual Budget FY<br/>2025</div>
-          </article>
+          <div class="stat-card" data-replay="true">
+            <div class="stat-value" data-target="58.8" data-suffix="B">0</div>
+            <div class="stat-caption">Department of<br>State<br><strong>Annual Budget FY 2025</strong></div>
+          </div>
 
-          <article class="card stat" data-target="64.81" data-suffix="B">
-            <div class="stat-top">
-              <span class="stat-currency">$</span><span class="stat-value">0</span><span class="stat-suffix">B</span>
-            </div>
-            <div class="stat-label">Department of<br/>Homeland Security<br/>(DHS)<br/>Annual Budget FY<br/>2025</div>
-          </article>
+          <div class="stat-card" data-replay="true">
+            <div class="stat-value" data-target="64.81" data-suffix="B">0</div>
+            <div class="stat-caption">Department of<br>Homeland Security (DHS)<br><strong>Annual Budget FY 2025</strong></div>
+          </div>
 
-          <article class="card stat" data-target="180" data-suffix="B">
-            <div class="stat-top">
-              <span class="stat-currency">$</span><span class="stat-value">0</span><span class="stat-suffix">B</span>
-            </div>
-            <div class="stat-label">Small Business<br/>Federal Spending<br/>FY 2025 (approx.)</div>
-          </article>
+          <div class="stat-card" data-replay="true">
+            <div class="stat-value" data-target="180" data-suffix="B">0</div>
+            <div class="stat-caption">Small Business<br>Federal Spending<br>FY 2025 (approx.)</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- PROCESS -->
-    <section id="process" class="section">
+    <!-- TARGET AGENCIES -->
+    <section id="agencies" class="section">
       <div class="container">
-        <h2>Our Process</h2>
-        <p class="muted">Finding Opportunities → Pursuing → Winning.</p>
+        <h2>Target Agencies</h2>
 
-        <div class="steps">
-          <article class="step">
-            <h3>1. Find Opportunities</h3>
-            <p>Targeted agency research, historical spend, contract vehicles, and early signals.</p>
-          </article>
-          <article class="step">
-            <h3>2. Pursue Smart</h3>
-            <p>Bid/No-Bid rigor, capture actions, and disciplined proposal execution.</p>
-          </article>
-          <article class="step">
-            <h3>3. Win &amp; Deliver</h3>
-            <p>Close strong, plan the hand-off, and set up reporting so delivery starts clean.</p>
-          </article>
+        <div class="seal-track" style="margin-top:14px;">
+          <!-- Row A -->
+          <div class="seal-row">
+            <img class="seal" src="images/Department/dhs.png" alt="U.S. Department of Homeland Security seal">
+            <img class="seal" src="images/Department/airforce.png" alt="U.S. Department of the Air Force seal">
+            <img class="seal" src="images/Department/state.png" alt="U.S. Department of State seal">
+            <img class="seal" src="images/Department/army.png" alt="U.S. Department of the Army seal">
+            <img class="seal" src="images/Department/navy.png" alt="U.S. Department of the Navy seal">
+            <!-- duplicate the same sequence to ensure a smooth 50% loop -->
+            <img class="seal" src="images/Department/dhs.png" alt="" aria-hidden="true">
+            <img class="seal" src="images/Department/airforce.png" alt="" aria-hidden="true">
+            <img class="seal" src="images/Department/state.png" alt="" aria-hidden="true">
+            <img class="seal" src="images/Department/army.png" alt="" aria-hidden="true">
+            <img class="seal" src="images/Department/navy.png" alt="" aria-hidden="true">
+          </div>
+
+          <!-- Row B (phase-shifted for continuous stream) -->
+          <div class="seal-row" aria-hidden="true">
+            <img class="seal" src="images/Department/dhs.png" alt="">
+            <img class="seal" src="images/Department/airforce.png" alt="">
+            <img class="seal" src="images/Department/state.png" alt="">
+            <img class="seal" src="images/Department/army.png" alt="">
+            <img class="seal" src="images/Department/navy.png" alt="">
+            <img class="seal" src="images/Department/dhs.png" alt="">
+            <img class="seal" src="images/Department/airforce.png" alt="">
+            <img class="seal" src="images/Department/state.png" alt="">
+            <img class="seal" src="images/Department/army.png" alt="">
+            <img class="seal" src="images/Department/navy.png" alt="">
+          </div>
         </div>
       </div>
     </section>
@@ -173,19 +190,9 @@
     <section id="about" class="section">
       <div class="container">
         <h2>About</h2>
-        <p>
-          I bring 15 years of combined military and commercial operations together in engineering. Using these skills I’ve gained,
-          I now help small businesses find, pursue, and win federal contracts—turning requirements into clear, actionable work.
-        </p>
-        <p>
-          My role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting
-          proposals that are compliant and compelling. When a project needs more hands, I bring in trusted specialists to fulfill the
-          requirements put forward by the federal government.
-        </p>
-        <p>
-          If you want growth without wasted effort, we’ll be a good fit. I meet you where you are, align strategy to your strengths,
-          and push each opportunity forward with a calm, disciplined process.
-        </p>
+        <p>I bring 15 years of combined military and commercial operations experience together in engineering. Using these skills, I’ve leveraged that knowledge into helping small businesses <strong>find</strong>, <strong>pursue</strong>, and <strong>win</strong> Federal contracts.</p>
+        <p>My role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling. When a project needs more hands, I bring in trusted specialists to fulfill the requirements put forward by the federal government.</p>
+        <p>If you want growth without wasted effort, we’ll be a good fit. I meet you where you are, align strategy to your strengths, and push each opportunity forward with a calm, disciplined process.</p>
       </div>
     </section>
 
@@ -195,8 +202,7 @@
         <h2>Quick Enquiry</h2>
         <p class="muted">Have a question? Send us a note and we’ll reply within 1–3 business days.</p>
 
-        <form id="enquiryForm" class="enquiry-form" action="https://formspree.io/f/xbldkjed" method="POST">
-          <input class="hp-field" type="text" name="website" autocomplete="off" />
+        <form class="enquiry-form" id="enquiryForm" novalidate>
           <div class="grid">
             <label class="field">
               <span>Your name</span>
@@ -207,28 +213,41 @@
               <input name="email" type="email" placeholder="you@company.com" required />
             </label>
           </div>
-          <label class="field">
+
+          <input class="hp-field" name="hp" autocomplete="off" tabindex="-1" />
+
+          <label class="field" style="margin-top:8px;">
             <span>Your message</span>
             <textarea name="message" rows="6" placeholder="Tell us about your goals and challenges…" required></textarea>
           </label>
+
           <div class="enquiry-actions">
-            <button type="submit" class="btn btn-primary">Send Enquiry</button>
-            <span class="enquiry-status" id="enquiryStatus" aria-live="polite"></span>
+            <button class="btn btn-primary" type="submit">Send Enquiry</button>
+            <span id="enquiryStatus" class="enquiry-status" role="status" aria-live="polite"></span>
           </div>
         </form>
 
         <div class="contact-card">
           <ul class="contact-list">
-            <li><strong>Email:</strong> <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></li>
             <li><strong>Phone:</strong> <a href="tel:+17075146122">+1 (707) 514-6122</a></li>
+            <li><strong>Email:</strong> <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></li>
           </ul>
+          <hr class="card-divider" />
+          <div class="company-block">
+            <h4>Bonny Contracting Solutions Pty Ltd</h4>
+            <div class="muted">U.S. &amp; Australia time zones • Remote first</div>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- FOOTER -->
     <footer class="site-footer">
-      <div class="container footer-inner">© <span id="year"></span> BonnyCsolutions. All rights reserved.</div>
+      <div class="container footer-inner">
+        © <span id="year"></span> Bonny Contracting Solutions Pty Ltd
+      </div>
     </footer>
+
   </div>
 
   <script src="script.js"></script>
