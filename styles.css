@@ -1,10 +1,10 @@
 /* =========================================
-   BonnyCsolutions — styles.css (v28)
+   BonnyCsolutions — styles.css (v29)
    - Theme, base, layout
    - Sticky nav + CTA stays dark
-   - Hero with full-bleed video loop + glass panel
-   - Services (2 cards, sensible size)
-   - Annual Spend stats (independent hovers + extra spacing)
+   - Hero with full-bleed video loop + glass panel (2-layer swap)
+   - Services (2 cards)
+   - Annual Spend stats (independent hovers)
    - Target Agencies marquee (peel-in, continuous loop)
    - Quick Enquiry (watermark-safe)
    - Uniform section dividers
@@ -28,8 +28,6 @@
   --radius:16px;
   --shadow:0 10px 30px rgba(0,0,0,.35);
   --inset:clamp(24px,4vw,56px);
-
-  --enquiry-watermark: url("images/logo.png");
 }
 
 /* ---------- Base ---------- */
@@ -43,7 +41,7 @@ body{
   color:var(--text);
   font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   line-height:1.6;
-  font-size: 15.5px; /* + slightly larger default */
+  font-size: 15.5px;
 }
 
 /* Vertical white page borders */
@@ -142,17 +140,24 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   display:flex; align-items:center;
   position:relative; overflow:hidden;
 }
-.hero-bg{ display:none; } /* we use video, no background image */
+.hero-video{ position:absolute; inset:0; z-index:0; overflow:hidden; }
 
-.hero-video{
-  position:absolute; inset:0; z-index:0; overflow:hidden;
-}
-#heroVideo{
+/* Both video layers (for #videoA and #videoB) */
+.hero-video .hero-video-el{
   position:absolute; inset:0;
   width:100%; height:100%;
   object-fit:cover; object-position:center;
   transform:translateZ(0);
+  opacity:0; /* hidden by default */
 }
+
+/* The visible (front) layer */
+.hero-video .hero-video-el.is-front{
+  opacity:1;
+  transition:opacity 60ms linear; /* matches JS swap timing */
+}
+
+/* Overlay gradient */
 .hero::after{
   content:""; position:absolute; inset:0;
   background:
@@ -161,6 +166,7 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   z-index:0;
 }
 .hero .container{ position:relative; z-index:1; }
+
 .hero-panel{
   max-width:940px;
   background:rgba(255,255,255,.09);
@@ -180,7 +186,7 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   .hero h1 { line-height: 1.12; }
 }
 
-/* ---------- Services (two sensible cards) ---------- */
+/* ---------- Services (two cards) ---------- */
 .services-grid{
   display:grid; gap:22px;
   grid-template-columns: 1fr;
@@ -245,6 +251,7 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   text-align:center;
   will-change: transform, border-color, background;
   transition: transform .18s ease, border-color .2s ease, background .2s ease;
+  transform: translateZ(0);
 }
 .stat-card:hover{
   transform: translateY(-3px);
@@ -255,7 +262,7 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   font-weight:800;
   font-size: clamp(32px, 4.2vw, 44px);
   letter-spacing:.5px;
-  margin-bottom: 12px; /* more breathing room above caption */
+  margin-bottom: 12px;
 }
 .stat-caption{
   color:#dbe6f4;
@@ -297,13 +304,16 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
   100% { transform: translateX(-50%); }
 }
 
+/* Pause marquee on hover (UX nicety) */
+.seal-track:hover .seal-row { animation-play-state: paused; }
+
 /* ---------- Quick Enquiry (no watermark artifacts) ---------- */
 #enquiry{ position:relative; overflow:hidden; z-index:1; }
-#enquiry::before{ content:none; } /* remove old watermark */
+#enquiry::before{ content:none; }
 #enquiry .container{ position:relative; z-index:1; }
 
 .enquiry-form{ margin-top:16px; }
-.enquiry-form .hp-field{ display:none; }
+.enquiry-form .hp-field{ display:none; } /* honeypot off the UI */
 .enquiry-form .grid{ display:grid; gap:14px; grid-template-columns:1fr; }
 @media (min-width:780px){ .enquiry-form .grid{ grid-template-columns:1fr 1fr; } }
 .field{ display:flex; flex-direction:column; gap:8px; }
@@ -357,7 +367,7 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
 
 /* ---------- Footer (tight) ---------- */
 .site-footer{
-  margin-top:auto; /* push footer to the bottom when content is short */
+  margin-top:auto;
   border-top: 2px solid rgba(255,255,255,.95);
   background: rgba(11,18,32,.85);
 }
@@ -379,19 +389,11 @@ h3{ font-size: clamp(18px, 2.2vw, 22px); }
 
 /* ---------- Print ---------- */
 @media print {
-  body {
-    background: #ffffff !important;
-  }
-  .page, .section::before, .hero::after, #enquiry::before {
-    border: none !important;
-    background: none !important;
-    box-shadow: none !important;
-  }
+  body { background: #ffffff !important; }
+  .page, .section::before, .hero::after { border: none !important; background: none !important; box-shadow: none !important; }
   .btn, .card, .step, .contact-card, .hero-panel, .service-card, .stat-card {
-    background: #fff !important;
-    color: #000 !important;
-    border: 1px solid #ccc !important;
-    box-shadow: none !important;
+    background: #fff !important; color: #000 !important; border: 1px solid #ccc !important; box-shadow: none !important;
   }
-  .seal-track, .seal-row, .seal { animation: none !important; }
+  .seal-track, .seal-row, .seal { animation: none !important; filter:none !important; }
+  h1, h2, h3, .process-line, .step h3 { color: #000 !important; }
 }

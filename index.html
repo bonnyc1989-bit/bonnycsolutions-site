@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bonny Contracting Solutions Pty Ltd</title>
 
+  <!-- Preload first-pass hero videos for smoother start -->
   <link rel="preload" as="video" href="images/Soldiers.mp4" type="video/mp4">
   <link rel="preload" as="video" href="images/Iwojima.mp4" type="video/mp4">
   <link rel="preload" as="video" href="images/Boots.mp4" type="video/mp4">
@@ -37,8 +38,8 @@
     <section id="hero" class="hero section">
       <div class="hero-video" aria-hidden="true">
         <!-- double-buffer videos for gapless swap -->
-        <video id="videoA" class="hero-video-el" playsinline muted preload="auto"></video>
-        <video id="videoB" class="hero-video-el" playsinline muted preload="auto" style="opacity:0;"></video>
+        <video id="videoA" class="hero-video-el" playsinline muted preload="auto" poster="images/hero-poster.jpg"></video>
+        <video id="videoB" class="hero-video-el" playsinline muted preload="auto" poster="images/hero-poster.jpg"></video>
       </div>
 
       <div class="container">
@@ -161,7 +162,7 @@
             <img class="seal" src="images/Department/state.png" alt="U.S. Department of State seal">
             <img class="seal" src="images/Department/army.png" alt="U.S. Department of the Army seal">
             <img class="seal" src="images/Department/navy.png" alt="U.S. Department of the Navy seal">
-            <!-- duplicate the same sequence to ensure a smooth 50% loop -->
+            <!-- duplicate sequence for seamless 50% loop -->
             <img class="seal" src="images/Department/dhs.png" alt="" aria-hidden="true">
             <img class="seal" src="images/Department/airforce.png" alt="" aria-hidden="true">
             <img class="seal" src="images/Department/state.png" alt="" aria-hidden="true">
@@ -214,7 +215,8 @@
             </label>
           </div>
 
-          <input class="hp-field" name="hp" autocomplete="off" tabindex="-1" />
+          <!-- Honeypot -->
+          <input class="hp-field" name="hp" autocomplete="off" tabindex="-1" aria-hidden="true" />
 
           <label class="field" style="margin-top:8px;">
             <span>Your message</span>
