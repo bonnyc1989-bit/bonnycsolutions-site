@@ -25,7 +25,7 @@
             <li><a href="#services">Services</a></li>
             <li><a href="#spend">Annual Spend 2025</a></li>
             <li><a href="#process">Process</a></li>
-            <li><a href="#agencies">Target Agencies</a></li>
+            <li><a href="#agencies">Target Departments</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#enquiry">Enquiry</a></li>
           </ul>
@@ -158,19 +158,21 @@
       </div>
     </section>
 
-    <!-- TARGET AGENCIES (only 5 seals, seamless loop) -->
+    <!-- TARGET DEPARTMENTS -->
     <section id="agencies" class="section">
       <div class="container">
-        <h2>Target Agencies</h2>
+        <h2>Target Departments</h2>
 
         <div class="seal-track" style="margin-top:14px;">
-          <!-- Single row with 5 unique seals -->
+          <!-- Single row with 7 unique seals -->
           <div class="seal-row">
             <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/army.png" alt="U.S. Department of the Army">
             <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/navy.png" alt="U.S. Department of the Navy">
             <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/airforce.png" alt="U.S. Department of the Air Force">
             <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/dhs.png" alt="U.S. Department of Homeland Security">
             <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/state.png" alt="U.S. Department of State">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/justice.png" alt="U.S. Department of Justice">
+            <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/Vet.png" alt="U.S. Department of Veterans Affairs">
           </div>
         </div>
       </div>
@@ -180,9 +182,22 @@
     <section id="about" class="section">
       <div class="container">
         <h2>About</h2>
-        <p>I bring 15 years of combined military and commercial operations experience together in engineering. Using these skills, I help small businesses <strong>find</strong>, <strong>pursue</strong>, and <strong>win</strong> Federal contracts.</p>
-        <p>My role is to bridge your capabilities with the public sector: targeting the right agencies, shaping early, and submitting proposals that are compliant and compelling.</p>
-        <p>If you want growth without wasted effort, we’ll be a good fit. I align strategy to your strengths and push each opportunity forward with a calm, disciplined process.</p>
+        <p>I deliver results where risk, regulation, and timelines are tight.<br>
+        Across 15 years in the British Army’s Royal Engineers and heavy industry—offshore rigs, rail rolling stock, mining, and advanced manufacturing—I learned to plan precisely, execute safely, and keep complex systems running under pressure. That field experience now powers my work helping small businesses <strong>find</strong>, <strong>pursue</strong>, and <strong>win</strong> U.S. Federal contracts.</p>
+
+        <p>In uniform, I led combat engineering tasks—bridging, demolitions/IED clearance, mobility support—where discipline, safety, and logistics decide outcomes. In industry, I commissioned rolling stock, maintained heavy plant and offshore equipment, and supervised multi‑shift crews on major capital programs. The common thread: complex requirements, unforgiving schedules, and compliance that cannot be an afterthought.</p>
+
+        <p>I translate that mindset into federal business development: targeting the right departments, shaping early with credible technical conversations, and building proposals that are compliant, defensible, and easy to evaluate. I don’t chase noise; I build a pipeline you can win and a plan you can deliver. My focus includes the Departments of <strong>Defense</strong>, <strong>State</strong>, <strong>Homeland Security</strong>, <strong>Justice</strong>, and <strong>Veterans Affairs</strong>.</p>
+
+        <h3>How I work</h3>
+        <ul>
+          <li>Clear target list and outreach rhythm aligned to your strengths.</li>
+          <li>Bid/No‑Bid discipline with structured capture actions and review gates.</li>
+          <li>Proposals that are compliant on day one—traceable, lean, and story‑driven.</li>
+          <li>Delivery credibility baked in: staffing, risk, schedule, and QA that withstand scrutiny.</li>
+        </ul>
+
+        <p>If you want growth without wasted effort, I bring calm, structure, and momentum to every opportunity.</p>
       </div>
     </section>
 
@@ -192,41 +207,53 @@
         <h2>Quick Enquiry</h2>
         <p class="muted">Have a question? Send us a note and we’ll reply within 1–3 business days.</p>
 
-        <form class="enquiry-form" id="enquiryForm" novalidate>
-          <div class="grid">
-            <label class="field">
-              <span>Your name</span>
-              <input name="name" type="text" placeholder="Your name" required />
-            </label>
-            <label class="field">
-              <span>Email</span>
-              <input name="email" type="email" placeholder="you@company.com" required />
-            </label>
+        <!-- Split layout: form (left) | divider | details (right) -->
+        <div class="enquiry-grid">
+          <div class="enquiry-col">
+            <form class="enquiry-form" id="enquiryForm" novalidate>
+              <div class="grid">
+                <label class="field">
+                  <span>Your name</span>
+                  <input name="name" type="text" placeholder="Your name" required />
+                </label>
+                <label class="field">
+                  <span>Email</span>
+                  <input name="email" type="email" placeholder="you@company.com" required />
+                </label>
+              </div>
+
+              <!-- Honeypot -->
+              <input class="hp-field" name="hp" autocomplete="off" tabindex="-1" aria-hidden="true" />
+
+              <label class="field" style="margin-top:8px;">
+                <span>Your message</span>
+                <textarea name="message" rows="6" placeholder="Tell us about your goals and challenges…" required></textarea>
+              </label>
+
+              <div class="enquiry-actions">
+                <button class="btn btn-primary" type="submit">Send Enquiry</button>
+                <span id="enquiryStatus" class="enquiry-status" role="status" aria-live="polite"></span>
+              </div>
+            </form>
           </div>
 
-          <!-- Honeypot -->
-          <input class="hp-field" name="hp" autocomplete="off" tabindex="-1" aria-hidden="true" />
+          <!-- Divider (vert on desktop, horiz on mobile) -->
+          <div class="enquiry-divider" aria-hidden="true"></div>
 
-          <label class="field" style="margin-top:8px;">
-            <span>Your message</span>
-            <textarea name="message" rows="6" placeholder="Tell us about your goals and challenges…" required></textarea>
-          </label>
-
-          <div class="enquiry-actions">
-            <button class="btn btn-primary" type="submit">Send Enquiry</button>
-            <span id="enquiryStatus" class="enquiry-status" role="status" aria-live="polite"></span>
-          </div>
-        </form>
-
-        <div class="contact-card">
-          <ul class="contact-list">
-            <li><strong>Phone:</strong> <a href="tel:+17075146122">+1 (707) 514-6122</a></li>
-            <li><strong>Email:</strong> <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></li>
-          </ul>
-          <hr class="card-divider" />
-          <div class="company-block">
-            <h4>Bonny Contracting Solutions Pty Ltd</h4>
-            <div class="muted">U.S. &amp; Australia time zones • Remote first</div>
+          <div class="enquiry-col">
+            <div class="contact-card">
+              <ul class="contact-list">
+                <li><strong>Phone (U.S.):</strong> <a href="tel:+17075146122">+1 (707) 514‑6122</a></li>
+                <li><strong>Phone (Australia):</strong> <a href="tel:+61448793660">+61 448 793 660</a></li>
+                <li><strong>Email:</strong> <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></li>
+                <li><strong>ABN:</strong> 86 768 265 615</li>
+              </ul>
+              <hr class="card-divider" />
+              <div class="company-block">
+                <h4>Bonny Contracting Solutions Pty Ltd</h4>
+                <div class="muted">U.S. &amp; Australia time zones • Remote first</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

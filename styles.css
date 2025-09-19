@@ -89,6 +89,9 @@ h1 { font-size: clamp(36px, 4.8vw, 56px); }
 h2 { font-size: clamp(22px, 2.8vw, 30px); }
 h3 { font-size: clamp(18px, 2.2vw, 22px); }
 
+/* Center the Target Departments section heading only */
+#agencies .container > h2 { text-align: center; }
+
 /* ---------- Header / Nav ---------- */
 .nav {
   position: sticky; top: 0; z-index: 60;
@@ -278,7 +281,7 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   min-height: var(--stats-caption-h);
 }
 
-/* ---------- Target Agencies (EXACT 4-seal window) ---------- */
+/* ---------- Target Departments (responsive full-width track) ---------- */
 .seal-track {
   position: relative;
   overflow: hidden;
@@ -286,13 +289,10 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   border-radius: 12px;
   background: rgba(255, 255, 255, .06);
 
-  /* Window shows exactly 4 full seals with spacing */
-  width: calc((4 * var(--seal-size)) + (3 * var(--seal-gap)));
+  /* Full container width */
+  width: 100%;
   height: calc(var(--seal-size) + 20px);
   margin: 0 auto;
-
-  /* No padding that would enlarge the visible area */
-  padding: 0;
 
   /* Cosmetic edge fade that does NOT enlarge the window */
   -webkit-mask-image: linear-gradient(90deg,
@@ -314,7 +314,7 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   position: absolute;
   left: 0;
   top: 50%;
-  animation: seal-loop calc(var(--seal-speed) / 1.25) linear infinite; /* Adjusted speed for 5 seals */
+  animation: seal-loop calc(var(--seal-speed) / 1.25) linear infinite; /* distance = 1 seal each loop */
   will-change: transform;
 }
 
@@ -334,11 +334,39 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
 /* Pause marquee on hover */
 .seal-track:hover .seal-row { animation-play-state: paused; }
 
-/* ---------- Enquiry ---------- */
+/* ---------- Enquiry (split layout) ---------- */
 #enquiry { position: relative; overflow: hidden; z-index: 1; }
 #enquiry .container { position: relative; z-index: 1; }
 
-.enquiry-form { margin-top: 16px; }
+.enquiry-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  align-items: start;
+}
+.enquiry-col { min-width: 0; }
+
+.enquiry-divider {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .85), transparent);
+  border-radius: 2px;
+}
+
+@media (min-width: 980px) {
+  .enquiry-grid {
+    grid-template-columns: 1fr 2px 1fr;  /* form | divider | details */
+    gap: 26px;
+  }
+  .enquiry-divider {
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, .85), transparent);
+    justify-self: center;
+  }
+}
+
 .enquiry-form .hp-field { display: none; }
 .enquiry-form .grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
 @media (min-width: 780px) { .enquiry-form .grid { grid-template-columns: 1fr 1fr; } }
@@ -371,6 +399,24 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
 .field input.is-success, .field textarea.is-success { border-color: #34d399 !important; }
 .enquiry-status.success { color: #86efac; }
 .enquiry-status.error { color: #fecaca; }
+
+/* Contact card (right column reuses existing styles) */
+.contact-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, .04) 100%);
+  border: 1px solid rgba(255, 255, 255, .5);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.contact-list {
+  list-style: none; margin: 0; padding: 0;
+}
+.contact-list li { margin: 8px 0; }
+.card-divider {
+  margin: 14px 0; border: none; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .85), transparent);
+}
+.company-block h4 { margin: 0 0 6px; }
 
 /* ---------- Footer ---------- */
 .site-footer {
