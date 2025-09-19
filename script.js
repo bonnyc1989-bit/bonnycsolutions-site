@@ -1,8 +1,8 @@
 /* =========================================================
    BonnyCsolutions — script.js (final)
-   - Gapless 4-video hero loop (requestVideoFrameCallback swap)
-   - Stats: hover-only count-up; default = final; no reset; zero-jitter
-   - Seamless departments marquee (duplicate-and-measure)
+   - Gapless 4-video hero loop (rVFC swap) + Save-Data
+   - Stats: hover/focus count-up; no reset; zero-jitter
+   - Departments marquee (duplicate-and-measure)
    - Enquiry form demo
    ========================================================= */
 
@@ -25,6 +25,10 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const a = document.getElementById('videoA');
   const b = document.getElementById('videoB');
   if (!a || !b) return;
+
+  // Respect Data Saver – skip loading videos entirely
+  const saveData = navigator.connection && navigator.connection.saveData;
+  if (saveData) return;
 
   [a, b].forEach(v => {
     v.muted = true;
@@ -109,10 +113,11 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       }, 180); // keep in sync with CSS transition
     };
 
+    // Use 'canplay' for better cross‑browser reliability
     if (back.readyState >= 3) doSwap();
     else {
-      const handler = () => { back.removeEventListener('canplaythrough', handler); doSwap(); };
-      back.addEventListener('canplaythrough', handler, { once: true });
+      const handler = () => { back.removeEventListener('canplay', handler); doSwap(); };
+      back.addEventListener('canplay', handler, { once: true });
       primeDecode(back);
     }
   };
@@ -143,7 +148,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   applyMotionPref();
 })();
 
-/* ---------- Annual Spend: hover-only, no-jitter count-up ---------- */
+/* ---------- Annual Spend: hover/focus, no-jitter count-up ---------- */
 (() => {
   const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const easeOut = t => 1 - Math.pow(1 - t, 3);
@@ -167,14 +172,12 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   };
 
   const COOLDOWN = 1200;
+  const animState = new WeakMap();
 
-  const animState = new WeakMap(); // stat-value -> { animating, rafId, lastRun, target, suffix }
-
-  // Build ghost + lock dimensions; set final values by default
   const captionHeights = [];
   const lineHeights = [];
 
-  $$('.stat-card').forEach(card => {
+  $$('.stat-card').forEach((card, i) => {
     const v = $('.stat-value', card);
     const g = $('.stat-ghost', card);
     const cap = $('.stat-caption', card);
@@ -184,10 +187,15 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     const suffix = v.dataset.suffix || '';
     const finalText = finalFormat(target, suffix);
 
+    // A11y: link value to caption
+    if (cap) {
+      if (!cap.id) cap.id = `statcap-${i+1}`;
+      v.setAttribute('aria-labelledby', cap.id);
+    }
+
     // show final value by default
     v.textContent = finalText;
 
-    // lock width/height to ghost metrics once
     requestAnimationFrame(() => {
       g.textContent = finalText;
       const w = Math.ceil(g.offsetWidth);
@@ -204,13 +212,18 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
     animState.set(v, { animating: false, rafId: 0, lastRun: 0, target, suffix });
 
-    // Hover-only: replay 0 -> final, then stay final
     const playHover = () => startAnim(v);
+
+    // Pointer, keyboard, and touch activation
     card.addEventListener('mouseenter', playHover);
     card.addEventListener('click', playHover);
+    card.tabIndex = 0;
+    card.addEventListener('focusin', playHover);
+    card.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); playHover(); }
+    });
   });
 
-  // unify caption & number-line heights across all cards
   requestAnimationFrame(() => {
     const maxCap = captionHeights.length ? Math.max(...captionHeights) : 0;
     const maxLine = lineHeights.length ? Math.max(...lineHeights) : 0;
@@ -233,7 +246,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     const start = now;
     const dur = 900;
 
-    // start from visible 0
     v.textContent = suffix ? (suffix === 'T' ? '$0.0T' : '$0B') : '$0';
 
     const step = (t) => {
@@ -267,32 +279,27 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
   const computeAndApply = () => {
     const styles = getComputedStyle(document.documentElement);
-    const size = parseFloat(styles.getPropertyValue('--seal-size')) || 128;
+    anSize = parseFloat(styles.getPropertyValue('--seal-size')) || 128;
     const gap  = parseFloat(styles.getPropertyValue('--seal-gap')) || 56;
     const count = parseInt(row.dataset.originalCount || '0', 10) || (row.children.length / 2) || 1;
 
-    const width = (count * size) + (Math.max(0, count - 1) * gap);
+    const width = (count * anSize) + (Math.max(0, count - 1) * gap);
     row.style.setProperty('--scroll-width', `${width}px`);
 
-    // Trigger/refresh animation class
-    row.classList.remove('marquee');
-    // Force style recalc so animation can restart cleanly
+    row.classList.remove('marquee'); // restart animation cleanly
     // eslint-disable-next-line no-unused-expressions
     row.offsetHeight;
     row.classList.add('marquee');
   };
 
-  // Initial and responsive updates
   computeAndApply();
   window.addEventListener('resize', computeAndApply);
 
-  // Respect reduced motion
+  // Reduced motion
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
   const applyRM = () => { row.style.animationPlayState = mq.matches ? 'paused' : 'running'; };
   mq.addEventListener ? mq.addEventListener('change', applyRM) : mq.addListener(applyRM);
   applyRM();
-
-  // Hover pause handled by CSS: .seal-track:hover .seal-row { animation-play-state: paused; }
 })();
 
 /* ---------- Enquiry form (demo only) ---------- */
@@ -327,3 +334,4 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     }, 600);
   });
 })();
+--END SCRIPT--
