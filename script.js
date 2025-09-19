@@ -2,7 +2,7 @@
    BonnyCsolutions — script.js (final)
    - Gapless 4-video hero loop (requestVideoFrameCallback swap)
    - Stats: hover-only count-up; default = final; no reset; zero-jitter
-   - Marquee respects reduced motion
+   - Seamless departments marquee (duplicate-and-measure)
    - Enquiry form demo
    ========================================================= */
 
@@ -247,15 +247,52 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   }
 })();
 
-/* ---------- Marquee: respect reduced motion ---------- */
+/* ---------- Departments marquee: seamless, responsive, reduced-motion aware ---------- */
 (() => {
-  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const rows = $$('.seal-row');
-  const apply = () => { rows.forEach(r => { r.style.animationPlayState = mq.matches ? 'paused' : 'running'; }); };
-  if (rows.length) {
-    mq.addEventListener ? mq.addEventListener('change', apply) : mq.addListener(apply);
-    apply();
+  const track = $('.seal-track');
+  const row = track ? $('.seal-row', track) : null;
+  if (!track || !row) return;
+
+  // Duplicate the sequence once for seamless looping
+  if (!row.dataset.cloned) {
+    const originals = Array.from(row.children);
+    originals.forEach(node => {
+      const clone = node.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      row.appendChild(clone);
+    });
+    row.dataset.cloned = 'true';
+    row.dataset.originalCount = String(originals.length);
   }
+
+  const computeAndApply = () => {
+    const styles = getComputedStyle(document.documentElement);
+    const size = parseFloat(styles.getPropertyValue('--seal-size')) || 128;
+    const gap  = parseFloat(styles.getPropertyValue('--seal-gap')) || 56;
+    const count = parseInt(row.dataset.originalCount || '0', 10) || (row.children.length / 2) || 1;
+
+    const width = (count * size) + (Math.max(0, count - 1) * gap);
+    row.style.setProperty('--scroll-width', `${width}px`);
+
+    // Trigger/refresh animation class
+    row.classList.remove('marquee');
+    // Force style recalc so animation can restart cleanly
+    // eslint-disable-next-line no-unused-expressions
+    row.offsetHeight;
+    row.classList.add('marquee');
+  };
+
+  // Initial and responsive updates
+  computeAndApply();
+  window.addEventListener('resize', computeAndApply);
+
+  // Respect reduced motion
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const applyRM = () => { row.style.animationPlayState = mq.matches ? 'paused' : 'running'; };
+  mq.addEventListener ? mq.addEventListener('change', applyRM) : mq.addListener(applyRM);
+  applyRM();
+
+  // Hover pause handled by CSS: .seal-track:hover .seal-row { animation-play-state: paused; }
 })();
 
 /* ---------- Enquiry form (demo only) ---------- */

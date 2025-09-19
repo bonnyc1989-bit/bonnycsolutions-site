@@ -23,11 +23,15 @@
   --stats-caption-h: auto;
   --stats-line-h: auto;
 
-  /* Agencies marquee sizing (ONLY these 3 tune the look) */
-  --seal-size: 128px;     /* circle diameter */
-  --seal-gap: 56px;       /* spacing between seals */
-  --edge-fade: 24px;      /* cosmetic fade at the edges (doesn't expand window) */
-  --seal-speed: 28s;      /* loop duration */
+  /* Page width guards */
+  --page-max: 1440px;  /* cap width on ultra‑wide screens */
+  --page-min: 360px;   /* protect readability on very narrow screens */
+
+  /* Departments marquee sizing */
+  --seal-size: 128px;
+  --seal-gap: 56px;
+  --edge-fade: 24px;
+  --seal-speed: 28s;
 }
 
 /* ---------- Base ---------- */
@@ -44,8 +48,14 @@ body {
   font-size: 15.5px;
 }
 
-/* Vertical white page borders */
+/* Vertical white page borders + fixed center width */
 .page {
+  width: 100%;
+  max-width: var(--page-max);
+  min-width: var(--page-min);
+  margin-left: auto;
+  margin-right: auto;
+
   min-height: 100dvh;
   border-left: 2px solid rgba(255, 255, 255, .92);
   border-right: 2px solid rgba(255, 255, 255, .92);
@@ -233,7 +243,6 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   box-shadow: var(--shadow);
   text-align: center;
 
-  /* Isolate layout so internal changes never push siblings */
   contain: content;
   will-change: transform, border-color, background;
   transition: transform .18s ease, border-color .2s ease, background .2s ease;
@@ -245,7 +254,7 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   background: rgba(255, 255, 255, .10);
 }
 
-/* Number line: tabular numerals; width/height fixed via JS */
+/* Number line */
 .stat-value,
 .stat-ghost {
   font-weight: 800;
@@ -268,10 +277,7 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   position: absolute;
   inset: auto auto 0 auto;
 }
-.stat-live {
-  display: inline-block;           /* JS sets width/height */
-  white-space: nowrap;
-}
+.stat-live { display: inline-block; white-space: nowrap; }
 
 /* Caption */
 .stat-caption {
@@ -281,7 +287,7 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   min-height: var(--stats-caption-h);
 }
 
-/* ---------- Target Departments (responsive full-width track) ---------- */
+/* ---------- Target Departments (full-width track, seamless loop) ---------- */
 .seal-track {
   position: relative;
   overflow: hidden;
@@ -289,12 +295,10 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   border-radius: 12px;
   background: rgba(255, 255, 255, .06);
 
-  /* Full container width */
   width: 100%;
   height: calc(var(--seal-size) + 20px);
   margin: 0 auto;
 
-  /* Cosmetic edge fade that does NOT enlarge the window */
   -webkit-mask-image: linear-gradient(90deg,
     transparent 0,
     #000 var(--edge-fade),
@@ -314,8 +318,12 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   position: absolute;
   left: 0;
   top: 50%;
-  animation: seal-loop calc(var(--seal-speed) / 1.25) linear infinite; /* distance = 1 seal each loop */
+  transform: translateY(-50%);
   will-change: transform;
+}
+
+.seal-row.marquee {
+  animation: seal-marquee var(--seal-speed) linear infinite;
 }
 
 .seal {
@@ -326,9 +334,9 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   flex: 0 0 auto;
 }
 
-@keyframes seal-loop {
+@keyframes seal-marquee {
   0%   { transform: translateY(-50%) translateX(0); }
-  100% { transform: translateY(-50%) translateX(calc(-1 * (var(--seal-size) + var(--seal-gap)))); }
+  100% { transform: translateY(-50%) translateX(calc(-1 * var(--scroll-width))); }
 }
 
 /* Pause marquee on hover */
@@ -400,7 +408,7 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
 .enquiry-status.success { color: #86efac; }
 .enquiry-status.error { color: #fecaca; }
 
-/* Contact card (right column reuses existing styles) */
+/* Contact card (right column) */
 .contact-card {
   background: linear-gradient(180deg, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, .04) 100%);
   border: 1px solid rgba(255, 255, 255, .5);
@@ -408,9 +416,7 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   padding: 16px;
   box-shadow: var(--shadow);
 }
-.contact-list {
-  list-style: none; margin: 0; padding: 0;
-}
+.contact-list { list-style: none; margin: 0; padding: 0; }
 .contact-list li { margin: 8px 0; }
 .card-divider {
   margin: 14px 0; border: none; height: 2px;
@@ -440,7 +446,7 @@ h3 { font-size: clamp(18px, 2.2vw, 22px); }
   }
 }
 
-/* ---------- Responsive tweak for agencies ---------- */
+/* ---------- Responsive tweak for departments ---------- */
 @media (max-width: 640px) {
   :root {
     --seal-size: 96px;
