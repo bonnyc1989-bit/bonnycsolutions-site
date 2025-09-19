@@ -1,8 +1,8 @@
 /* =========================================================
-   BonnyCsolutions — script.js (final)
-   - Gapless 4-video hero loop (rVFC swap) + Save-Data
-   - Stats: on-view auto + hover/focus; RM-friendly
-   - Departments marquee (duplicate-and-measure)
+   BonnyCsolutions — script.js (hardened)
+   - Gapless 4-video hero loop; no early bail on Save-Data
+   - Stats: on-view auto + hover/focus; RM-friendly; IO fallback
+   - Departments marquee: fixed, measured, RM-aware
    - Enquiry form demo
    ========================================================= */
 
@@ -26,15 +26,13 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const b = document.getElementById('videoB');
   if (!a || !b) return;
 
-  // Respect Data Saver – skip loading videos entirely
+  // Do NOT bail out on Save-Data; just lighten preload
   const saveData = navigator.connection && navigator.connection.saveData;
-  if (saveData) return;
-
   [a, b].forEach(v => {
     v.muted = true;
     v.playsInline = true;
     v.loop = false;
-    v.preload = 'auto';
+    v.preload = saveData ? 'metadata' : 'auto';
   });
 
   let cur = 0;          // index of currently visible video in playlist
@@ -50,7 +48,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   };
   const nextIndex = () => (cur + 1) % playlist.length;
 
-  // prepare first two
+  // Ensure first two are correct (HTML provides a fallback already)
   setSrc(front, playlist[cur]);
   setSrc(back, playlist[nextIndex()]);
 
@@ -124,7 +122,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
   watchFront();
 
-  // Autoplay nudge (iOS/Safari)
+  // Autoplay nudge (iOS/Safari) — also covers Save-Data users who click
   const tryStart = () => {
     a.play().catch(()=>{});
     b.play().then(() => b.pause()).catch(()=>{});
@@ -132,7 +130,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   document.addEventListener('touchstart', tryStart, { once: true, passive: true });
   document.addEventListener('click', tryStart, { once: true });
 
-  // Reduced motion: freeze
+  // Reduced motion: freeze on first frame
   const mq = matchMedia('(prefers-reduced-motion: reduce)');
   const applyMotionPref = () => {
     const vids = [a, b];
@@ -172,7 +170,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   };
 
   const COOLDOWN = 1200;
-  const animState = new WeakMap(); // v -> { animating, rafId, lastRun, target, suffix, playedAuto? }
+  const animState = new WeakMap(); // v -> { animating, rafId, lastRun, target, suffix }
 
   const captionHeights = [];
   const lineHeights = [];
@@ -182,7 +180,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     if (!st) return;
     const now = performance.now();
 
-    // If we should respect RM (auto-play), skip animation.
+    // If we're auto-playing and RM is on, show final but don't animate.
     if (respectRM && mqReduce.matches) { v.textContent = v.dataset.final; return; }
 
     if (st.animating || (now - st.lastRun) < COOLDOWN) return;
@@ -194,7 +192,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     const start = now;
     const dur = 900;
 
-    // start from visible 0
     v.textContent = suffix ? (suffix === 'T' ? '$0.0T' : '$0B') : '$0';
 
     const step = (t) => {
@@ -240,7 +237,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       v.dataset.suffix = suffix;
     });
 
-    animState.set(v, { animating: false, rafId: 0, lastRun: 0, target, suffix, playedAuto: false });
+    animState.set(v, { animating: false, rafId: 0, lastRun: 0, target, suffix });
 
     const playHover = () => startAnim(v, /* respectRM */ false);
 
@@ -262,16 +259,23 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     document.documentElement.style.setProperty('--stats-line-h',    maxLine ? `${maxLine}px` : 'auto');
   });
 
-  // Auto-play once when stats come into view; respect Reduced Motion (skip auto)
+  // Auto-play once when stats come into view; respect RM.
   const stats = document.querySelector('.stats');
   if (stats) {
-    const io = new IntersectionObserver((entries) => {
-      if (entries.some(e => e.isIntersecting)) {
-        $$('.stat-card .stat-value', stats).forEach(v => startAnim(v, /* respectRM */ true));
-        io.disconnect();
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some(e => e.isIntersecting)) {
+          $$('.stat-card .stat-value', stats).forEach(v => startAnim(v, /* respectRM */ true));
+          io.disconnect();
+        }
+      }, { threshold: 0.35 });
+      io.observe(stats);
+    } else {
+      // Fallback: auto-play on load if RM is off
+      if (!mqReduce.matches) {
+        $$('.stat-card .stat-value', stats).forEach(v => startAnim(v, /* respectRM */ false));
       }
-    }, { threshold: 0.35 });
-    io.observe(stats);
+    }
   }
 })();
 
@@ -294,15 +298,21 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   }
 
   const computeAndApply = () => {
+    // Measure real width of the original set for accuracy
+    const originalsCount = parseInt(row.dataset.originalCount || '0', 10) || (row.children.length / 2) || 1;
+    let contentWidth = 0;
+    for (let i = 0; i < originalsCount; i++) {
+      contentWidth += row.children[i].getBoundingClientRect().width;
+    }
+    // Add gap width (flex gap isn't part of offsetWidth)
     const styles = getComputedStyle(document.documentElement);
-    const size = parseFloat(styles.getPropertyValue('--seal-size')) || 128;
     const gap  = parseFloat(styles.getPropertyValue('--seal-gap')) || 56;
-    const count = parseInt(row.dataset.originalCount || '0', 10) || (row.children.length / 2) || 1;
+    contentWidth += Math.max(0, originalsCount - 1) * gap;
 
-    const width = (count * size) + (Math.max(0, count - 1) * gap);
-    row.style.setProperty('--scroll-width', `${width}px`);
+    row.style.setProperty('--scroll-width', `${Math.ceil(contentWidth)}px`);
 
-    row.classList.remove('marquee'); // restart animation cleanly
+    // Restart animation cleanly
+    row.classList.remove('marquee');
     // eslint-disable-next-line no-unused-expressions
     row.offsetHeight;
     row.classList.add('marquee');
@@ -317,7 +327,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   mq.addEventListener ? mq.addEventListener('change', applyRM) : mq.addListener(applyRM);
   applyRM();
 
-  // Hover pause handled by CSS: .seal-track:hover .seal-row { animation-play-state: paused; }
+  // Hover pause handled by CSS (.seal-track:hover .seal-row)
 })();
 
 /* ---------- Enquiry form (demo only) ---------- */

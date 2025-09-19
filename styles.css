@@ -1,5 +1,5 @@
 /* =========================================
-   BonnyCsolutions — styles.css (final)
+   BonnyCsolutions — styles.css (hardened)
    ========================================= */
 
    :root{
@@ -120,11 +120,23 @@
   .stats-note{margin-top:12px;text-align:center;font-size:13.5px}
   
   /* Target Departments */
-  .seal-track{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.45);border-radius:12px;background:rgba(255,255,255,.06);width:100%;height:calc(var(--seal-size) + 20px);margin:0 auto;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),transparent 100%)}
-  .seal-row{display:flex;align-items:center;gap:var(--seal-gap);position:absolute;left:0;top:50%;transform:translateY(-50%);will-change:transform}
-  .seal-row.marquee{animation:seal-marquee var(--seal-speed) linear infinite}
+  .seal-track{
+    position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.45);border-radius:12px;background:rgba(255,255,255,.06);
+    width:100%;height:calc(var(--seal-size) + 20px);margin:0 auto;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0,#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),transparent 100%)
+  }
+  .seal-row{
+    display:flex;align-items:center;gap:var(--seal-gap);position:absolute;left:0;top:50%;transform:translateY(-50%);will-change:transform;
+    /* Provide a default scroll width so it still moves even if JS fails */
+    --scroll-width: 2400px;
+    animation: seal-marquee var(--seal-speed) linear infinite;
+  }
+  @keyframes seal-marquee{
+    0%{transform:translateY(-50%) translateX(0)}
+    100%{transform:translateY(-50%) translateX(calc(-1 * var(--scroll-width, 2400px)))}
+  }
   .seal{width:var(--seal-size);height:var(--seal-size);object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));flex:0 0 auto}
-  @keyframes seal-marquee{0%{transform:translateY(-50%) translateX(0)}100%{transform:translateY(-50%) translateX(calc(-1 * var(--scroll-width)))}}
   .seal-track:hover .seal-row{animation-play-state:paused}
   
   /* Enquiry */
@@ -161,7 +173,7 @@
   .site-footer{margin-top:auto;border-top:2px solid rgba(255,255,255,.95);background:rgba(11,18,32,.85)}
   .footer-inner{padding:16px 0;text-align:center;color:#dbe6f4;font-size:14px}
   
-  /* Reduced motion: do NOT kill animations globally; just remove transitions + smooth scroll */
+  /* Reduced motion: do NOT kill animations globally */
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{transition:none!important;scroll-behavior:auto!important}
   }
