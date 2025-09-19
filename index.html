@@ -68,7 +68,7 @@
       <!-- HERO -->
       <section id="hero" class="hero section">
         <div class="hero-video" aria-hidden="true">
-          <!-- Fallback src so something shows even if JS fails -->
+          <!-- Fallback src so something shows even if JS is blocked -->
           <video id="videoA" class="hero-video-el" playsinline muted preload="auto" poster="images/hero-poster.jpg" src="images/Soldiers.mp4"></video>
           <video id="videoB" class="hero-video-el" playsinline muted preload="auto" poster="images/hero-poster.jpg" src="images/Iwojima.mp4"></video>
         </div>
@@ -282,8 +282,7 @@
 
   </div>
 
-  <!-- cache-buster + defer to avoid stale/blocked JS -->
-  <script src="script.js?v=2025-09-19a" defer></script>
+  <!-- cache-buster + defer to avoid stale JS -->
+  <script src="script.js?v=2025-09-19b" defer></script>
 </body>
 </html>
---END INDEX--
