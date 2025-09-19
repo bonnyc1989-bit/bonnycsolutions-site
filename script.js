@@ -1,7 +1,7 @@
 /* =========================================================
    BonnyCsolutions — script.js (final)
    - Gapless 4-video hero loop (rVFC swap) + Save-Data
-   - Stats: hover/focus count-up; no reset; zero-jitter
+   - Stats: on-view auto + hover/focus; RM-friendly
    - Departments marquee (duplicate-and-measure)
    - Enquiry form demo
    ========================================================= */
@@ -148,7 +148,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   applyMotionPref();
 })();
 
-/* ---------- Annual Spend: hover/focus, no-jitter count-up ---------- */
+/* ---------- Annual Spend: on-view + hover/focus; RM-friendly ---------- */
 (() => {
   const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const easeOut = t => 1 - Math.pow(1 - t, 3);
@@ -172,10 +172,40 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   };
 
   const COOLDOWN = 1200;
-  const animState = new WeakMap();
+  const animState = new WeakMap(); // v -> { animating, rafId, lastRun, target, suffix, playedAuto? }
 
   const captionHeights = [];
   const lineHeights = [];
+
+  function startAnim(v, respectRM = false) {
+    const st = animState.get(v);
+    if (!st) return;
+    const now = performance.now();
+
+    // If we should respect RM (auto-play), skip animation.
+    if (respectRM && mqReduce.matches) { v.textContent = v.dataset.final; return; }
+
+    if (st.animating || (now - st.lastRun) < COOLDOWN) return;
+    st.lastRun = now;
+
+    st.animating = true;
+    const target = parseFloat(v.dataset.targetNum || '0');
+    const suffix = v.dataset.suffix || '';
+    const start = now;
+    const dur = 900;
+
+    // start from visible 0
+    v.textContent = suffix ? (suffix === 'T' ? '$0.0T' : '$0B') : '$0';
+
+    const step = (t) => {
+      const p = Math.min(1, (t - start) / dur);
+      const n = target * easeOut(p);
+      v.textContent = formatVal(n, target, suffix);
+      if (p < 1) st.rafId = requestAnimationFrame(step);
+      else { st.animating = false; v.textContent = v.dataset.final; }
+    };
+    st.rafId = requestAnimationFrame(step);
+  }
 
   $$('.stat-card').forEach((card, i) => {
     const v = $('.stat-value', card);
@@ -210,9 +240,9 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       v.dataset.suffix = suffix;
     });
 
-    animState.set(v, { animating: false, rafId: 0, lastRun: 0, target, suffix });
+    animState.set(v, { animating: false, rafId: 0, lastRun: 0, target, suffix, playedAuto: false });
 
-    const playHover = () => startAnim(v);
+    const playHover = () => startAnim(v, /* respectRM */ false);
 
     // Pointer, keyboard, and touch activation
     card.addEventListener('mouseenter', playHover);
@@ -224,6 +254,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     });
   });
 
+  // Normalize heights across cards
   requestAnimationFrame(() => {
     const maxCap = captionHeights.length ? Math.max(...captionHeights) : 0;
     const maxLine = lineHeights.length ? Math.max(...lineHeights) : 0;
@@ -231,31 +262,16 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     document.documentElement.style.setProperty('--stats-line-h',    maxLine ? `${maxLine}px` : 'auto');
   });
 
-  function startAnim(v) {
-    const st = animState.get(v);
-    if (!st) return;
-    const now = performance.now();
-    if (st.animating || (now - st.lastRun) < COOLDOWN) return;
-    st.lastRun = now;
-
-    if (mqReduce.matches) { v.textContent = v.dataset.final; return; }
-
-    st.animating = true;
-    const target = parseFloat(v.dataset.targetNum || '0');
-    const suffix = v.dataset.suffix || '';
-    const start = now;
-    const dur = 900;
-
-    v.textContent = suffix ? (suffix === 'T' ? '$0.0T' : '$0B') : '$0';
-
-    const step = (t) => {
-      const p = Math.min(1, (t - start) / dur);
-      const n = target * easeOut(p);
-      v.textContent = formatVal(n, target, suffix);
-      if (p < 1) st.rafId = requestAnimationFrame(step);
-      else { st.animating = false; v.textContent = v.dataset.final; }
-    };
-    st.rafId = requestAnimationFrame(step);
+  // Auto-play once when stats come into view; respect Reduced Motion (skip auto)
+  const stats = document.querySelector('.stats');
+  if (stats) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) {
+        $$('.stat-card .stat-value', stats).forEach(v => startAnim(v, /* respectRM */ true));
+        io.disconnect();
+      }
+    }, { threshold: 0.35 });
+    io.observe(stats);
   }
 })();
 
@@ -279,11 +295,11 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
   const computeAndApply = () => {
     const styles = getComputedStyle(document.documentElement);
-    anSize = parseFloat(styles.getPropertyValue('--seal-size')) || 128;
+    const size = parseFloat(styles.getPropertyValue('--seal-size')) || 128;
     const gap  = parseFloat(styles.getPropertyValue('--seal-gap')) || 56;
     const count = parseInt(row.dataset.originalCount || '0', 10) || (row.children.length / 2) || 1;
 
-    const width = (count * anSize) + (Math.max(0, count - 1) * gap);
+    const width = (count * size) + (Math.max(0, count - 1) * gap);
     row.style.setProperty('--scroll-width', `${width}px`);
 
     row.classList.remove('marquee'); // restart animation cleanly
@@ -295,11 +311,13 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   computeAndApply();
   window.addEventListener('resize', computeAndApply);
 
-  // Reduced motion
+  // Reduced motion: pause (do not remove animation entirely)
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
   const applyRM = () => { row.style.animationPlayState = mq.matches ? 'paused' : 'running'; };
   mq.addEventListener ? mq.addEventListener('change', applyRM) : mq.addListener(applyRM);
   applyRM();
+
+  // Hover pause handled by CSS: .seal-track:hover .seal-row { animation-play-state: paused; }
 })();
 
 /* ---------- Enquiry form (demo only) ---------- */
