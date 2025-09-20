@@ -1,5 +1,5 @@
 /* =========================================
-   BonnyCsolutions — styles.css (final, higher-contrast mobile pills)
+   BonnyCsolutions — styles.css (final, higher-contrast mobile pills + desktop Contact fix)
    ========================================= */
 
    :root{
@@ -95,6 +95,8 @@
     font-size:clamp(14px,1.1vw,16px);color:#dbe6f4;padding:6px 4px;white-space:nowrap;
   }
   .nav-list a:hover{color:var(--white)}
+  /* NEW: Hide inline Contact on desktop (CTA button remains) */
+  .nav-list .link-contact{ display:none; }
   
   /* Desktop CTA */
   .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:12px;font-weight:700;border:1px solid transparent;transition:transform .08s ease,background .2s ease,border-color .2s ease,color .2s ease}
@@ -143,11 +145,11 @@
     /* Pill styling for each topic link — darker & clearer */
     .nav-list{gap:10px;min-width:max-content;padding:4px 2px}
     .nav-list a{
-      background:rgba(8,14,28,.84);               /* higher contrast */
+      background:rgba(8,14,28,.84);               /* higher contrast on mobile */
       border:1px solid rgba(255,255,255,.45);
       border-radius:999px;
       padding:10px 14px;
-      color:#fff;
+      color:#fff;                                   /* ensure uniform text color */
       font-weight:700; letter-spacing:.2px;
       scroll-snap-align:start;
       backdrop-filter:blur(6px) saturate(120%);
