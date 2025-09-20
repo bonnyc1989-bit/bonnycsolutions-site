@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- Viewport: desktop keeps zoom; mobile/tablet may be tightened by JS -->
+  <!-- Desktop keeps zoom; mobile/tablet tightened by JS (viewport-fit supports notches) -->
   <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Bonny Contracting Solutions Pty Ltd</title>
 
   <meta name="description" content="Bonny Contracting Solutions helps small businesses find, shape, and win U.S. Federal contracts—DoD & State—through targeted BD, disciplined capture, and compliant proposals.">
@@ -50,16 +49,24 @@
     <header class="nav">
       <div class="container nav-inner">
         <div class="brand">Bonny Contracting Solutions Pty Ltd</div>
-        <nav role="navigation" aria-label="Primary">
-          <ul class="nav-list">
-            <li><a href="#services">Services</a></li>
-            <li><a href="#spend">Annual Spend 2025</a></li>
-            <li><a href="#process">Process</a></li>
-            <li><a href="#agencies">Target Departments</a></li>
-            <li><a href="#about">About</a></li>
-          </ul>
+
+        <!-- New: horizontal scroller wrapper for mobile -->
+        <nav class="primary-nav" role="navigation" aria-label="Primary">
+          <div class="nav-scroller" aria-label="Section links">
+            <ul class="nav-list">
+              <li><a href="#services">Services</a></li>
+              <li><a href="#spend">Annual Spend 2025</a></li>
+              <li><a href="#process">Process</a></li>
+              <li><a href="#agencies">Target Departments</a></li>
+              <li><a href="#about">About</a></li>
+              <!-- Mobile-only Contact (desktop button remains at right) -->
+              <li class="link-contact"><a href="#enquiry">Contact</a></li>
+            </ul>
+          </div>
         </nav>
-        <a class="btn btn-primary" href="#enquiry">Contact</a>
+
+        <!-- Desktop CTA (hidden on mobile) -->
+        <a class="btn btn-primary nav-cta" href="#enquiry">Contact</a>
       </div>
     </header>
 
@@ -102,7 +109,7 @@
               </div>
             </article>
 
-          <article class="service-card">
+            <article class="service-card">
               <div class="service-body">
                 <h3>Business Development for Federal Consulting</h3>
                 <p>Operationalize BD: target lists, outreach rhythms, capture handoffs, and metrics that show progress—not motion.</p>
@@ -140,7 +147,7 @@
       <section id="spend" class="section">
         <div class="container">
           <h2>Annual Spend 2025</h2>
-        <p class="muted">Budget &amp; spending highlights.</p>
+          <p class="muted">Budget &amp; spending highlights.</p>
 
           <div class="stats" style="margin-top:10px;">
             <div class="stat-card">
@@ -197,7 +204,6 @@
 
           <div class="seal-track" style="margin-top:14px;">
             <div class="seal-row">
-              <!-- One set; JS will duplicate once to achieve a seamless loop -->
               <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/army.png" alt="U.S. Department of the Army">
               <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/navy.png" alt="U.S. Department of the Navy">
               <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/airforce.png" alt="U.S. Department of the Air Force">
@@ -237,7 +243,6 @@
       <section id="enquiry" class="section">
         <div class="container">
 
-          <!-- Headings row aligned across columns -->
           <div class="enquiry-head">
             <h2 class="enquiry-title">Quick Enquiry</h2>
             <div class="enquiry-head-divider" aria-hidden="true"></div>
@@ -296,7 +301,6 @@
       </section>
     </main>
 
-    <!-- FOOTER -->
     <footer class="site-footer">
       <div class="container footer-inner">
         © <span id="year"></span> Bonny Contracting Solutions Pty Ltd
@@ -305,6 +309,6 @@
 
   </div>
 
-  <script src="script.js?v=2025-09-20a" defer></script>
+  <script src="script.js?v=2025-09-20b" defer></script>
 </body>
 </html>

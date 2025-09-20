@@ -1,10 +1,5 @@
 /* =========================================================
-   BonnyCsolutions — script.js (final, with mobile viewport lock)
-   - Mobile/tablet: lock pinch zoom; desktop keeps normal zoom
-   - Gapless 4-video hero loop (rVFC-based)
-   - Stats: animate on first view + hover replay; zero-jitter
-   - Seamless departments marquee (duplicate-once)
-   - Enquiry form demo
+   BonnyCsolutions — script.js (with mobile viewport lock)
    ========================================================= */
 
 /* ---------- Viewport: lock zoom on touch devices, keep desktop flexible ---------- */
@@ -58,9 +53,9 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     v.preload = 'auto';
   });
 
-  let cur = 0;          // index of currently visible video in playlist
-  let front = a;        // video on top (visible)
-  let back = b;         // preloading the next one
+  let cur = 0;
+  let front = a;
+  let back = b;
   let swapping = false;
 
   const setSrc = (vid, src) => {
@@ -71,19 +66,17 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   };
   const nextIndex = () => (cur + 1) % playlist.length;
 
-  // prepare first two
   setSrc(front, playlist[cur]);
   setSrc(back, playlist[nextIndex()]);
 
   const primeDecode = (v) => { try { v.play(); v.pause(); } catch {} };
 
-  // show first frame as soon as it can play
   front.addEventListener('canplay', () => {
     try { front.play(); } catch {}
     front.classList.add('is-front');
   }, { once: true });
 
-  const SWAP_EARLY_SEC = 0.18; // crossfade ~180ms before end
+  const SWAP_EARLY_SEC = 0.18;
   const useRvfc = typeof front.requestVideoFrameCallback === 'function';
 
   const watchFront = () => {
@@ -131,7 +124,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
         watchFront();
         swapping = false;
-      }, 180); // keep in sync with CSS transition
+      }, 180);
     };
 
     if (back.readyState >= 3) doSwap();
@@ -144,7 +137,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
   watchFront();
 
-  // Autoplay nudge (iOS/Safari)
   const tryStart = () => {
     a.play().catch(()=>{});
     b.play().then(() => b.pause()).catch(()=>{});
@@ -152,7 +144,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   document.addEventListener('touchstart', tryStart, { once: true, passive: true });
   document.addEventListener('click', tryStart, { once: true });
 
-  // Reduced motion: freeze
   const mq = matchMedia('(prefers-reduced-motion: reduce)');
   const applyMotionPref = () => {
     const vids = [a, b];
@@ -168,7 +159,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   applyMotionPref();
 })();
 
-/* ---------- Annual Spend: on-view + hover replay, no-jitter ---------- */
+/* ---------- Annual Spend: on-view + hover replay ---------- */
 (() => {
   const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const easeOut = t => 1 - Math.pow(1 - t, 3);
@@ -192,7 +183,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   };
 
   const COOLDOWN = 1200;
-  const animState = new WeakMap(); // stat-value -> { animating, rafId, lastRun, target, suffix }
+  const animState = new WeakMap();
 
   const captionHeights = [];
   const lineHeights = [];
@@ -207,7 +198,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     const suffix = v.dataset.suffix || '';
     const finalText = finalFormat(target, suffix);
 
-    // show final value by default, lock width/height via ghost
     v.textContent = finalText;
 
     requestAnimationFrame(() => {
@@ -232,7 +222,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     card.addEventListener('focusin', playHover);
   });
 
-  // unify caption & number-line heights across all cards
   requestAnimationFrame(() => {
     const maxCap = captionHeights.length ? Math.max(...captionHeights) : 0;
     const maxLine = lineHeights.length ? Math.max(...lineHeights) : 0;
@@ -255,7 +244,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     const start = now;
     const dur = 900;
 
-    // start from visible 0
     v.textContent = suffix ? (suffix === 'T' ? '$0.0T' : '$0B') : '$0';
 
     const step = (t) => {
@@ -268,7 +256,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     st.rafId = requestAnimationFrame(step);
   }
 
-  // Animate once when stats section enters viewport
   const statsSection = document.getElementById('spend');
   if (statsSection && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries, obs) => {
@@ -299,7 +286,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     row.dataset.cloned = 'true';
   }
 
-  // Respect reduced motion
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
   const applyRM = () => { row.style.animationPlayState = mq.matches ? 'paused' : 'running'; };
   mq.addEventListener ? mq.addEventListener('change', applyRM) : mq.addListener(applyRM);
@@ -318,7 +304,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       status.textContent = 'Sending…';
     }
 
-    // Honeypot check
     const hp = (new FormData(form)).get('hp');
     if (hp) {
       if (status) {
@@ -328,7 +313,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       return;
     }
 
-    // Simulate success (replace with real endpoint if desired)
     setTimeout(() => {
       if (status) {
         status.textContent = 'Thanks! We’ll be in touch shortly.';
