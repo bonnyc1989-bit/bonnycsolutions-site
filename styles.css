@@ -70,7 +70,7 @@
     display:flex;align-items:center;justify-content:space-between;padding:14px 0;flex-wrap:nowrap;
   }
   
-  /* Brand pill */
+  /* Brand pill (desktop defaults) */
   .brand{
     display:inline-flex;align-items:center;gap:10px;
     font-family:"Manrope",system-ui,sans-serif;font-weight:800;letter-spacing:.2px;color:var(--white);
@@ -79,7 +79,7 @@
     background:rgba(255,255,255,.06);
     border:1px solid rgba(255,255,255,.28);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 10px rgba(0,0,0,.16);
-    margin-left:-22px;
+    margin-left:-22px; /* desktop nudge */
     margin-right:clamp(16px,2.4vw,36px);
     flex:0 0 auto;
   }
@@ -87,7 +87,7 @@
   .brand:hover{ background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.38) }
   .brand:focus-visible{ outline:2px solid var(--brand); outline-offset:3px; border-radius:999px }
   
-  /* Default (desktop) nav list */
+  /* Desktop nav list */
   .nav-list{
     list-style:none;margin:0;padding:0;display:flex;align-items:center;
     gap:clamp(12px,1.8vw,22px);
@@ -105,14 +105,23 @@
   .nav .btn-primary{color:#0b1220!important;padding:8px 14px;font-size:clamp(14px,1.05vw,15.5px);margin-left:clamp(16px,2.4vw,36px)}
   .nav .btn-primary:hover,.nav .btn-primary:focus-visible{color:#0b1220!important}
   
-  /* New: mobile two-row layout + horizontal scroller */
+  /* ---------- Mobile header: two rows + horizontal scroller ---------- */
   @media (max-width: 820px){
-    /* Make header two rows */
+    /* Taller sticky header, keep anchor landings neat */
     .nav-inner{flex-direction:column;align-items:stretch;gap:8px;padding:10px 0}
-    /* Larger anchor offset because header is taller on mobile */
     .section{scroll-margin-top:110px}
   
-    /* Hide desktop CTA; show Contact inside list */
+    /* Brand: fully visible, centered, single line */
+    .brand{
+      margin-left:0; margin-right:0;          /* remove negative nudge */
+      width:100%;                              /* span container width */
+      justify-content:center; text-align:center;
+      white-space:nowrap; overflow:hidden;     /* guarantee one line */
+      font-size:clamp(16px,4.6vw,20px);        /* small mobile-only fit */
+      padding:10px 12px; letter-spacing:.1px;
+    }
+  
+    /* Hide desktop CTA; show Contact inside scroller pills */
     .nav-cta{display:none}
     .nav-list .link-contact{display:list-item}
   
@@ -129,17 +138,21 @@
     }
     .nav-scroller::-webkit-scrollbar{display:none}
   
-    /* Make items thumb-friendly “pills” */
-    .nav-list{gap:10px;min-width:max-content;padding:2px}
+    /* Pill styling for each topic link (lighter, glassy) */
+    .nav-list{gap:10px;min-width:max-content;padding:4px 2px}
     .nav-list a{
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.28);
       border-radius:999px;
       padding:8px 12px;
       color:#e9eefc;
       scroll-snap-align:start;
+      backdrop-filter:blur(6px) saturate(120%);
+      -webkit-backdrop-filter:blur(6px) saturate(120%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 1px 6px rgba(0,0,0,.18);
     }
-    .nav-list a:hover{color:#fff}
+    .nav-list a:hover{color:#fff;border-color:rgba(255,255,255,.38);background:rgba(255,255,255,.10)}
+    .nav-list a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
   }
   
   /* Skip link */
