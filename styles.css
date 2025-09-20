@@ -1,5 +1,5 @@
 /* =========================================
-   BonnyCsolutions — styles.css (final, higher-contrast mobile pills + desktop Contact fix)
+   BonnyCsolutions — styles.css (final, unified hero CTAs + clean header pills)
    ========================================= */
 
    :root{
@@ -69,21 +69,21 @@
     display:flex;align-items:center;justify-content:space-between;padding:14px 0;flex-wrap:nowrap;
   }
   
-  /* Brand pill (desktop defaults) */
+  /* Brand pill (desktop defaults) — remove glow, solid white outline */
   .brand{
     display:inline-flex;align-items:center;gap:10px;
     font-family:"Manrope",system-ui,sans-serif;font-weight:800;letter-spacing:.2px;color:var(--white);
     font-size:clamp(18px,2vw,24px);
     padding:8px 14px;border-radius:999px;
     background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.28);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 10px rgba(0,0,0,.16);
-    margin-left:-22px; /* desktop nudge */
+    border:1px solid #fff;                /* solid white outline */
+    box-shadow:none;                       /* remove glow */
+    margin-left:-22px;                     /* desktop nudge */
     margin-right:clamp(16px,2.4vw,36px);
     flex:0 0 auto;
   }
   @media (min-width:1200px){ .brand{ margin-left:-32px } }
-  .brand:hover{ background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.38) }
+  .brand:hover{ background:rgba(255,255,255,.09); border-color:#fff }
   .brand:focus-visible{ outline:2px solid var(--brand); outline-offset:3px; border-radius:999px }
   
   /* Desktop nav list */
@@ -95,10 +95,10 @@
     font-size:clamp(14px,1.1vw,16px);color:#dbe6f4;padding:6px 4px;white-space:nowrap;
   }
   .nav-list a:hover{color:var(--white)}
-  /* NEW: Hide inline Contact on desktop (CTA button remains) */
+  /* Hide inline Contact on desktop (CTA button remains on the right) */
   .nav-list .link-contact{ display:none; }
   
-  /* Desktop CTA */
+  /* Buttons */
   .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:12px;font-weight:700;border:1px solid transparent;transition:transform .08s ease,background .2s ease,border-color .2s ease,color .2s ease}
   .btn:active{transform:translateY(1px) scale(.99)}
   .btn-primary{color:#000;background:var(--white);border-color:rgba(255,255,255,.9)}
@@ -108,10 +108,10 @@
   
   /* ---------- Mobile header: two rows + high-contrast horizontal scroller ---------- */
   @media (max-width: 820px){
-    .nav-inner{flex-direction:column;align-items:stretch;gap:8px;padding:10px 0}
+    .nav-inner{flex-direction:column;align-items:stretch;gap:12px;padding:10px 0} /* a bit more gap */
     .section{scroll-margin-top:110px}
   
-    /* Brand: centered, never clipped, high contrast */
+    /* Brand: centered, never clipped, clean outline (no glow) */
     .brand{
       margin-left:0; margin-right:0;
       width:100%;
@@ -119,11 +119,10 @@
       white-space:nowrap; overflow:hidden;
       font-size:clamp(16px,4.6vw,20px);
       padding:10px 12px; letter-spacing:.1px;
-      /* darker, more opaque for stronger contrast */
       background:rgba(8,14,28,.88);
-      border-color:rgba(255,255,255,.45);
-      box-shadow:0 6px 16px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
-      color:#fff; text-shadow:0 1px 1px rgba(0,0,0,.5);
+      border:1px solid #fff;             /* solid white outline */
+      box-shadow:none;                    /* remove glow */
+      color:#fff;
     }
   
     /* Hide desktop CTA; show Contact inside scroller pills */
@@ -142,24 +141,24 @@
     }
     .nav-scroller::-webkit-scrollbar{display:none}
   
-    /* Pill styling for each topic link — darker & clearer */
+    /* Topic pills — keep colors, remove glow, add solid white outline */
     .nav-list{gap:10px;min-width:max-content;padding:4px 2px}
     .nav-list a{
-      background:rgba(8,14,28,.84);               /* higher contrast on mobile */
-      border:1px solid rgba(255,255,255,.45);
+      background:rgba(8,14,28,.84);      /* unchanged dark pill */
+      border:1px solid #fff;             /* solid white outline */
       border-radius:999px;
       padding:10px 14px;
-      color:#fff;                                   /* ensure uniform text color */
+      color:#fff;                        /* uniform white text */
       font-weight:700; letter-spacing:.2px;
       scroll-snap-align:start;
       backdrop-filter:blur(6px) saturate(120%);
       -webkit-backdrop-filter:blur(6px) saturate(120%);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 2px 10px rgba(0,0,0,.28);
-      text-shadow:0 1px 1px rgba(0,0,0,.45);
+      box-shadow:none;                   /* remove glow */
+      text-shadow:none;                  /* remove text glow */
     }
     .nav-list a:hover{
       background:rgba(12,20,36,.92);
-      border-color:rgba(255,255,255,.6);
+      border-color:#fff;
     }
     .nav-list a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
   }
@@ -188,6 +187,24 @@
   .hero h1{font-size:clamp(36px,5.6vw,62px);line-height:1.1;font-weight:800}
   .hero p{max-width:820px;color:var(--white)}.cta-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}.support{margin-top:14px}
   @media (max-width:640px){.hero-panel{background:rgba(15,23,42,.45);border-color:rgba(255,255,255,.35)}.hero h1{line-height:1.12}}
+  
+  /* === Hero CTA unification (both buttons identical) === */
+  .hero .cta-row .btn,
+  .hero .cta-row .btn-primary{
+    background:#fff;
+    color:#0b1220 !important;
+    border:1px solid #fff !important;
+  }
+  .hero .cta-row .btn:hover,
+  .hero .cta-row .btn-primary:hover{
+    background:#f5f8ff;
+    border-color:#fff;
+  }
+  .hero .cta-row .btn:focus-visible,
+  .hero .cta-row .btn-primary:focus-visible{
+    outline:2px solid var(--brand);
+    outline-offset:2px;
+  }
   
   /* Services */
   .services-grid{display:grid;gap:22px;grid-template-columns:1fr}
