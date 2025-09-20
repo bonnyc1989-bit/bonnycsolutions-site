@@ -14,7 +14,11 @@
   /* Base */
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
+  /* Mobile polish: fill screen without weird bounce/side-jiggle; desktop unaffected */
+  html,body{overscroll-behavior:none;overflow-x:hidden}
+  body{touch-action:manipulation}
   html{scroll-behavior:smooth}
+  
   body{
     background:radial-gradient(1400px 900px at 50% -200px,rgba(255,255,255,.06),transparent 60%),linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%);
     color:var(--text);font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6;font-size:15.5px;
@@ -53,7 +57,7 @@
   #process .process-line{text-align:center}
   #process .container>.muted{text-align:center}
   
-  /* Header/Nav (static) */
+  /* Header/Nav */
   .nav{
     position:sticky;top:0;z-index:60;backdrop-filter:blur(8px);
     background:rgba(11,18,32,.75);border-bottom:1px solid var(--border)
@@ -160,7 +164,7 @@
   .stat-caption{color:#dbe6f4;font-weight:600;line-height:1.5;min-height:var(--stats-caption-h)}
   .stats-note{margin-top:12px;text-align:center;font-size:13.5px}
   
-  /* Target Departments — measurement-free seamless marquee */
+  /* Target Departments — seamless marquee (CSS keyframes; JS duplicates content once) */
   .seal-track{
     position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.45);border-radius:12px;background:rgba(255,255,255,.06);
     width:100%;height:calc(var(--seal-size) + 20px);margin:0 auto;
@@ -174,7 +178,7 @@
   }
   @keyframes seal-loop{
     0%  { transform:translateY(-50%) translateX(0); }
-    100%{ transform:translateY(-50%) translateX(-50%); } /* always exactly one set width */
+    100%{ transform:translateY(-50%) translateX(-50%); } /* requires one duplicate set */
   }
   .seal{width:var(--seal-size);height:var(--seal-size);object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));flex:0 0 auto}
   .seal-track:hover .seal-row{animation-play-state:paused}
@@ -216,7 +220,7 @@
   .site-footer{margin-top:auto;border-top:2px solid rgba(255,255,255,.95);background:rgba(11,18,32,.85)}
   .footer-inner{padding:16px 0;text-align:center;color:#dbe6f4;font-size:14px}
   
-  /* Reduced motion: do NOT kill animations globally */
+  /* Reduced motion */
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{transition:none!important;scroll-behavior:auto!important}
   }

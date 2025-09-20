@@ -1,10 +1,35 @@
 /* =========================================================
-   BonnyCsolutions — script.js (final, hardened)
-   - 4‑video hero loop (rVFC swap) + iOS nudge; no Save‑Data bail
-   - Stats: ALWAYS on-view + replay on hover/focus/click
-   - Target Departments: measurement-free seamless marquee
+   BonnyCsolutions — script.js (final, with mobile viewport lock)
+   - Mobile/tablet: lock pinch zoom; desktop keeps normal zoom
+   - Gapless 4-video hero loop (rVFC-based)
+   - Stats: animate on first view + hover replay; zero-jitter
+   - Seamless departments marquee (duplicate-once)
    - Enquiry form demo
    ========================================================= */
+
+/* ---------- Viewport: lock zoom on touch devices, keep desktop flexible ---------- */
+(() => {
+  const vp = document.querySelector('meta[name="viewport"]');
+  if (!vp) return;
+
+  const base = 'width=device-width, initial-scale=1, viewport-fit=cover';
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+  if (isTouch) {
+    vp.setAttribute('content', base + ', maximum-scale=1, user-scalable=no');
+    const prevent = (e) => { e.preventDefault(); };
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach(t =>
+      document.addEventListener(t, prevent, { passive: false })
+    );
+  } else {
+    vp.setAttribute('content', base);
+  }
+
+  window.addEventListener('orientationchange', () => {
+    const touchNow = window.matchMedia('(pointer: coarse)').matches;
+    vp.setAttribute('content', base + (touchNow ? ', maximum-scale=1, user-scalable=no' : ''));
+  });
+})();
 
 /* ---------- Utils ---------- */
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -26,13 +51,11 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const b = document.getElementById('videoB');
   if (!a || !b) return;
 
-  // Do NOT bail on Save‑Data; just reduce preload
-  const saveData = navigator.connection && navigator.connection.saveData;
   [a, b].forEach(v => {
     v.muted = true;
     v.playsInline = true;
     v.loop = false;
-    v.preload = saveData ? 'metadata' : 'auto';
+    v.preload = 'auto';
   });
 
   let cur = 0;          // index of currently visible video in playlist
@@ -48,7 +71,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   };
   const nextIndex = () => (cur + 1) % playlist.length;
 
-  // Ensure first two are correct (HTML has fallbacks already)
+  // prepare first two
   setSrc(front, playlist[cur]);
   setSrc(back, playlist[nextIndex()]);
 
@@ -111,11 +134,10 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       }, 180); // keep in sync with CSS transition
     };
 
-    // Use 'canplay' for better cross‑browser reliability
     if (back.readyState >= 3) doSwap();
     else {
-      const handler = () => { back.removeEventListener('canplay', handler); doSwap(); };
-      back.addEventListener('canplay', handler, { once: true });
+      const handler = () => { back.removeEventListener('canplaythrough', handler); doSwap(); };
+      back.addEventListener('canplaythrough', handler, { once: true });
       primeDecode(back);
     }
   };
@@ -130,7 +152,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   document.addEventListener('touchstart', tryStart, { once: true, passive: true });
   document.addEventListener('click', tryStart, { once: true });
 
-  // Reduced motion: freeze on first frame for RM users
+  // Reduced motion: freeze
   const mq = matchMedia('(prefers-reduced-motion: reduce)');
   const applyMotionPref = () => {
     const vids = [a, b];
@@ -146,8 +168,9 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   applyMotionPref();
 })();
 
-/* ---------- Annual Spend: ALWAYS on-view + replay on interaction ---------- */
+/* ---------- Annual Spend: on-view + hover replay, no-jitter ---------- */
 (() => {
+  const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const easeOut = t => 1 - Math.pow(1 - t, 3);
 
   const finalFormat = (target, suffix) => {
@@ -168,11 +191,54 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     return `$${Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
   };
 
-  const COOLDOWN = 500; // allow quick replays but avoid double-triggers
-  const animState = new WeakMap(); // v -> { animating, rafId, lastRun, target, suffix }
+  const COOLDOWN = 1200;
+  const animState = new WeakMap(); // stat-value -> { animating, rafId, lastRun, target, suffix }
 
   const captionHeights = [];
   const lineHeights = [];
+
+  $$('.stat-card').forEach(card => {
+    const v = $('.stat-value', card);
+    const g = $('.stat-ghost', card);
+    const cap = $('.stat-caption', card);
+    if (!v || !g) return;
+
+    const target = parseFloat(v.dataset.target || '0');
+    const suffix = v.dataset.suffix || '';
+    const finalText = finalFormat(target, suffix);
+
+    // show final value by default, lock width/height via ghost
+    v.textContent = finalText;
+
+    requestAnimationFrame(() => {
+      g.textContent = finalText;
+      const w = Math.ceil(g.offsetWidth);
+      const h = Math.ceil(g.offsetHeight);
+      v.classList.add('stat-live');
+      v.style.width  = w + 'px';
+      v.style.height = h + 'px';
+      lineHeights.push(h);
+      if (cap) captionHeights.push(Math.ceil(cap.offsetHeight));
+      v.dataset.final = finalText;
+      v.dataset.targetNum = String(target);
+      v.dataset.suffix = suffix;
+    });
+
+    animState.set(v, { animating: false, rafId: 0, lastRun: 0, target, suffix });
+
+    const playHover = () => startAnim(v);
+    card.addEventListener('mouseenter', playHover);
+    card.addEventListener('click', playHover);
+    card.addEventListener('focusin', playHover);
+  });
+
+  // unify caption & number-line heights across all cards
+  requestAnimationFrame(() => {
+    const maxCap = captionHeights.length ? Math.max(...captionHeights) : 0;
+    const maxLine = lineHeights.length ? Math.max(...lineHeights) : 0;
+    document.documentElement.style.setProperty('--stats-caption-h', maxCap ? `${maxCap}px` : 'auto');
+    document.documentElement.style.setProperty('--stats-line-h',    maxLine ? `${maxLine}px` : 'auto');
+  });
 
   function startAnim(v) {
     const st = animState.get(v);
@@ -180,6 +246,8 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     const now = performance.now();
     if (st.animating || (now - st.lastRun) < COOLDOWN) return;
     st.lastRun = now;
+
+    if (mqReduce.matches) { v.textContent = v.dataset.final; return; }
 
     st.animating = true;
     const target = parseFloat(v.dataset.targetNum || '0');
@@ -200,97 +268,42 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     st.rafId = requestAnimationFrame(step);
   }
 
-  $$('.stat-card').forEach((card, i) => {
-    const v = $('.stat-value', card);
-    const g = $('.stat-ghost', card);
-    const cap = $('.stat-caption', card);
-    if (!v || !g) return;
-
-    const target = parseFloat(v.dataset.target || '0');
-    const suffix = v.dataset.suffix || '';
-    const finalText = finalFormat(target, suffix);
-
-    // A11y: link value to caption
-    if (cap) {
-      if (!cap.id) cap.id = `statcap-${i+1}`;
-      v.setAttribute('aria-labelledby', cap.id);
-    }
-
-    // show final value by default (no jitter), but we will animate to it
-    v.textContent = finalText;
-
-    requestAnimationFrame(() => {
-      g.textContent = finalText;
-      const w = Math.ceil(g.offsetWidth);
-      const h = Math.ceil(g.offsetHeight);
-      v.classList.add('stat-live');
-      v.style.width  = w + 'px';
-      v.style.height = h + 'px';
-      lineHeights.push(h);
-      if (cap) captionHeights.push(Math.ceil(cap.offsetHeight));
-      v.dataset.final = finalText;
-      v.dataset.targetNum = String(target);
-      v.dataset.suffix = suffix;
-    });
-
-    animState.set(v, { animating: false, rafId: 0, lastRun: 0, target, suffix });
-
-    // Interaction replay (always allowed)
-    const play = () => startAnim(v);
-    card.addEventListener('mouseenter', play);
-    card.addEventListener('click', play);
-    card.tabIndex = 0;
-    card.addEventListener('focusin', play);
-    card.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); play(); }
-    });
-  });
-
-  // Normalize heights across cards
-  requestAnimationFrame(() => {
-    const maxCap = captionHeights.length ? Math.max(...captionHeights) : 0;
-    const maxLine = lineHeights.length ? Math.max(...lineHeights) : 0;
-    document.documentElement.style.setProperty('--stats-caption-h', maxCap ? `${maxCap}px` : 'auto');
-    document.documentElement.style.setProperty('--stats-line-h',    maxLine ? `${maxLine}px` : 'auto');
-  });
-
-  // Auto-play once when stats come into view (ALWAYS)
-  const stats = document.querySelector('.stats');
-  if (stats) {
-    const animateAll = () => $$('.stat-card .stat-value', stats).forEach(v => startAnim(v));
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        if (entries.some(e => e.isIntersecting)) { animateAll(); io.disconnect(); }
-      }, { threshold: 0.35 });
-      io.observe(stats);
-    } else {
-      // Fallback: if observer unavailable, animate on load
-      animateAll();
-    }
+  // Animate once when stats section enters viewport
+  const statsSection = document.getElementById('spend');
+  if (statsSection && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          $$('.stat-card .stat-value', statsSection).forEach(v => startAnim(v));
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(statsSection);
   }
 })();
 
-/* ---------- Departments marquee: measurement-free seamless loop ---------- */
+/* ---------- Departments marquee: duplicate once for seamless loop ---------- */
 (() => {
   const track = $('.seal-track');
-  const row = track ? $('.seal-row') : null;
+  const row = track ? $('.seal-row', track) : null;
   if (!track || !row) return;
 
-  // Duplicate the sequence once so the row contains 2× content
   if (!row.dataset.cloned) {
     const originals = Array.from(row.children);
     originals.forEach(node => {
       const clone = node.cloneNode(true);
       clone.setAttribute('aria-hidden', 'true');
-      // ensure cloned images paint when they enter from the right
-      if (clone.tagName === 'IMG') clone.setAttribute('loading', 'eager');
       row.appendChild(clone);
     });
     row.dataset.cloned = 'true';
   }
 
-  // Reduced motion: pause via CSS (nothing to do here)
-  // Hover pause handled by CSS
+  // Respect reduced motion
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const applyRM = () => { row.style.animationPlayState = mq.matches ? 'paused' : 'running'; };
+  mq.addEventListener ? mq.addEventListener('change', applyRM) : mq.addListener(applyRM);
+  applyRM();
 })();
 
 /* ---------- Enquiry form (demo only) ---------- */

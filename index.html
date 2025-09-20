@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Viewport: desktop keeps zoom; mobile/tablet may be tightened by JS -->
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Bonny Contracting Solutions Pty Ltd</title>
 
   <meta name="description" content="Bonny Contracting Solutions helps small businesses find, shape, and win U.S. Federal contracts—DoD & State—through targeted BD, disciplined capture, and compliant proposals.">
@@ -12,10 +14,9 @@
   <meta property="og:description" content="Find. Influence. Win. U.S. Federal Contracts. Pipeline, capture, proposals.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_US">
-  <!-- <meta property="og:image" content="https://your-domain.example/og-image.jpg"> -->
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- Optional fonts (or self-host to avoid third-party) -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -33,10 +34,9 @@
     "@context":"https://schema.org",
     "@type":"Organization",
     "name":"Bonny Contracting Solutions Pty Ltd",
-    "url":"https://your-domain.example",
+    "url":"https://bonnycsolutions.com",
     "email":"info@bonnycsolutions.com",
-    "telephone":["+17075146122","+61448793660"],
-    "logo":"https://your-domain.example/logo.png"
+    "telephone":["+17075146122","+61448793660"]
   }
   </script>
 </head>
@@ -59,7 +59,6 @@
             <li><a href="#about">About</a></li>
           </ul>
         </nav>
-        <!-- CTA inside right margin -->
         <a class="btn btn-primary" href="#enquiry">Contact</a>
       </div>
     </header>
@@ -103,7 +102,7 @@
               </div>
             </article>
 
-            <article class="service-card">
+          <article class="service-card">
               <div class="service-body">
                 <h3>Business Development for Federal Consulting</h3>
                 <p>Operationalize BD: target lists, outreach rhythms, capture handoffs, and metrics that show progress—not motion.</p>
@@ -141,7 +140,7 @@
       <section id="spend" class="section">
         <div class="container">
           <h2>Annual Spend 2025</h2>
-          <p class="muted">Budget &amp; spending highlights.</p>
+        <p class="muted">Budget &amp; spending highlights.</p>
 
           <div class="stats" style="margin-top:10px;">
             <div class="stat-card">
@@ -198,6 +197,7 @@
 
           <div class="seal-track" style="margin-top:14px;">
             <div class="seal-row">
+              <!-- One set; JS will duplicate once to achieve a seamless loop -->
               <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/army.png" alt="U.S. Department of the Army">
               <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/navy.png" alt="U.S. Department of the Navy">
               <img class="seal" width="112" height="112" decoding="async" loading="lazy" src="images/Department/airforce.png" alt="U.S. Department of the Air Force">
@@ -305,7 +305,6 @@
 
   </div>
 
-  <!-- cache-buster + defer to avoid stale JS -->
-  <script src="script.js?v=2025-09-19d" defer></script>
+  <script src="script.js?v=2025-09-20a" defer></script>
 </body>
 </html>
