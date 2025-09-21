@@ -50,7 +50,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     v.muted = true;
     v.playsInline = true;
     v.loop = false;
-    v.preload = 'auto';
+    v.preload = 'metadata';
   });
 
   let cur = 0;
