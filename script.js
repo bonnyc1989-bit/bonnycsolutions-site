@@ -1,5 +1,5 @@
 /* =========================================================
-   BonnyCsolutions — script.js (with mobile viewport lock)
+   BonnyCsolutions — script.js (stable hero playlist)
    ========================================================= */
 
 /* ---------- Viewport: lock zoom on touch devices, keep desktop flexible ---------- */
@@ -33,189 +33,141 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 /* ---------- Footer year ---------- */
 (() => { const y = new Date().getFullYear(); const el = $('#year'); if (el) el.textContent = y; })();
 
-/* ---------- HERO: robust, gapless 4‑video loop with watchdog & skips ---------- */
+/* ---------- HERO: stable 4‑video loop (preload + swap on `ended`) ---------- */
 (() => {
-  const playlist = [
+  const files = [
     'images/Soldiers.mp4',
     'images/Iwojima.mp4',
     'images/Boots.mp4',
     'images/B1.mp4',
   ];
 
-  const a = document.getElementById('videoA');
-  const b = document.getElementById('videoB');
-  if (!a || !b) return;
+  const A = document.getElementById('videoA');
+  const B = document.getElementById('videoB');
+  if (!A || !B) return;
 
-  // Respect user/data conditions (poster only in these cases)
+  // Respect user/data conditions -> posters only
   const conn = navigator.connection || {};
   const saveData = !!conn.saveData;
   const slow     = /(^2g$|3g)/.test(conn.effectiveType || '');
   const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
   if (saveData || slow || mqReduce.matches) return;
 
-  // Base setup
-  [a, b].forEach(v => {
+  // Base video setup
+  [A, B].forEach(v => {
     v.muted = true;
     v.playsInline = true;
     v.loop = false;
     v.preload = 'metadata';
   });
 
-  let cur = 0;
-  let front = a;
-  let back  = b;
+  let i = 0;
+  let front = A;
+  let back  = B;
+  const HAVE_FUTURE_DATA = 3; // readyState >= 3 means "good to play"
+  const WATCHDOG_MS = 1500;   // don’t wait forever to preload the next
 
-  const HAVE_FUTURE_DATA = 3;   // readyState threshold
-  const SWAP_EARLY_SEC   = 0.18;
-  const WATCHDOG_MS      = 1200;
-
-  const setSrc = (el, src) => {
-    if (el.getAttribute('src') !== src) {
-      try { el.removeAttribute('src'); el.load(); } catch {}
-      el.src = src;
-      try { el.load(); } catch {}
+  const setSrc = (vid, src) => {
+    if (vid.getAttribute('src') !== src) {
+      try { vid.removeAttribute('src'); vid.load(); } catch {}
+      vid.src = src;
+      try { vid.load(); } catch {}
     }
   };
-  const nextIndex = () => (cur + 1) % playlist.length;
 
-  // Load `idx` into `el`, signal cb(true|false) with a watchdog
-  const loadInto = (el, idx, cb) => {
-    let done = false;
-    const finish = ok => {
-      if (done) return;
-      done = true;
-      clearTimeout(timer);
-      el.removeEventListener('canplay', onCan);
-      ['error', 'stalled', 'abort'].forEach(ev => el.removeEventListener(ev, onFail));
-      cb(ok);
-    };
-    const onCan  = () => finish(true);
-    const onFail = () => finish(false);
-    const timer  = setTimeout(onFail, WATCHDOG_MS);
-
-    setSrc(el, playlist[idx]);
-    if (el.readyState >= HAVE_FUTURE_DATA) return onCan();
-    el.addEventListener('canplay', onCan, { once: true });
-    ['error', 'stalled', 'abort'].forEach(ev => el.addEventListener(ev, onFail, { once: true }));
-  };
-
-  // Preload the clip after `idx` into `back`, skipping any that fail
-  const preloadNextAfter = (idx) => {
-    const target = (idx + 1) % playlist.length;
-    loadInto(back, target, ok => {
-      if (!ok) {
-        const skip = (target + 1) % playlist.length;
-        loadInto(back, skip, () => {});
-      }
-    });
-  };
-
-  // Watch the current (front) video and request an early swap
-  const useRvfc = typeof front.requestVideoFrameCallback === 'function';
-  let watching = false;
-  const watchFront = () => {
-    if (watching) return; // prevent double-watch
-    watching = true;
-
-    if (useRvfc) {
-      const tick = (_, meta) => {
-        const t = meta?.mediaTime ?? front.currentTime ?? 0;
-        const remain = (front.duration || 0) - t;
-        if (remain > 0 && remain <= SWAP_EARLY_SEC) {
-          watching = false; // this round ends here; doSwap will re‑arm
-          doSwap();
-        } else {
-          front.requestVideoFrameCallback(tick);
-        }
+  // Return a promise that resolves true/false if clip is ready (or failed/timed out)
+  function ready(vid, ms = WATCHDOG_MS) {
+    return new Promise(res => {
+      let done = false;
+      const finish = ok => {
+        if (done) return;
+        done = true;
+        clearTimeout(t);
+        vid.removeEventListener('canplay', onCan);
+        ['error','stalled','abort','emptied'].forEach(ev => vid.removeEventListener(ev, onFail));
+        res(ok);
       };
-      front.requestVideoFrameCallback(tick);
-    } else {
-      const onTime = () => {
-        const remain = (front.duration || 0) - (front.currentTime || 0);
-        if (remain > 0 && remain <= SWAP_EARLY_SEC) {
-          front.removeEventListener('timeupdate', onTime);
-          watching = false;
-          doSwap();
-        }
-      };
-      a.removeEventListener('timeupdate', onTime);
-      b.removeEventListener('timeupdate', onTime);
-      front.addEventListener('timeupdate', onTime);
-    }
-  };
+      const onCan  = () => finish(true);
+      const onFail = () => finish(false);
 
-  // Swap to back (preloaded); if not ready, wait/skip; then re‑arm watcher
-  const doSwap = () => {
-    const go = () => {
-      try { back.currentTime = 0; back.play(); } catch {}
-      back.classList.add('is-front');
-
-      setTimeout(() => {
-        front.classList.remove('is-front');
-
-        [front, back] = [back, front];
-        cur = nextIndex();
-
-        // Preload the following clip and re‑arm both mechanisms
-        preloadNextAfter(cur);
-        front.onended = doSwap;   // safety if early‑swap is ever missed
-        watching = false;
-        watchFront();
-      }, 160);
-    };
-
-    if (back.readyState >= HAVE_FUTURE_DATA) {
-      go();
-    } else {
-      const idx = nextIndex();
-      loadInto(back, idx, ok => {
-        if (!ok) {
-          // Skip a bad one once
-          const skip = (idx + 1) % playlist.length;
-          loadInto(back, skip, () => go());
-          return;
-        }
-        go();
-      });
-    }
-  };
-
-  // Prime first+second and start the front video
-  const primeStart = () => {
-    loadInto(front, 0, () => {
-      try { front.currentTime = 0; front.play(); } catch {}
-      front.classList.add('is-front');
-      front.onended = doSwap;     // safety: fire swap if early‑swap misses
-      watchFront();
+      if (vid.readyState >= HAVE_FUTURE_DATA) return finish(true);
+      vid.addEventListener('canplay', onCan, { once: true });
+      ['error','stalled','abort','emptied'].forEach(ev => vid.addEventListener(ev, onFail, { once: true }));
+      const t = setTimeout(onFail, ms);
     });
-    loadInto(back, 1 % playlist.length, () => {});
-  };
+  }
 
-  // Kick off after first paint work to protect LCP
+  // Preload `srcIdx` into `vid`, resolving when it’s can‑play‑ready (or skip if it fails)
+  async function preloadInto(vid, srcIdx) {
+    const src = files[srcIdx % files.length];
+    setSrc(vid, src);
+    const ok = await ready(vid);
+    return ok;
+  }
+
+  // One‑time prime of first + second clips
+  async function prime() {
+    // Prepare the first clip into front and play
+    await preloadInto(front, i);
+    try { front.currentTime = 0; front.play(); } catch {}
+    front.classList.add('is-front');
+
+    // Prepare the next into back (keep paused)
+    await preloadInto(back, (i + 1) % files.length);
+
+    // Safety: handle swap on ended
+    front.onended = onEnded;
+  }
+
+  // Swap when the current (front) ends
+  async function onEnded() {
+    // Play the preloaded back
+    try { back.currentTime = 0; back.play(); } catch {}
+    back.classList.add('is-front');
+
+    // Small class swap delay feels smoother
+    setTimeout(async () => {
+      front.classList.remove('is-front');
+
+      // Rotate refs
+      [front, back] = [back, front];
+      front.onended = onEnded;  // re‑arm
+
+      // Advance index and start preloading the following clip
+      i = (i + 1) % files.length;
+
+      // Try the next; if it fails once, skip forward one more
+      let ok = await preloadInto(back, (i + 1) % files.length);
+      if (!ok) ok = await preloadInto(back, (i + 2) % files.length);
+      // If even that failed, we still keep looping the ones that do work.
+    }, 140);
+  }
+
+  // Start after paint to protect LCP
   window.addEventListener('load', () => {
-    setTimeout(primeStart, 800);
+    setTimeout(() => { prime().catch(()=>{}); }, 700);
   }, { once: true });
 
-  // Resume/pause if motion preference flips at runtime
+  // Autoplay gesture unlock (some browsers still require it even when muted)
+  const tryStart = () => {
+    A.play().catch(()=>{});
+    B.play().then(() => B.pause()).catch(()=>{});
+  };
+  document.addEventListener('touchstart', tryStart, { once: true, passive: true });
+  document.addEventListener('click',      tryStart, { once: true });
+
+  // Respect reduced‑motion if toggled while on page
   const applyMotionPref = () => {
     if (mqReduce.matches) {
-      [a, b].forEach(v => { try { v.pause(); v.currentTime = 0; } catch {} });
-      a.classList.add('is-front');
-      b.classList.remove('is-front');
+      [A, B].forEach(v => { try { v.pause(); v.currentTime = 0; } catch {} });
+      A.classList.add('is-front');
+      B.classList.remove('is-front');
     } else {
       try { front.play(); } catch {}
     }
   };
   mqReduce.addEventListener ? mqReduce.addEventListener('change', applyMotionPref)
                             : mqReduce.addListener(applyMotionPref);
-
-  // User gesture unlock (some browsers gate autoplay even when muted)
-  const tryStart = () => {
-    a.play().catch(()=>{});
-    b.play().then(() => b.pause()).catch(()=>{});
-  };
-  document.addEventListener('touchstart', tryStart, { once: true, passive: true });
-  document.addEventListener('click',      tryStart, { once: true });
 })();
 
 /* ---------- Annual Spend: on-view + hover replay ---------- */
