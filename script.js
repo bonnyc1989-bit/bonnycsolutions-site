@@ -325,3 +325,58 @@ if (!AUTOPLAY) return;    // keep poster only
     }, 600);
   });
 })();
+
+/* ---------- Lazy hero video start (post‑paint, respectful of network & prefs) ---------- */
+(() => {
+  const a = document.getElementById('videoA');
+  const b = document.getElementById('videoB');
+  if (!a || !b) return;
+
+  // Respect user/data conditions
+  const conn = navigator.connection || {};
+  const saveData = !!conn.saveData;
+  const slow = /(^2g$|3g)/.test(conn.effectiveType || '');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (saveData || slow || reduced) return;   // keep poster only
+
+  const playlist = [
+    'images/Soldiers.mp4',
+    'images/Iwojima.mp4',
+    'images/Boots.mp4',
+    'images/B1.mp4'
+  ];
+
+  let i = 0, front = a, back = b;
+
+  const setSrc = (el, src) => {
+    if (el.getAttribute('src') !== src) { el.src = src; el.load(); }
+  };
+  const nextIndex = () => (i + 1) % playlist.length;
+
+  function start() {
+    // prime first video
+    setSrc(front, playlist[i]);
+    front.oncanplay = () => { front.play().catch(()=>{}); front.classList.add('is-front'); };
+
+    // prepare the second
+    setSrc(back, playlist[nextIndex()]);
+
+    const swap = () => {
+      back.oncanplay = () => {
+        back.play().catch(()=>{});
+        back.classList.add('is-front');
+        front.classList.remove('is-front');
+
+        [front, back] = [back, front];
+        i = nextIndex();
+        setSrc(back, playlist[nextIndex()]);
+      };
+    };
+
+    front.onended = swap;
+    back.onended  = swap;
+  }
+
+  // Start after first paint so LCP stays fast
+  window.addEventListener('load', () => setTimeout(start, 1200), { once: true });
+})();
