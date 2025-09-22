@@ -33,22 +33,27 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 /* ---------- Footer year ---------- */
 (() => { const y = new Date().getFullYear(); const el = $('#year'); if (el) el.textContent = y; })();
 
-/* ---------- HERO: gapless 4-video loop (rVFC-based) ---------- */
+/* ---------- HERO: robust, gapless 4‑video loop with watchdog & skips ---------- */
 (() => {
   const playlist = [
     'images/Soldiers.mp4',
     'images/Iwojima.mp4',
     'images/Boots.mp4',
-    'images/B1.mp4'
+    'images/B1.mp4',
   ];
 
   const a = document.getElementById('videoA');
   const b = document.getElementById('videoB');
   if (!a || !b) return;
 
-  const AUTOPLAY = true;    // allow playback (muted + playsinline)
+  // Respect user/data conditions (poster only in these cases)
+  const conn = navigator.connection || {};
+  const saveData = !!conn.saveData;
+  const slow = /(^2g$|3g)/.test(conn.effectiveType || '');
+  const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
+  if (saveData || slow || mqReduce.matches) return;
 
-
+  // Base setup
   [a, b].forEach(v => {
     v.muted = true;
     v.playsInline = true;
@@ -59,43 +64,102 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   let cur = 0;
   let front = a;
   let back = b;
-  let swapping = false;
 
-  const setSrc = (vid, src) => {
-    if (vid.getAttribute('src') !== src) {
-      vid.src = src;
-      vid.load();
+  const HAVE_FUTURE_DATA = 3;      // readyState threshold
+  const SWAP_EARLY_SEC = 0.18;     // swap ~180ms before the end for gapless feel
+  const WATCHDOG_MS   = 1200;      // if next video isn't ready in ~1.2s, skip it
+
+  const setSrc = (el, src) => {
+    if (el.getAttribute('src') !== src) {
+      try { el.removeAttribute('src'); el.load(); } catch {}
+      el.src = src;
+      try { el.load(); } catch {}
     }
   };
   const nextIndex = () => (cur + 1) % playlist.length;
 
-  setSrc(front, playlist[cur]);
-  setSrc(back, playlist[nextIndex()]);
+  // Load a target index into an element and call cb(true|false) with a watchdog
+  const loadInto = (el, idx, cb) => {
+    let done = false;
+    const finish = ok => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      el.removeEventListener('canplay', onCan);
+      ['error', 'stalled', 'abort'].forEach(ev => el.removeEventListener(ev, onFail));
+      cb(ok);
+    };
+    const onCan  = () => finish(true);
+    const onFail = () => finish(false);
+    const timer  = setTimeout(onFail, WATCHDOG_MS);
 
-  const primeDecode = (v) => { try { v.play(); v.pause(); } catch {} };
+    setSrc(el, playlist[idx]);
+    if (el.readyState >= HAVE_FUTURE_DATA) return onCan();
+    el.addEventListener('canplay', onCan, { once: true });
+    ['error', 'stalled', 'abort'].forEach(ev => el.addEventListener(ev, onFail, { once: true }));
+  };
 
-  front.addEventListener('canplay', () => {
-    try { front.play(); } catch {}
-    front.classList.add('is-front');
-  }, { once: true });
+  // Preload first + second, then play
+  const primeStart = () => {
+    loadInto(front, 0, () => {
+      try { front.currentTime = 0; front.play(); } catch {}
+      front.classList.add('is-front');
+    });
+    loadInto(back, 1 % playlist.length, () => {});
+  };
 
-  const SWAP_EARLY_SEC = 0.18;
+  // Preload the clip after `idx` into `back`, skipping any that fail
+  const preloadNextAfter = (idx) => {
+    const target = (idx + 1) % playlist.length;
+    loadInto(back, target, ok => {
+      if (!ok) {
+        // Skip a bad one and move to the next; keep trying once
+        const skip = (target + 1) % playlist.length;
+        loadInto(back, skip, () => {});
+      }
+    });
+  };
+
+  // Swap to back (which should be preloaded); if not ready, wait with watchdog/skip
+  const doSwap = () => {
+    const go = () => {
+      try { back.currentTime = 0; back.play(); } catch {}
+      back.classList.add('is-front');
+
+      setTimeout(() => {
+        front.classList.remove('is-front');
+        [front, back] = [back, front];
+        cur = nextIndex();
+        preloadNextAfter(cur);       // prepare the following clip
+      }, 160);
+    };
+
+    if (back.readyState >= HAVE_FUTURE_DATA) go();
+    else {
+      // ensure readiness (with timeout/skip); then go
+      const idx = nextIndex();
+      loadInto(back, idx, () => go());
+    }
+  };
+
+  // Watch the current (front) video and request an early swap
   const useRvfc = typeof front.requestVideoFrameCallback === 'function';
-
   const watchFront = () => {
     if (useRvfc) {
-      const cb = (_, meta) => {
-        if (swapping) return;
-        const remain = (front.duration || 0) - (meta.mediaTime || front.currentTime || 0);
-        if (remain > 0 && remain <= SWAP_EARLY_SEC) startSwap();
-        else front.requestVideoFrameCallback(cb);
+      const tick = (_, meta) => {
+        const t = meta?.mediaTime ?? front.currentTime ?? 0;
+        const remain = (front.duration || 0) - t;
+        if (remain > 0 && remain <= SWAP_EARLY_SEC) doSwap();
+        else front.requestVideoFrameCallback(tick);
       };
-      front.requestVideoFrameCallback(cb);
+      front.requestVideoFrameCallback(tick);
     } else {
       const onTime = () => {
-        if (swapping) return;
         const remain = (front.duration || 0) - (front.currentTime || 0);
-        if (remain > 0 && remain <= SWAP_EARLY_SEC) { front.removeEventListener('timeupdate', onTime); startSwap(); }
+        if (remain > 0 && remain <= SWAP_EARLY_SEC) {
+          front.removeEventListener('timeupdate', onTime);
+          doSwap();
+        }
       };
       a.removeEventListener('timeupdate', onTime);
       b.removeEventListener('timeupdate', onTime);
@@ -103,63 +167,34 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     }
   };
 
-  const startSwap = () => {
-    if (swapping) return;
-    swapping = true;
+  // Kick off after first paint work to protect LCP
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      primeStart();
+      watchFront();
+    }, 800);
+  }, { once: true });
 
-    const expectedBack = back;
-
-    const doSwap = () => {
-      if (back !== expectedBack) return;
-
-      try { back.currentTime = 0; back.play(); } catch {}
-      back.classList.add('is-front');
-
-      setTimeout(() => {
-        front.classList.remove('is-front');
-
-        const tmp = front; front = back; back = tmp;
-
-        cur = nextIndex();
-        setSrc(back, playlist[nextIndex()]);
-        try { back.pause(); back.currentTime = 0; } catch {}
-        primeDecode(back);
-
-        watchFront();
-        swapping = false;
-      }, 180);
-    };
-
-    if (back.readyState >= 3) doSwap();
-    else {
-      const handler = () => { back.removeEventListener('canplaythrough', handler); doSwap(); };
-      back.addEventListener('canplaythrough', handler, { once: true });
-      primeDecode(back);
-    }
-  };
-
-  watchFront();
-
-  const tryStart = () => {
-    a.play().catch(()=>{});
-    b.play().then(() => b.pause()).catch(()=>{});
-  };
-  document.addEventListener('touchstart', tryStart, { once: true, passive: true });
-  document.addEventListener('click', tryStart, { once: true });
-
-  const mq = matchMedia('(prefers-reduced-motion: reduce)');
+  // Resume/pause if motion preference flips at runtime
   const applyMotionPref = () => {
-    const vids = [a, b];
-    if (mq.matches) {
-      vids.forEach(v => { try { v.pause(); v.currentTime = 0; } catch {} });
+    if (mqReduce.matches) {
+      [a, b].forEach(v => { try { v.pause(); v.currentTime = 0; } catch {} });
       a.classList.add('is-front');
       b.classList.remove('is-front');
     } else {
       try { front.play(); } catch {}
     }
   };
-  mq.addEventListener ? mq.addEventListener('change', applyMotionPref) : mq.addListener(applyMotionPref);
-  applyMotionPref();
+  mqReduce.addEventListener ? mqReduce.addEventListener('change', applyMotionPref)
+                             : mqReduce.addListener(applyMotionPref);
+
+  // User gesture unlock (some browsers gate autoplay even when muted)
+  const tryStart = () => {
+    a.play().catch(()=>{});
+    b.play().then(() => b.pause()).catch(()=>{});
+  };
+  document.addEventListener('touchstart', tryStart, { once: true, passive: true });
+  document.addEventListener('click',      tryStart, { once: true });
 })();
 
 /* ---------- Annual Spend: on-view + hover replay ---------- */
@@ -324,73 +359,4 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       form.reset();
     }, 600);
   });
-})();
-
-/* ---------- Lazy hero video start (post‑paint, respectful of network & prefs) ---------- */
-(() => {
-  const a = document.getElementById('videoA');
-  const b = document.getElementById('videoB');
-  if (!a || !b) return;
-
-  // Respect user/data conditions
-  const conn = navigator.connection || {};
-  const saveData = !!conn.saveData;
-  const slow = /(^2g$|3g)/.test(conn.effectiveType || '');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (saveData || slow || reduced) return;   // keep poster only
-
-  const playlist = [
-    'images/Soldiers.mp4',
-    'images/Iwojima.mp4',
-    'images/Boots.mp4',
-    'images/B1.mp4'
-  ];
-
-  let i = 0, front = a, back = b;
-
-  const setSrc = (el, src) => {
-    if (el.getAttribute('src') !== src) { el.src = src; el.load(); }
-  };
-  const nextIndex = () => (i + 1) % playlist.length;
-
-  function playFrontWhenReady() {
-    const go = () => { front.oncanplay = null; front.currentTime = 0; front.play().catch(()=>{}); front.classList.add('is-front'); };
-    if (front.readyState >= 3) go(); else front.oncanplay = go; // HAVE_FUTURE_DATA
-  }
-
-  function swapToBack() {
-    const idx = nextIndex();
-    setSrc(back, playlist[idx]);
-
-    const go = () => {
-      back.oncanplay = null;
-      try { back.currentTime = 0; back.play(); } catch {}
-      back.classList.add('is-front');
-      front.classList.remove('is-front');
-
-      // rotate references
-      [front, back] = [back, front];
-      i = idx;
-
-      // pre‑set the following video so it’s ready for the next swap
-      setSrc(back, playlist[nextIndex()]);
-    };
-
-    // If the "back" video is already ready, run immediately; otherwise wait
-    if (back.readyState >= 3) go(); else back.oncanplay = go;
-  }
-
-  // Start after first paint so LCP stays fast
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      // prime first video + pre‑load the next
-      setSrc(front, playlist[i]);
-      setSrc(back,  playlist[nextIndex()]);
-      playFrontWhenReady();
-
-      // swap whenever the current one ends
-      front.onended = swapToBack;
-      back.onended  = swapToBack;
-    }, 1200);
-  }, { once: true });
 })();
