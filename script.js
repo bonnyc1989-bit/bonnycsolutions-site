@@ -46,8 +46,8 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const b = document.getElementById('videoB');
   if (!a || !b) return;
 
-  const AUTOPLAY = false;   // turn off autoplay to fix slow LCP/black flashes
-if (!AUTOPLAY) return;    // keep poster only
+  const AUTOPLAY = true;    // allow playback (muted + playsinline)
+
 
   [a, b].forEach(v => {
     v.muted = true;
