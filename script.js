@@ -353,30 +353,44 @@ if (!AUTOPLAY) return;    // keep poster only
   };
   const nextIndex = () => (i + 1) % playlist.length;
 
-  function start() {
-    // prime first video
-    setSrc(front, playlist[i]);
-    front.oncanplay = () => { front.play().catch(()=>{}); front.classList.add('is-front'); };
+  function playFrontWhenReady() {
+    const go = () => { front.oncanplay = null; front.currentTime = 0; front.play().catch(()=>{}); front.classList.add('is-front'); };
+    if (front.readyState >= 3) go(); else front.oncanplay = go; // HAVE_FUTURE_DATA
+  }
 
-    // prepare the second
-    setSrc(back, playlist[nextIndex()]);
+  function swapToBack() {
+    const idx = nextIndex();
+    setSrc(back, playlist[idx]);
 
-    const swap = () => {
-      back.oncanplay = () => {
-        back.play().catch(()=>{});
-        back.classList.add('is-front');
-        front.classList.remove('is-front');
+    const go = () => {
+      back.oncanplay = null;
+      try { back.currentTime = 0; back.play(); } catch {}
+      back.classList.add('is-front');
+      front.classList.remove('is-front');
 
-        [front, back] = [back, front];
-        i = nextIndex();
-        setSrc(back, playlist[nextIndex()]);
-      };
+      // rotate references
+      [front, back] = [back, front];
+      i = idx;
+
+      // pre‑set the following video so it’s ready for the next swap
+      setSrc(back, playlist[nextIndex()]);
     };
 
-    front.onended = swap;
-    back.onended  = swap;
+    // If the "back" video is already ready, run immediately; otherwise wait
+    if (back.readyState >= 3) go(); else back.oncanplay = go;
   }
 
   // Start after first paint so LCP stays fast
-  window.addEventListener('load', () => setTimeout(start, 1200), { once: true });
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      // prime first video + pre‑load the next
+      setSrc(front, playlist[i]);
+      setSrc(back,  playlist[nextIndex()]);
+      playFrontWhenReady();
+
+      // swap whenever the current one ends
+      front.onended = swapToBack;
+      back.onended  = swapToBack;
+    }, 1200);
+  }, { once: true });
 })();
