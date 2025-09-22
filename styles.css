@@ -302,4 +302,10 @@
     .seal-track,.seal-row,.seal{animation:none!important;filter:none!important}
     h1,h2,h3,.process-line,.step h3{color:#000!important}
   }
-  
+  /* Perf: use Manrope for 800-weight to avoid loading Poppins 800 */
+.hero h1,
+.process-line,
+.stat-value {
+  font-family: "Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 800;
+}
