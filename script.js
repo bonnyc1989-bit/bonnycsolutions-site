@@ -1,5 +1,5 @@
 /* =========================================================
-   BonnyCsolutions — script.js (stable hero playlist)
+   BonnyCsolutions — script.js (stable infinite hero loop)
    ========================================================= */
 
 /* ---------- Viewport: lock zoom on touch devices, keep desktop flexible ---------- */
@@ -33,7 +33,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 /* ---------- Footer year ---------- */
 (() => { const y = new Date().getFullYear(); const el = $('#year'); if (el) el.textContent = y; })();
 
-/* ---------- HERO: stable 4‑video loop (preload + swap on `ended`) ---------- */
+/* ---------- HERO: robust infinite 4‑video loop ---------- */
 (() => {
   const files = [
     'images/Soldiers.mp4',
@@ -46,7 +46,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   const B = document.getElementById('videoB');
   if (!A || !B) return;
 
-  // Respect user/data conditions -> posters only
+  // Respect user/data conditions -> show posters only
   const conn = navigator.connection || {};
   const saveData = !!conn.saveData;
   const slow     = /(^2g$|3g)/.test(conn.effectiveType || '');
@@ -61,11 +61,11 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     v.preload = 'metadata';
   });
 
-  let i = 0;
-  let front = A;
-  let back  = B;
-  const HAVE_FUTURE_DATA = 3; // readyState >= 3 means "good to play"
-  const WATCHDOG_MS = 1500;   // don’t wait forever to preload the next
+  // Helpers
+  const HAVE_FUTURE_DATA = 3;
+  const WATCHDOG_MS = 4000; // give slow networks a bit more room
+  const delay = (ms) => new Promise(r => setTimeout(r, ms));
+  const once  = (el, ev) => new Promise(r => el.addEventListener(ev, r, { once: true }));
 
   const setSrc = (vid, src) => {
     if (vid.getAttribute('src') !== src) {
@@ -75,95 +75,93 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
     }
   };
 
-  // Return a promise that resolves true/false if clip is ready (or failed/timed out)
   function ready(vid, ms = WATCHDOG_MS) {
     return new Promise(res => {
+      if (vid.readyState >= HAVE_FUTURE_DATA) return res(true);
       let done = false;
-      const finish = ok => {
-        if (done) return;
-        done = true;
-        clearTimeout(t);
-        vid.removeEventListener('canplay', onCan);
-        ['error','stalled','abort','emptied'].forEach(ev => vid.removeEventListener(ev, onFail));
-        res(ok);
-      };
+      const finish = ok => { if (done) return; done = true; clearTimeout(t); clean(); res(ok); };
       const onCan  = () => finish(true);
       const onFail = () => finish(false);
-
-      if (vid.readyState >= HAVE_FUTURE_DATA) return finish(true);
+      const clean  = () => {
+        vid.removeEventListener('canplay', onCan);
+        ['error','stalled','abort','emptied'].forEach(ev => vid.removeEventListener(ev, onFail));
+      };
       vid.addEventListener('canplay', onCan, { once: true });
       ['error','stalled','abort','emptied'].forEach(ev => vid.addEventListener(ev, onFail, { once: true }));
       const t = setTimeout(onFail, ms);
     });
   }
 
-  // Preload `srcIdx` into `vid`, resolving when it’s can‑play‑ready (or skip if it fails)
   async function preloadInto(vid, srcIdx) {
-    const src = files[srcIdx % files.length];
+    const src = files[(srcIdx + files.length) % files.length];
     setSrc(vid, src);
     const ok = await ready(vid);
     return ok;
   }
 
-  // One‑time prime of first + second clips
-  async function prime() {
-    // Prepare the first clip into front and play
+  // Loop driver: preload next, play current, await ended, swap, repeat
+  async function playForever() {
+    let i = 0;
+    let front = A;
+    let back  = B;
+
+    // Initial prime: current + next
     await preloadInto(front, i);
-    try { front.currentTime = 0; front.play(); } catch {}
+    try { front.currentTime = 0; await front.play(); } catch {}
     front.classList.add('is-front');
+    await preloadInto(back, i + 1);
 
-    // Prepare the next into back (keep paused)
-    await preloadInto(back, (i + 1) % files.length);
+    // Keep nudging playback occasionally (browsers sometimes pause muted media)
+    const nudge = () => {
+      if (document.hidden || mqReduce.matches) return;
+      if (front.paused) front.play().catch(()=>{});
+    };
+    const nudgeTimer = setInterval(nudge, 4000);
 
-    // Safety: handle swap on ended
-    front.onended = onEnded;
-  }
+    try {
+      for (;;) {
+        // Wait until the current clip ends
+        await once(front, 'ended');
 
-  // Swap when the current (front) ends
-  async function onEnded() {
-    // Play the preloaded back
-    try { back.currentTime = 0; back.play(); } catch {}
-    back.classList.add('is-front');
+        // Ensure the next is ready (if not, wait; if it fails, skip once)
+        let ok = back.readyState >= HAVE_FUTURE_DATA || await ready(back);
+        if (!ok) { await preloadInto(back, i + 2); } // skip a troubled file
 
-    // Small class swap delay feels smoother
-    setTimeout(async () => {
-      front.classList.remove('is-front');
+        // Play the back clip and bring it to front
+        try { back.currentTime = 0; await back.play(); } catch {}
+        back.classList.add('is-front');
+        await delay(140);
+        front.classList.remove('is-front');
 
-      // Rotate refs
-      [front, back] = [back, front];
-      front.onended = onEnded;  // re‑arm
+        // Rotate
+        [front, back] = [back, front];
+        i = (i + 1) % files.length;
 
-      // Advance index and start preloading the following clip
-      i = (i + 1) % files.length;
-
-      // Try the next; if it fails once, skip forward one more
-      let ok = await preloadInto(back, (i + 1) % files.length);
-      if (!ok) ok = await preloadInto(back, (i + 2) % files.length);
-      // If even that failed, we still keep looping the ones that do work.
-    }, 140);
+        // Start preloading the following clip
+        // If it fails, we'll try again next iteration before swap
+        preloadInto(back, i + 1);
+      }
+    } finally {
+      clearInterval(nudgeTimer);
+    }
   }
 
   // Start after paint to protect LCP
   window.addEventListener('load', () => {
-    setTimeout(() => { prime().catch(()=>{}); }, 700);
+    setTimeout(() => { playForever().catch(()=>{}); }, 700);
   }, { once: true });
 
-  // Autoplay gesture unlock (some browsers still require it even when muted)
-  const tryStart = () => {
-    A.play().catch(()=>{});
-    B.play().then(() => B.pause()).catch(()=>{});
-  };
+  // Autoplay gesture unlock
+  const tryStart = () => { A.play().catch(()=>{}); B.play().then(() => B.pause()).catch(()=>{}); };
   document.addEventListener('touchstart', tryStart, { once: true, passive: true });
   document.addEventListener('click',      tryStart, { once: true });
 
-  // Respect reduced‑motion if toggled while on page
+  // Respect reduced‑motion toggled while the page is open
   const applyMotionPref = () => {
     if (mqReduce.matches) {
       [A, B].forEach(v => { try { v.pause(); v.currentTime = 0; } catch {} });
       A.classList.add('is-front');
       B.classList.remove('is-front');
-    } else {
-      try { front.play(); } catch {}
     }
   };
   mqReduce.addEventListener ? mqReduce.addEventListener('change', applyMotionPref)
@@ -259,8 +257,10 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
     const step = (t) => {
       const p = Math.min(1, (t - start) / dur);
-      const n = target * easeOut(p);
-      v.textContent = formatVal(n, target, suffix);
+      const n = target * (1 - Math.pow(1 - p, 3));
+      v.textContent = (suffix === 'T') ? `$${n.toFixed(1)}T`
+                  : (suffix === 'B') ? `$${n.toFixed(Number.isInteger(target) ? 0 : 2)}B`
+                  : `$${Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
       if (p < 1) st.rafId = requestAnimationFrame(step);
       else { st.animating = false; v.textContent = v.dataset.final; }
     };
