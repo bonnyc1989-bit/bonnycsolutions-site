@@ -26,6 +26,13 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="styles.css" />
 
+  <!-- Minimal inline tweaks for bullet spacing/underline thickness -->
+  <style>
+    .impact-list li { margin-bottom: 1rem; }       /* one line between bullets */
+    .impact-list li:last-child { margin-bottom: 0; }
+    .impact-list u { text-underline-offset: 2px; text-decoration-thickness: .09em; }
+  </style>
+
   <!-- Organization schema -->
   <script type="application/ld+json">
   {
@@ -226,8 +233,9 @@
 
           <ul class="impact-list">
             <li><strong>If your proposals aren’t compliant</strong> — I <u>bring structure and story so they pass review</u>.</li>
+
             <li><strong>If your capture process lacks focus</strong> — I <u>design a system to target the right agencies at the right time</u>.</li>
-            <li><strong>If you’re exploring mechanical, technology, or surveillance &amp; security contracts</strong> — I <u>translate your capabilities into federal language buyers understand</u>.</li>
+
             <li><strong>If your internal processes are ad-hoc</strong> — I <u>turn them into repeatable, auditable workflows that withstand scrutiny</u>.</li>
           </ul>
 
