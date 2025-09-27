@@ -35,12 +35,13 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 /* ---------- HERO: robust infinite 4-video loop ---------- */
 (() => {
-  const files = [
-    'images/Soldiers.mp4',
-    'images/Iwojima.mp4',
-    'images/Boots.mp4',
-    'images/B1.mp4',
-  ];
+const files = [
+  'images/Soldiers.opt.mp4',  // smaller
+  'images/Iwojima.opt.mp4',   // MUCH smaller
+  'images/Boots.mp4',         // already small, keep
+  'images/B1.opt.mp4',        // MUCH smaller
+];
+
 
   const A = document.getElementById('videoA');
   const B = document.getElementById('videoB');
