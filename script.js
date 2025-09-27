@@ -33,7 +33,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 /* ---------- Footer year ---------- */
 (() => { const y = new Date().getFullYear(); const el = $('#year'); if (el) el.textContent = y; })();
 
-/* ---------- HERO: robust infinite 4‑video loop ---------- */
+/* ---------- HERO: robust infinite 4-video loop ---------- */
 (() => {
   const files = [
     'images/Soldiers.mp4',
@@ -138,7 +138,6 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
         i = (i + 1) % files.length;
 
         // Start preloading the following clip
-        // If it fails, we'll try again next iteration before swap
         preloadInto(back, i + 1);
       }
     } finally {
@@ -156,7 +155,7 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
   document.addEventListener('touchstart', tryStart, { once: true, passive: true });
   document.addEventListener('click',      tryStart, { once: true });
 
-  // Respect reduced‑motion toggled while the page is open
+  // Respect reduced-motion toggled while the page is open
   const applyMotionPref = () => {
     if (mqReduce.matches) {
       [A, B].forEach(v => { try { v.pause(); v.currentTime = 0; } catch {} });

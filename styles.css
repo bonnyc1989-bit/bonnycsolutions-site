@@ -1,7 +1,6 @@
 /* =========================================
    BonnyCsolutions — styles.css (final, unified hero CTAs + clean header pills)
    ========================================= */
-
    :root{
     --bg:#0b1220;--bg-2:#0e1628;--surface:#111827;--surface-2:#0f172a;--border:#1f2937;
     --white:#ffffff;--text:#ffffff;--muted:#cdd6e4;--brand:#22d3ee;--brand-strong:#1cc6e0;
@@ -108,7 +107,7 @@
   
   /* ---------- Mobile header: two rows + high-contrast horizontal scroller ---------- */
   @media (max-width: 820px){
-    .nav-inner{flex-direction:column;align-items:stretch;gap:12px;padding:10px 0} /* a bit more gap */
+    .nav-inner{flex-direction:column;align-items:stretch;gap:12px;padding:10px 0}
     .section{scroll-margin-top:110px}
   
     /* Brand: centered, never clipped, clean outline (no glow) */
@@ -144,7 +143,7 @@
     /* Topic pills — keep colors, remove glow, add solid white outline */
     .nav-list{gap:10px;min-width:max-content;padding:4px 2px}
     .nav-list a{
-      background:rgba(8,14,28,.84);      /* unchanged dark pill */
+      background:rgba(8,14,28,.84);
       border:1px solid #fff;             /* solid white outline */
       border-radius:999px;
       padding:10px 14px;
@@ -303,9 +302,10 @@
     h1,h2,h3,.process-line,.step h3{color:#000!important}
   }
   /* Perf: use Manrope for 800-weight to avoid loading Poppins 800 */
-.hero h1,
-.process-line,
-.stat-value {
-  font-family: "Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 800;
-}
+  .hero h1,
+  .process-line,
+  .stat-value {
+    font-family: "Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    font-weight: 800;
+  }
+  
