@@ -324,3 +324,41 @@ section.seals .fade{ width: 160px; }
   filter: none;
   opacity: 1;
 }
+/* ===== NUCLEAR OVERRIDE FOR BIG SEALS ===== */
+:root{
+  /* crank this up to the size you actually want */
+  --seal-size: 340px;            /* try 340, 380, even 420 */
+  --seal-gap: 60px;              /* space between seals */
+}
+
+/* Make sure the marquee/track is tall enough to display the big images */
+.seals,
+.seals-marquee{ padding: 10px 0; }
+.seals-track{
+  gap: var(--seal-gap) !important;
+  align-items: center !important;
+  height: calc(var(--seal-size) + 12px) !important;   /* critical */
+  min-height: calc(var(--seal-size) + 12px) !important;
+  line-height: 0 !important;
+}
+
+/* Hard-force the image size and kill any inherited limits */
+.seals img,
+.seals-track img{
+  display: block !important;
+  width:  var(--seal-size) !important;
+  height: var(--seal-size) !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  border-radius: 50% !important;
+  filter: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* If any LI or wrapper tried to cap size with transforms/overflow */
+.seals-track > *{
+  transform: none !important;
+  overflow: visible !important;
+}
