@@ -1,51 +1,64 @@
-// Footer year
+// Year in footer
 document.getElementById("year").textContent = new Date().getFullYear();
 
-/* ===== HERO: swap to video when ready (image poster first) ===== */
+/* ===== HERO: reveal video when ready ===== */
 const heroVideo = document.getElementById("heroVideo");
 if (heroVideo) {
   const tryPlay = () => heroVideo.play().catch(() => {});
   heroVideo.muted = true;
   heroVideo.addEventListener("canplaythrough", () => {
-    heroVideo.classList.add("ready");   // fade in over the image
+    heroVideo.classList.add("ready");
     tryPlay();
   });
   window.addEventListener("load", tryPlay);
 }
 
-/* ===== BUDGET: count-up when visible ===== */
-const bubbles = document.querySelectorAll(".budget-bubble");
-if (bubbles.length) {
-  const format = (n, suffix) => `$${n.toFixed(1)}${suffix}`;
+/* ===== BUDGET: count-up on hover (white digits) ===== */
+(() => {
+  const bubbles = document.querySelectorAll(".budget-bubble");
+  if (!bubbles.length) return;
 
-  const runCounter = (el) => {
+  const fmt = (n, suffix) => `$${n.toFixed(1)}${suffix}`;
+
+  function animateCount(el, duration = 1200) {
     const target = parseFloat(el.dataset.target || "0");
     const suffix = el.dataset.suffix || "";
-    const numEl = el.querySelector(".budget-number");
-    let start = null;
+    const numEl  = el.querySelector(".budget-number");
 
+    if (el._rafId) cancelAnimationFrame(el._rafId);
+
+    let start = null;
     function step(ts) {
       if (!start) start = ts;
-      const p = Math.min(1, (ts - start) / 1200);        // 1.2s
-      const eased = 0.2 + 0.8 * p * p;                   // ease-in
-      const val = Math.min(target * eased, target);
-      numEl.textContent = format(val, suffix);
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  };
+      const t = Math.min(1, (ts - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const val = target * eased;
+      numEl.textContent = fmt(val, suffix);
 
-  const io = new IntersectionObserver((entries, obs) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        runCounter(e.target);
-        obs.unobserve(e.target);
+      if (t < 1) {
+        el._rafId = requestAnimationFrame(step);
+      } else {
+        numEl.textContent = fmt(target, suffix);
+        el._rafId = null;
       }
-    });
-  }, { threshold: 0.35 });
+    }
+    el._rafId = requestAnimationFrame(step);
+  }
 
-  bubbles.forEach(b => io.observe(b));
-}
+  // initialize and wire hover
+  bubbles.forEach((b) => {
+    const n = b.querySelector(".budget-number");
+    if (n) n.textContent = "$0";
+
+    b.addEventListener("mouseenter", () => animateCount(b));
+    b.addEventListener("mouseleave", () => {
+      if (b._rafId) cancelAnimationFrame(b._rafId);
+      const n2 = b.querySelector(".budget-number");
+      if (n2) n2.textContent = "$0";
+      b._rafId = null;
+    });
+  });
+})();
 
 /* ===== CONTACT: Netlify XHR (stay on page) ===== */
 const form = document.querySelector('form[name="contact"]');
@@ -58,11 +71,11 @@ if (form) {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(data).toString()
     })
-    .then(() => {
-      form.reset();
-      const ok = form.querySelector(".form-success");
-      if (ok) ok.hidden = false;
-    })
-    .catch(() => alert("Submission failed. Please try again."));
+      .then(() => {
+        form.reset();
+        const ok = form.querySelector(".form-success");
+        if (ok) ok.hidden = false;
+      })
+      .catch(() => alert("Submission failed. Please try again."));
   });
 }

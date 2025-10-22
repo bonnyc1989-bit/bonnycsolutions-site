@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Bonny Contracting Solutions Pty Ltd</title>
 
-  <!-- Canonical + SEO -->
   <link rel="canonical" href="https://bonnycsolutions.com" />
   <meta name="description" content="Find. Influence. Win. U.S. Federal Contracts for small businesses in manufacturing, machinery leasing, and maintenance." />
   <meta property="og:title" content="Bonny Contracting Solutions Pty Ltd" />
@@ -13,30 +12,24 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bonnycsolutions.com" />
   <meta property="og:locale" content="en_US" />
-  <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="images/icons/favicon.ico" />
-
-  <!-- Styles -->
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- Schema.org -->
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Bonny Contracting Solutions Pty Ltd",
-    "url": "https://bonnycsolutions.com",
-    "email": "info@bonnycsolutions.com",
-    "telephone": ["+17075146122","+61448793660"]
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"Bonny Contracting Solutions Pty Ltd",
+    "url":"https://bonnycsolutions.com",
+    "email":"info@bonnycsolutions.com",
+    "telephone":["+17075146122","+61448793660"]
   }
   </script>
 </head>
-
 <body>
   <div class="page-frame">
-    <!-- ===== NAVBAR (centered brand + right bubble menu) ===== -->
+    <!-- ===== NAV ===== -->
     <header class="nav">
       <div class="container nav-inner">
         <div class="nav-spacer" aria-hidden="true"></div>
@@ -55,7 +48,7 @@
       </div>
     </header>
 
-    <!-- ===== HERO (image first → swap to video when ready) ===== -->
+    <!-- ===== HERO ===== -->
     <section id="hero" class="hero">
       <div class="hero-wrapper" style="background-image:url('images/hero-poster.jpg');">
         <video id="heroVideo" class="hero-video" playsinline muted loop preload="metadata" aria-label="Background video (muted)">
@@ -72,14 +65,13 @@
             </div>
           </div>
         </div>
-
         <div class="hero-gradient"></div>
       </div>
     </section>
 
     <hr class="divider" />
 
-    <!-- ===== SERVICES (3 top / 2 centered under) ===== -->
+    <!-- ===== SERVICES (2 top / 3 bottom) ===== -->
     <section id="services" class="section">
       <div class="container">
         <h2 class="section-title">Services</h2>
@@ -87,8 +79,8 @@
           Practical, outcomes-first support. When needed, I bring in trusted specialists through BonnyCsolutions to scale delivery.
         </p>
 
-        <div class="services-grid five-grid">
-          <!-- Row 1 -->
+        <div class="services-grid five-grid top-two">
+          <!-- row 1 -->
           <article class="service-card">
             <h3>Roadmapping & Strategic Placement</h3>
             <p>Map buyer demand, competitors, and contract vehicles to build a winning pursuit plan.</p>
@@ -97,12 +89,12 @@
             <h3>Business Development for Federal Consulting</h3>
             <p>Target lists, outreach rhythms, capture handoffs, and metrics that show progress—not motion.</p>
           </article>
+
+          <!-- row 2 -->
           <article class="service-card">
             <h3>Manufacturing Readiness & Compliance</h3>
             <p>Align production, QA systems, and export controls with federal procurement standards.</p>
           </article>
-
-          <!-- Row 2 (centered pair) -->
           <article class="service-card">
             <h3>Machinery Leasing Support</h3>
             <p>Develop compliant leasing models for heavy equipment and defense programs.</p>
@@ -117,7 +109,7 @@
 
     <hr class="divider" />
 
-    <!-- ===== ABOUT (rewritten) ===== -->
+    <!-- ===== ABOUT ===== -->
     <section id="about" class="section">
       <div class="container narrow">
         <h2 class="section-title">About</h2>
@@ -143,14 +135,14 @@
 
     <hr class="divider" />
 
-    <!-- ===== TARGET DEPARTMENTS (seals marquee w/ tint) ===== -->
+    <!-- ===== SEALS (lighter tint + edge fades) ===== -->
     <section id="seals" class="section">
       <div class="container">
         <h2 class="section-title">Target Departments</h2>
 
         <div class="seal-marquee">
           <div class="seal-track">
-            <!-- A-set -->
+            <!-- set A -->
             <img src="images/Department/army.png" alt="Army" />
             <img src="images/Department/navy.png" alt="Navy" />
             <img src="images/Department/airforce.png" alt="Air Force" />
@@ -158,7 +150,7 @@
             <img src="images/Department/state.png" alt="State Department" />
             <img src="images/Department/justice.png" alt="Justice" />
             <img src="images/Department/vet.png" alt="Veterans Affairs" />
-            <!-- B-set (duplicate for seamless loop) -->
+            <!-- set B (duplicate for seamless loop) -->
             <img src="images/Department/army.png" alt="" aria-hidden="true" />
             <img src="images/Department/navy.png" alt="" aria-hidden="true" />
             <img src="images/Department/airforce.png" alt="" aria-hidden="true" />
@@ -173,7 +165,7 @@
 
     <hr class="divider" />
 
-    <!-- ===== BUDGET (count-up) ===== -->
+    <!-- ===== BUDGET ===== -->
     <section id="budget" class="section section-tight">
       <div class="container">
         <h2 class="section-title">2025 Federal Contracting Budget Breakdown</h2>
@@ -205,40 +197,42 @@
 
     <hr class="divider" />
 
-    <!-- ===== CONTACT (two-column) ===== -->
+    <!-- ===== CONTACT (narrower, more vertical) ===== -->
     <section id="contact" class="section">
       <div class="container">
         <h2 class="section-title">Contact</h2>
 
-        <div class="contact-grid">
-          <!-- Left: Netlify form -->
-          <form name="contact" method="POST" data-netlify="true" class="contact-form">
-            <input type="hidden" name="form-name" value="contact" />
-            <div class="form-row two">
-              <label> Name
-                <input type="text" name="name" required />
+        <div class="contact-wrap">
+          <div class="contact-grid">
+            <!-- Left: form -->
+            <form name="contact" method="POST" data-netlify="true" class="contact-form">
+              <input type="hidden" name="form-name" value="contact" />
+              <div class="form-row two">
+                <label> Name
+                  <input type="text" name="name" required />
+                </label>
+                <label> Email
+                  <input type="email" name="email" required />
+                </label>
+              </div>
+              <label> Message
+                <textarea name="message" rows="6" required></textarea>
               </label>
-              <label> Email
-                <input type="email" name="email" required />
-              </label>
-            </div>
-            <label> Message
-              <textarea name="message" rows="6" required></textarea>
-            </label>
-            <button type="submit" class="btn btn-primary btn-full">Send Message</button>
-            <p class="form-success" hidden>Thanks! Your message has been received.</p>
-          </form>
+              <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+              <p class="form-success" hidden>Thanks! Your message has been received.</p>
+            </form>
 
-          <!-- Right: company info -->
-          <aside class="company-card">
-            <h3 class="company-title">Bonny Contracting Solutions Pty Ltd</h3>
-            <ul class="company-list">
-              <li><strong>Email:</strong> <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></li>
-              <li><strong>Phone (US):</strong> +1 (707) 514 6122</li>
-              <li><strong>Phone (AUS):</strong> +61 448 793 660</li>
-            </ul>
-            <p class="company-tagline">Registered consulting partner supporting global government contractors.</p>
-          </aside>
+            <!-- Right: company info -->
+            <aside class="company-card">
+              <h3 class="company-title">Bonny Contracting Solutions Pty Ltd</h3>
+              <ul class="company-list">
+                <li><strong>Email:</strong> <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></li>
+                <li><strong>Phone (US):</strong> +1 (707) 514 6122</li>
+                <li><strong>Phone (AUS):</strong> +61 448 793 660</li>
+              </ul>
+              <p class="company-tagline">Registered consulting partner supporting global government contractors.</p>
+            </aside>
+          </div>
         </div>
       </div>
     </section>
