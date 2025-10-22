@@ -1,1 +1,6 @@
-/favicon.ico /images/icons/favicon.png 200
+# Redirect all HTTP to HTTPS
+http://* https://:splat 301!
+
+# Clean URLs (remove .html)
+# Example: /about.html → /about
+/* /index.html 200
