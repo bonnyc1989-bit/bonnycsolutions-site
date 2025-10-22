@@ -1,52 +1,53 @@
 // Footer year
 document.getElementById("year").textContent = new Date().getFullYear();
 
-/* ===== HERO: image first, then swap to video when ready ===== */
+/* ===== HERO: swap to video when ready (image poster first) ===== */
 const heroVideo = document.getElementById("heroVideo");
 if (heroVideo) {
   const tryPlay = () => heroVideo.play().catch(() => {});
   heroVideo.muted = true;
   heroVideo.addEventListener("canplaythrough", () => {
-    heroVideo.classList.add("ready"); // fade in video over the poster image
+    heroVideo.classList.add("ready");   // fade in over the image
     tryPlay();
   });
-  // Attempt autoplay on load as well (mobile)
   window.addEventListener("load", tryPlay);
 }
 
-/* ===== BUDGET COUNTERS (count-up when visible) ===== */
+/* ===== BUDGET: count-up when visible ===== */
 const bubbles = document.querySelectorAll(".budget-bubble");
 if (bubbles.length) {
   const format = (n, suffix) => `$${n.toFixed(1)}${suffix}`;
+
   const runCounter = (el) => {
     const target = parseFloat(el.dataset.target || "0");
     const suffix = el.dataset.suffix || "";
     const numEl = el.querySelector(".budget-number");
-    let val = 0;
-    const duration = 1200; // ms
-    const start = performance.now();
-    const tick = (t) => {
-      const p = Math.min(1, (t - start) / duration);
-      val = target * (0.2 + 0.8 * p * p); // ease in
-      if (p < 1) requestAnimationFrame(tick);
-      numEl.textContent = format(Math.min(val, target), suffix);
-    };
-    requestAnimationFrame(tick);
+    let start = null;
+
+    function step(ts) {
+      if (!start) start = ts;
+      const p = Math.min(1, (ts - start) / 1200);        // 1.2s
+      const eased = 0.2 + 0.8 * p * p;                   // ease-in
+      const val = Math.min(target * eased, target);
+      numEl.textContent = format(val, suffix);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
   };
 
   const io = new IntersectionObserver((entries, obs) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        runCounter(entry.target);
-        obs.unobserve(entry.target);
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        runCounter(e.target);
+        obs.unobserve(e.target);
       }
     });
   }, { threshold: 0.35 });
 
-  bubbles.forEach((b) => io.observe(b));
+  bubbles.forEach(b => io.observe(b));
 }
 
-/* ===== CONTACT (Netlify form XHR to stay on page) ===== */
+/* ===== CONTACT: Netlify XHR (stay on page) ===== */
 const form = document.querySelector('form[name="contact"]');
 if (form) {
   form.addEventListener("submit", (e) => {
@@ -57,11 +58,11 @@ if (form) {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(data).toString()
     })
-      .then(() => {
-        form.reset();
-        const ok = form.querySelector(".form-success");
-        if (ok) ok.hidden = false;
-      })
-      .catch((err) => alert("Submission failed. Please try again."));
+    .then(() => {
+      form.reset();
+      const ok = form.querySelector(".form-success");
+      if (ok) ok.hidden = false;
+    })
+    .catch(() => alert("Submission failed. Please try again."));
   });
 }
