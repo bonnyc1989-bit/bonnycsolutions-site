@@ -2,236 +2,235 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Desktop keeps zoom; mobile/tablet tightened by JS (viewport-fit supports notches) -->
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Bonny Contracting Solutions Pty Ltd</title>
-  <meta name="description" content="Pipeline development, early shaping, and compliant proposals—built for small businesses in manufacturing, machinery leasing, and maintenance." />
-  <link rel="icon" href="images/icons/favicon.ico" />
-  <link rel="canonical" href="https://bonnycsolutions.com" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Bonny Contracting Solutions Pty Ltd" />
-  <meta property="og:description" content="Find. Influence. Win. U.S. Federal Contracts." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://bonnycsolutions.com" />
-  <meta property="og:image" content="images/hero-poster.jpg" />
+  <meta name="description" content="Bonny Contracting Solutions ...ugh targeted BD, disciplined capture, and compliant proposals.">
 
+  <!-- Social sharing -->
+  <meta property="og:title" content="Bonny Contracting Solutions Pty Ltd">
+  <meta property="og:description" content="Find. Influence. Win. U.S. Federal Contracts. Pipeline, capture, proposals.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0a1a2a">
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/images/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+
+  <!-- Preconnects for fonts/media -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preload" as="image" href="images/hero-poster.jpg">
+  <link rel="preload" as="video" href="videos/hero-clip-1.mp4" />
+  <link rel="preload" as="video" href="videos/hero-clip-2.mp4" />
+
+  <!-- Site styles -->
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- Schema: Organization -->
-  <script type="application/ld+json">
+  <!-- Minimal inline tweaks for bullet spacing/underline thickness -->
+  <style>
+    .impact-list li { margin-bottom: 1rem; }       /* one line between bullets */
+    .impact-list li:last-child { margin-bottom: 0; }
+    .impact-list u { text-underline-offset: 2px; text-decoration-thickness: .09em; }
+  </style>
+
+  <!-- Organization schema -->
+  <script type='text/javascript' src='https://api.netlify.com/VZ...tI-SfH5mgwDJjwLu0='></script><script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Bonny Contracting Solutions Pty Ltd",
-    "url": "https://bonnycsolutions.com",
-    "email": "info@bonnycsolutions.com",
-    "telephone": ["+1 707 514 6122", "+61 448 793 660"]
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"Bonny Contracting Solutions Pty Ltd",
+    "url":"https://bonny.example/",
+    "logo":"https://bonny.example/images/logo.png",
+    "sameAs":[
+      "https://www.linkedin.com/company/bonny-contracting-solutions"
+    ]
   }
   </script>
 </head>
+
 <body>
-  <!-- ====== Header ====== -->
-  <header class="nav">
-    <div class="container nav-inner">
-      <div class="nav-grid">
-        <div class="nav-spacer" aria-hidden="true"></div>
-        <div class="brand">Bonny Contracting Solutions Pty Ltd</div>
-        <nav class="primary-nav" aria-label="Primary">
-          <div class="nav-bubble">
-            <ul class="nav-list">
-              <li><a href="#services">Services</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#seals">Agencies</a></li>
-              <li><a href="#budget">Budget</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div>
+  <div class="site-wrap">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#top" aria-label="Home">
+          <img src="images/logo.svg" alt="Bonny Contracting Solutions Pty Ltd" width="160" height="36">
+        </a>
+        <nav class="nav">
+          <a href="#services">Services</a>
+          <a href="#process">Process</a>
+          <a href="#spend">Spend</a>
+          <a href="#agencies">Agencies</a>
+          <a href="#about">About</a>
+          <a class="btn btn-sm" href="#enquiry">Enquiry</a>
         </nav>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- ====== Hero ====== -->
-  <section id="hero" class="hero">
-    <div class="hero-wrapper" style="background-image:url('images/hero-poster.jpg');">
-      <video id="heroVideo" class="hero-video" muted playsinline preload="metadata" aria-label="Background video (muted)"></video>
+    <main id="top" class="site-main">
 
-      <div class="hero-content container">
-        <div class="hero-bubble">
-          <h1>Find. Influence. Win.<br />U.S. Federal Contracts.</h1>
-          <p class="lead">
-            Pipeline development, early shaping, and compliant proposals—built for small businesses in manufacturing, machinery leasing, and maintenance sectors.
-          </p>
-          <div class="cta-row">
-            <a class="btn btn-primary" href="#contact">Get Started</a>
-            <a class="btn btn-primary" href="#services">See Services</a>
+      <!-- HERO -->
+      <section id="hero" class="hero">
+        <div class="hero-video" aria-hidden="true">
+          <!-- preload switched to metadata to keep first load light -->
+          <video id="videoA" class="hero-video-el" playsinline muted preload="none" poster="images/hero-poster.jpg"></video>
+          <video id="videoB" class="hero-video-el" playsinline muted preload="none" poster="images/hero-poster.jpg"></video>
+        </div>
+
+        <div class="container">
+          <div class="hero-panel">
+            <h1>Find. Influence. Win.<br>U.S. Federal Contracts.</h1>
+            <p>My heavy-equipment background + procurement fluency: I turn your <strong>manufacturing, machine leasing, and maintenance</strong> strengths into clear, low-risk proposals that win.</p>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="#enquiry">Get Started</a>
+              <a class="btn" style="border-color:rgba(255,255,255,.55);color:#e8f3ff;" href="#services">See Services</a>
+            </div>
+            <p class="support muted" style="max-width:920px;">
+              We specialize in bringing the right <strong>DoD</strong>, <strong>GSA</strong>, <strong>VA</strong>, <strong>DHS</strong>, and <strong>State Department</strong> solicitations forward and increasing
+              your probability of award—through focused targeting, disciplined capture, and sharp proposals.
+            </p>
           </div>
         </div>
+      </section>
+
+      <!-- SERVICES -->
+      <section id="services" class="section">
+        <div class="container">
+          <h2>Services</h2>
+
+          <div class="cards">
+            <article class="card">
+              <h3>Roadmaps &amp; Readiness</h3>
+              <p>NAICS/PSC fit, set-aside strategy, teaming, bid/no-bid rules, and a 90-day plan.</p>
+            </article>
+
+            <article class="card">
+              <h3>Pipeline &amp; Positioning</h3>
+              <p>Find spend you can win, shape early, and pre-wire the story with the right offices.</p>
+            </article>
+
+            <article class="card">
+              <h3>Capture &amp; Proposals</h3>
+              <p>Plain-English, FAR-clean responses. Technical that reads, pricing that defends, compliance that sticks.</p>
+            </article>
+
+            <article class="card">
+              <h3>Advisory on “Hard Jobs”</h3>
+              <p>Manufacturing, machine leasing, and maintenance—translated into risk, uptime, and mission outcomes.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROCESS -->
+      <section id="process" class="section section-alt">
+        <div class="container">
+          <h2>Process</h2>
+          <ol class="steps">
+            <li><strong>Discover</strong> — Map strengths to how agencies buy: thresholds, vehicles, decision factors.</li>
+            <li><strong>Position</strong> — Shape opportunities before they drop. Past performance, teaming, set-aside alignment.</li>
+            <li><strong>Pursue</strong> — Capture plans with clear roles, deadlines, and color-team rigor.</li>
+            <li><strong>Win &amp; Deliver</strong> — Pass the checklist, win on value, and perform clean post-award.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- SPEND / COUNTERS -->
+      <section id="spend" class="section">
+        <div class="container">
+          <h2>Focused Federal Spend</h2>
+          <ul class="stats">
+            <li><span data-count="154">0</span><small>Tracked Spend (B$)</small></li>
+            <li><span data-count="312">0</span><small>Qualified Opps</small></li>
+            <li><span data-count="27">0</span><small>Days Saved / Cycle</small></li>
+            <li><span data-count="38">0</span><small>Win Rate Uplift (%)</small></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- AGENCIES -->
+      <section id="agencies" class="section section-alt">
+        <div class="container">
+          <h2>Agencies</h2>
+          <p>We align your niche to buyers whose missions depend on uptime, safety, and repeatable field service.</p>
+          <div class="marquee" aria-label="Agencies">
+            <div class="marquee-track">
+              <span>DoD</span><span>GSA</span><span>VA</span><span>DHS</span><span>State</span><span>USACE</span><span>USAF</span><span>USN</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" class="section">
+        <div class="container">
+          <h2>About</h2>
+
+          <p>I specialize in <strong>manufacturing, machine leasing, and maintenance</strong>, and I speak the language of specialist equipment. With a background on the tools and a clear grasp of federal procurement, I translate what you actually deliver—uptime, safety, repeatability—into what contracting officers must see: controlled risk, credible past performance, and value that fits the mission. That’s how we capture more of the right opportunities and convert your niche into <strong>winning proposals and awards</strong>.</p>
+
+          <p>Most small businesses entering the U.S. Federal mar...targeting and timing aren’t precise. That’s where I come in.</p>
+
+          <p>With 15+ years of experience in mechanical engineer...areer around making complex systems work under pressure. I now a
+          lign this hands-on perspective with FAR-clean strategy, so your proposals read credible, compliant, and low-risk.</p>
+
+          <ul class="impact-list">
+            <li><u>Targeting:</u> where your capability fits current missions and spend trends.</li>
+            <li><u>Positioning:</u> early shaping, teaming, and set-aside leverage.</li>
+            <li><u>Proposals:</u> clear technicals, defensible pricing, and strict compliance.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ENQUIRY -->
+      <section id="enquiry" class="section section-alt">
+        <div class="container">
+          <h2>Enquiry</h2>
+          <form id="enquiryForm" novalidate>
+            <div class="grid">
+              <label>
+                <span>Full name</span>
+                <input type="text" name="name" autocomplete="name" required>
+              </label>
+              <label>
+                <span>Company</span>
+                <input type="text" name="company" autocomplete="organization">
+              </label>
+              <label>
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" required>
+              </label>
+              <label>
+                <span>Phone</span>
+                <input type="tel" name="phone" autocomplete="tel">
+              </label>
+              <label class="full">
+                <span>What do you want to win?</span>
+                <textarea name="message" rows="5" placeholder="Describe your niche, vehicles, and near-term targets…"></textarea>
+              </label>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Send</button>
+              <p class="muted">By submitting, you agree we may contact you about federal pursuits.</p>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        © <span id="year"></span> Bonny Contracting Solutions Pty Ltd
       </div>
+    </footer>
 
-      <div class="hero-gradient"></div>
-    </div>
-  </section>
+  </div>
 
-  <div class="section-divider"></div>
+  <script src="script.js?v=opt-v1" defer></script>
 
-  <!-- ====== Services (two cards only) ====== -->
-  <section id="services" class="section">
-    <div class="container">
-      <h2 class="section-title">Services</h2>
-      <p class="muted">
-        Practical, outcomes-first support. When needed, I bring in trusted specialists through BonnyCsolutions to scale delivery.
-      </p>
-
-      <div class="services-grid two-up">
-        <article class="service-card">
-          <h3>Roadmapping & Strategic Placement</h3>
-          <p>Map buyer demand, competitors, and contract vehicles to build a winning pursuit plan.</p>
-        </article>
-
-        <article class="service-card">
-          <h3>Business Development for Federal Consulting</h3>
-          <p>Target lists, outreach rhythms, capture handoffs, and metrics that show progress—not motion.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ====== About ====== -->
-  <section id="about" class="section">
-    <div class="container">
-      <h2 class="section-title">About</h2>
-      <p>
-        With over 15 years in engineering, defense operations, and heavy machinery environments, Bonny Contracting Solutions bridges the gap between industry expertise and government expectations. We help small businesses master the complexities of the federal market by translating real-world operational know-how into compliant, winning strategies.
-      </p>
-      <p>
-        Having worked in environments where precision, timing, and coordination decide outcomes — from large-scale construction and equipment maintenance to defense logistics — we understand both sides of the table: the contractor’s urgency to execute and the government’s need for assurance. Our role is to make that relationship seamless.
-      </p>
-      <ul class="bullets">
-        <li><strong>Non-compliant proposals?</strong> We bring structure, compliance, and clarity.</li>
-        <li><strong>Weak capture process?</strong> We design targeted, data-driven pursuit systems that align technical capability with agency need.</li>
-        <li><strong>Ad-hoc internal workflows?</strong> We create repeatable, audit-ready processes that help you scale with confidence.</li>
-      </ul>
-      <p>
-        We translate technical experience into federal readiness — helping specialists, trades, and engineering firms position themselves not just to bid, but to win.
-      </p>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ====== Target Departments (original colors, smooth carousel) ====== -->
-  <section id="seals" class="section">
-    <div class="container">
-      <h2 class="section-title">Target Departments</h2>
-
-      <div class="seals-marquee">
-        <ul class="seals-track">
-          <!-- one loop -->
-          <li><img src="images/Department/navy.png" alt="Department of the Navy" /></li>
-          <li><img src="images/Department/airforce.png" alt="Department of the Air Force" /></li>
-          <li><img src="images/Department/dhs.png" alt="Department of Homeland Security" /></li>
-          <li><img src="images/Department/state.png" alt="Department of State" /></li>
-          <li><img src="images/Department/vet.png" alt="Department of Veterans Affairs" /></li>
-          <li><img src="images/Department/justice.png" alt="Department of Justice" /></li>
-          <li><img src="images/Department/army.png" alt="United States Army" /></li>
-
-          <!-- duplicate loop for seamless scroll -->
-          <li><img src="images/Department/navy.png" alt="Department of the Navy" /></li>
-          <li><img src="images/Department/airforce.png" alt="Department of the Air Force" /></li>
-          <li><img src="images/Department/dhs.png" alt="Department of Homeland Security" /></li>
-          <li><img src="images/Department/state.png" alt="Department of State" /></li>
-          <li><img src="images/Department/vet.png" alt="Department of Veterans Affairs" /></li>
-          <li><img src="images/Department/justice.png" alt="Department of Justice" /></li>
-          <li><img src="images/Department/army.png" alt="United States Army" /></li>
-        </ul>
-
-        <!-- edge fades (purely visual) -->
-        <div class="fade fade-left" aria-hidden="true"></div>
-        <div class="fade fade-right" aria-hidden="true"></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ====== Budget ====== -->
-  <section id="budget" class="section">
-    <div class="container">
-      <h2 class="section-title">2025 Federal Contracting Budget Breakdown</h2>
-
-      <div class="budget-grid">
-        <div class="budget-bubble" data-target="851.7" data-suffix="B">
-          <div class="budget-number">$<span class="num">851.7</span><span class="suffix">B</span></div>
-          <div class="budget-label">Department of Defense</div>
-        </div>
-
-        <div class="budget-bubble" data-target="62.8" data-suffix="B">
-          <div class="budget-number">$<span class="num">62.8</span><span class="suffix">B</span></div>
-          <div class="budget-label">Department of Homeland Security</div>
-        </div>
-
-        <div class="budget-bubble" data-target="58.8" data-suffix="B">
-          <div class="budget-number">$<span class="num">58.8</span><span class="suffix">B</span></div>
-          <div class="budget-label">Department of State</div>
-        </div>
-
-        <div class="budget-bubble" data-target="180.0" data-suffix="B">
-          <div class="budget-number">$<span class="num">180.0</span><span class="suffix">B</span></div>
-          <div class="budget-label">Small Business Awards</div>
-        </div>
-
-        <div class="budget-bubble" data-target="7.0" data-suffix="T">
-          <div class="budget-number">$<span class="num">7.0</span><span class="suffix">T</span></div>
-          <div class="budget-label">Total Federal Outlays</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ====== Contact ====== -->
-  <section id="contact" class="section">
-    <div class="container">
-      <h2 class="section-title">Contact</h2>
-
-      <div class="contact-grid">
-        <!-- form -->
-        <form class="contact-card" name="contact" method="POST" data-netlify="true">
-          <input type="hidden" name="form-name" value="contact" />
-          <label>Name
-            <input type="text" name="name" required />
-          </label>
-          <label>Email
-            <input type="email" name="email" required />
-          </label>
-          <label>Message
-            <textarea name="message" rows="6" required></textarea>
-          </label>
-          <button class="btn btn-primary wide" type="submit">Send Message</button>
-        </form>
-
-        <!-- company -->
-        <div class="contact-card">
-          <h3 class="company">Bonny Contracting Solutions Pty Ltd</h3>
-          <p><strong>Email:</strong> <a href="mailto:info@bonnycsolutions.com">info@bonnycsolutions.com</a></p>
-          <p><strong>Phone (US):</strong> +1 (707) 514 6122</p>
-          <p><strong>Phone (AUS):</strong> +61 448 793 660</p>
-          <p class="muted">Registered consulting partner supporting global government contractors.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container">
-      <p>© <span id="year"></span> Bonny Contracting Solutions Pty Ltd</p>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>
