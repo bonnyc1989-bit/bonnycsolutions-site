@@ -1,103 +1,67 @@
-// === HERO VIDEO HANDLER ===
-// Ensures autoplay works smoothly on mobile and desktop
-document.addEventListener("DOMContentLoaded", () => {
-  const vid = document.getElementById("videoA");
-  if (vid) {
-    vid.play().catch(() => {
-      // If autoplay is blocked, unmute workaround
-      vid.muted = true;
-      vid.play().catch(() => {});
+// Footer year
+document.getElementById("year").textContent = new Date().getFullYear();
+
+/* ===== HERO: image first, then swap to video when ready ===== */
+const heroVideo = document.getElementById("heroVideo");
+if (heroVideo) {
+  const tryPlay = () => heroVideo.play().catch(() => {});
+  heroVideo.muted = true;
+  heroVideo.addEventListener("canplaythrough", () => {
+    heroVideo.classList.add("ready"); // fade in video over the poster image
+    tryPlay();
+  });
+  // Attempt autoplay on load as well (mobile)
+  window.addEventListener("load", tryPlay);
+}
+
+/* ===== BUDGET COUNTERS (count-up when visible) ===== */
+const bubbles = document.querySelectorAll(".budget-bubble");
+if (bubbles.length) {
+  const format = (n, suffix) => `$${n.toFixed(1)}${suffix}`;
+  const runCounter = (el) => {
+    const target = parseFloat(el.dataset.target || "0");
+    const suffix = el.dataset.suffix || "";
+    const numEl = el.querySelector(".budget-number");
+    let val = 0;
+    const duration = 1200; // ms
+    const start = performance.now();
+    const tick = (t) => {
+      const p = Math.min(1, (t - start) / duration);
+      val = target * (0.2 + 0.8 * p * p); // ease in
+      if (p < 1) requestAnimationFrame(tick);
+      numEl.textContent = format(Math.min(val, target), suffix);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        runCounter(entry.target);
+        obs.unobserve(entry.target);
+      }
     });
-  }
-});
+  }, { threshold: 0.35 });
 
-// === SEALS AUTO-SCROLL ===
-// Continuously scroll the seals row right→left in an infinite loop
-const sealRow = document.querySelector(".seal-row");
-let scrollPos = 0;
-function animateSeals() {
-  if (!sealRow) return;
-  scrollPos -= 0.5; // speed of scroll
-  sealRow.style.transform = `translateX(${scrollPos}px)`;
-  if (Math.abs(scrollPos) >= sealRow.scrollWidth / 2) {
-    scrollPos = 0;
-  }
-  requestAnimationFrame(animateSeals);
-}
-if (sealRow) animateSeals();
-
-// Pause scroll on hover
-const sealTrack = document.querySelector(".seal-track");
-if (sealTrack) {
-  sealTrack.addEventListener("mouseenter", () => cancelAnimationFrame(animateSeals));
-  sealTrack.addEventListener("mouseleave", () => animateSeals());
+  bubbles.forEach((b) => io.observe(b));
 }
 
-// === BUDGET COUNTER ANIMATION ===
-const counters = document.querySelectorAll(".budget-bubble");
-let budgetAnimated = false;
-
-function animateCounters() {
-  if (budgetAnimated) return;
-  const triggerPoint = window.innerHeight * 0.8;
-  counters.forEach((bubble) => {
-    const rect = bubble.getBoundingClientRect();
-    if (rect.top < triggerPoint) {
-      const target = parseFloat(bubble.getAttribute("data-target"));
-      const suffix = bubble.getAttribute("data-suffix") || "";
-      const span = bubble.querySelector("span");
-      let count = 0;
-      const speed = target / 200; // adjust speed here
-      const update = () => {
-        count += speed;
-        if (count >= target) {
-          count = target;
-          budgetAnimated = true;
-        } else {
-          requestAnimationFrame(update);
-        }
-        span.textContent = `$${count.toFixed(1)}${suffix}`;
-      };
-      update();
-    }
-  });
-}
-window.addEventListener("scroll", animateCounters);
-
-// === FADE-IN ON SCROLL ===
-const fadeEls = document.querySelectorAll(".section");
-function fadeOnScroll() {
-  fadeEls.forEach((el) => {
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.85) {
-      el.style.opacity = "1";
-      el.style.transform = "translateY(0)";
-      el.style.transition = "opacity 1s ease, transform 1s ease";
-    }
-  });
-}
-window.addEventListener("scroll", fadeOnScroll);
-window.addEventListener("load", fadeOnScroll);
-
-// === NETLIFY FORM SUCCESS ===
+/* ===== CONTACT (Netlify form XHR to stay on page) ===== */
 const form = document.querySelector('form[name="contact"]');
 if (form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const formData = new FormData(form);
+    const data = new FormData(form);
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(formData).toString(),
+      body: new URLSearchParams(data).toString()
     })
       .then(() => {
-        form.querySelector(".form-success").hidden = false;
         form.reset();
+        const ok = form.querySelector(".form-success");
+        if (ok) ok.hidden = false;
       })
-      .catch((error) => alert(error));
+      .catch((err) => alert("Submission failed. Please try again."));
   });
 }
-
-// === FOOTER YEAR AUTO ===
-const yearSpan = document.getElementById("year");
-if (yearSpan) yearSpan.textContent = new Date().getFullYear();
