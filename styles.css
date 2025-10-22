@@ -118,23 +118,88 @@ body::after{right:calc(50% - 560px);}
 .bullets{margin:0 0 1rem 1rem}
 .bullets li{margin:.35rem 0}
 
-/* ====== Seals carousel ====== */
-.seals-marquee{position:relative;overflow:hidden;margin-top:16px}
+/* ===== Agencies / Seals ===== */
+:root{
+  /* Control seal size & spacing here */
+  --seal-size: 128px;    /* bigger seals */
+  --seal-gap: 48px;      /* space between seals */
+}
+
+/* Pull heading up a bit to allow more room for bigger seals */
+.seals h2{
+  margin-top: -0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Outer container (keeps your existing class name) */
+.seals-marquee{
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;       /* was 16px; tighter to heading */
+}
+
+/* The moving track */
 .seals-track{
-  display:flex;gap:60px;align-items:center;
-  animation:scroll 35s linear infinite;
-  will-change:transform;
+  display: flex;
+  gap: var(--seal-gap);
+  align-items: center;
+  animation: scroll 35s linear infinite;
+  will-change: transform;
 }
+
+/* Seal image */
 .seals-track img{
-  width:150px;height:auto;filter:none;opacity:1; /* original colors */
+  width: var(--seal-size);
+  height: var(--seal-size);
+  object-fit: contain;
+  border-radius: 50%;
+  filter: none;          /* original colors */
+  opacity: .98;
+  transition: transform .2s ease, opacity .2s ease;
 }
-.fade{position:absolute;top:0;bottom:0;width:110px;pointer-events:none}
-.fade-left{left:0;background:linear-gradient(90deg, var(--bg), transparent)}
-.fade-right{right:0;background:linear-gradient(270deg, var(--bg), transparent)}
+.seals-track img:hover{
+  transform: scale(1.06);
+  opacity: 1;
+}
+
+/* Edge fades (keep your background var --bg) */
+.fade{
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 110px;
+  pointer-events: none;
+}
+.fade-left{
+  left: 0;
+  background: linear-gradient(90deg, var(--bg), transparent);
+}
+.fade-right{
+  right: 0;
+  background: linear-gradient(270deg, var(--bg), transparent);
+}
+
+/* Same keyframes name so your JS keeps working */
 @keyframes scroll{
-  from{transform:translateX(0)}
-  to{transform:translateX(-50%)}
+  from{ transform: translateX(0) }
+  to  { transform: translateX(-50%) }
 }
+
+/* Responsive tweaks */
+@media (max-width:1024px){
+  :root{
+    --seal-size: 108px;
+    --seal-gap: 36px;
+  }
+  .seals h2{ margin-top: -0.25rem; }
+}
+@media (max-width:640px){
+  :root{
+    --seal-size: 88px;
+    --seal-gap: 28px;
+  }
+  .seals h2{ margin-top: -0.15rem; }
+}
+
 
 /* ====== Budget ====== */
 .budget-grid{
