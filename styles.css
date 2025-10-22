@@ -272,3 +272,55 @@
      ============================= */
   .footer{padding:36px 0 60px;color:#b7ceda;text-align:center}
   
+  /* ===== FINAL OVERRIDES: FORCE BIG SEALS ===== */
+section.seals {
+  /* set your target seal size and spacing here */
+  --seal-size: 220px;   /* ~3x bigger than before; bump to 260px / 300px if you want more */
+  --seal-gap: 56px;     /* wider spacing so they don’t collide */
+}
+
+/* Make sure we beat any earlier rules */
+section.seals .seals-track img{
+  width: var(--seal-size) !important;
+  height: var(--seal-size) !important;
+  border-radius: 50%;
+  object-fit: contain;
+  filter: none;
+  opacity: 1;
+}
+
+/* Ensure track spacing matches the larger icons */
+section.seals .seals-track{
+  gap: var(--seal-gap) !important;
+  padding: 12px 0;
+}
+
+/* Give the marquee enough height so images aren't visually clipped */
+section.seals .seals-marquee{
+  min-height: calc(var(--seal-size) + 28px);
+}
+
+/* Slightly taller fades so the edges look right with large seals */
+section.seals .fade{ width: 160px; }
+
+/* ===== BIG SEALS OVERRIDE (force large size) ===== */
+:root{
+  --seal-size: 260px;   /* make bigger here: 260, 300, etc. */
+  --seal-gap: 56px;     /* spacing between seals */
+}
+
+/* If your section has .seals, this keeps the title spacing tidy */
+.seals h2{ margin-bottom: 1rem; }
+
+/* Make sure the moving row uses the larger gap */
+.seals-track{ gap: var(--seal-gap); }
+
+/* The important bit: force each seal image to the big size */
+.seals-track img{
+  width:  var(--seal-size) !important;
+  height: var(--seal-size) !important;
+  object-fit: contain;
+  border-radius: 50%;
+  filter: none;
+  opacity: 1;
+}
