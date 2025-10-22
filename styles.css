@@ -119,41 +119,42 @@ body::after{right:calc(50% - 560px);}
 .bullets li{margin:.35rem 0}
 
 /* ===== Agencies / Seals ===== */
+
+/* Control size/spacing from one place */
 :root{
-  /* Control seal size & spacing here */
-  --seal-size: 128px;    /* bigger seals */
-  --seal-gap: 48px;      /* space between seals */
+  --seal-size: 180px;   /* bigger seals on desktop */
+  --seal-gap:  56px;    /* space between seals */
 }
 
-/* Pull heading up a bit to allow more room for bigger seals */
+/* Pull heading up slightly so large seals fit comfortably */
 .seals h2{
-  margin-top: -0.35rem;
-  margin-bottom: 0.5rem;
+  margin-top: -0.55rem;
+  margin-bottom: 0.6rem;
 }
 
-/* Outer container (keeps your existing class name) */
+/* Outer container (keeps your class names) */
 .seals-marquee{
   position: relative;
   overflow: hidden;
-  margin-top: 8px;       /* was 16px; tighter to heading */
+  margin-top: 6px;
 }
 
-/* The moving track */
+/* Moving track */
 .seals-track{
   display: flex;
   gap: var(--seal-gap);
   align-items: center;
-  animation: scroll 35s linear infinite;
+  animation: scroll 38s linear infinite;
   will-change: transform;
 }
 
-/* Seal image */
+/* Seal images — original colors, larger, circular */
 .seals-track img{
   width: var(--seal-size);
   height: var(--seal-size);
   object-fit: contain;
   border-radius: 50%;
-  filter: none;          /* original colors */
+  filter: none;
   opacity: .98;
   transition: transform .2s ease, opacity .2s ease;
 }
@@ -162,11 +163,11 @@ body::after{right:calc(50% - 560px);}
   opacity: 1;
 }
 
-/* Edge fades (keep your background var --bg) */
+/* Edge fades */
 .fade{
   position: absolute;
   top: 0; bottom: 0;
-  width: 110px;
+  width: 140px;
   pointer-events: none;
 }
 .fade-left{
@@ -178,28 +179,27 @@ body::after{right:calc(50% - 560px);}
   background: linear-gradient(270deg, var(--bg), transparent);
 }
 
-/* Same keyframes name so your JS keeps working */
+/* Seamless loop */
 @keyframes scroll{
   from{ transform: translateX(0) }
   to  { transform: translateX(-50%) }
 }
 
-/* Responsive tweaks */
+/* Responsive seals */
 @media (max-width:1024px){
   :root{
-    --seal-size: 108px;
-    --seal-gap: 36px;
+    --seal-size: 140px;
+    --seal-gap:  44px;
   }
-  .seals h2{ margin-top: -0.25rem; }
+  .seals h2{ margin-top: -0.45rem; margin-bottom:.55rem; }
 }
 @media (max-width:640px){
   :root{
-    --seal-size: 88px;
-    --seal-gap: 28px;
+    --seal-size: 104px;
+    --seal-gap:  32px;
   }
-  .seals h2{ margin-top: -0.15rem; }
+  .seals h2{ margin-top: -0.35rem; margin-bottom:.5rem; }
 }
-
 
 /* ====== Budget ====== */
 .budget-grid{
