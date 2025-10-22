@@ -173,7 +173,17 @@
     animation: scroll 35s linear infinite;
     will-change: transform;
   }
-  
+  /* Remove stray list markers/dots in the seals row */
+.seals ul,
+.seals li,
+.seals-track,
+.seals-track li{
+  list-style: none !important;
+  margin: 0;
+  padding: 0;
+}
+.seals-track li::marker{ content: "" !important; }
+
   /* The seals (FORCED size so nothing shrinks them) */
   .seals-track img{
     display:block;
@@ -218,6 +228,12 @@
     .seals-marquee{ min-height: calc(var(--seal-size) + 16px); }
   }
   
+  /* ===== OVERRIDE: final seal size ===== */
+:root{
+  --seal-size: 170px;   /* half of the previous big size (adjust if you want) */
+  --seal-gap: 60px;     /* spacing between seals; tweak if needed */
+}
+
   /* =============================
      Budget
      ============================= */
