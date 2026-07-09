@@ -38,8 +38,8 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const files = [
   'images/Soldiers.opt.mp4',  // smaller
   'images/Iwojima.opt.mp4',   // MUCH smaller
-  'images/Boots.mp4',         // already small, keep
-  'images/B1.opt.mp4',        // MUCH smaller
+  'images/boots.mp4',         // already small, keep
+  'images/b1.opt.mp4',        // MUCH smaller
 ];
 
 
