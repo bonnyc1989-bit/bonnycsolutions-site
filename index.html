@@ -18,7 +18,7 @@
   <!-- Fonts (preconnects for faster font CSS) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="favicon-180.png">
@@ -58,7 +58,10 @@
     <!-- NAV -->
     <header class="nav">
       <div class="container nav-inner">
-        <div class="brand">Bonny Contracting Solutions Pty Ltd</div>
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Bonny Contracting Solutions<span class="brand-suffix"> Pty Ltd</span></span>
+        </div>
 
         <!-- Horizontal scroller wrapper for mobile -->
         <nav class="primary-nav" role="navigation" aria-label="Primary">
@@ -97,12 +100,13 @@
 
         <div class="container">
           <div class="hero-panel">
-            <h1>Find. Influence. Win.<br>U.S. Federal Contracts.</h1>
-            <p>“We pair our heavy/precision machinery and maintenance know-how with data-driven research on federal spending patterns—anticipating what buyers need and raising your probability of win.”</p>
+            <p class="hero-eyebrow">Federal Capture Advisory</p>
+            <h1>Find. Influence. Win.<span class="h1-alt">U.S. Federal Contracts.</span></h1>
+            <p class="hero-quote">“We pair our heavy/precision machinery and maintenance know-how with data-driven research on federal spending patterns—anticipating what buyers need and raising your probability of win.”</p>
 
             <div class="cta-row">
               <a class="btn btn-primary" href="#enquiry">Get Started</a>
-              <a class="btn" style="border-color:rgba(255,255,255,.55);color:#e8f3ff;" href="#services">See Services</a>
+              <a class="btn btn-ghost" href="#services">See Services</a>
             </div>
 
           </div>
@@ -112,13 +116,14 @@
       <!-- SERVICES -->
       <section id="services" class="section">
         <div class="container">
+          <p class="eyebrow"><span class="eyebrow-idx">01</span> Capabilities</p>
           <h2>Services</h2>
           <p class="muted">Practical, outcomes-first support. When needed, I bring in trusted specialists through BonnyCsolutions to scale delivery.</p>
 
           <div class="services-grid" style="margin-top:16px;">
             <article class="service-card">
               <div class="service-body">
-                <h3>Roadmapping & Strategic Placement</h3>
+                <h3>Roadmapping <span class="amp">&amp;</span> Strategic Placement</h3>
                 <p>Map buyer demand, competitors, and vehicles to build a pursuit plan that maximizes probability of award (PWin) and avoids low-yield bids.</p>
               </div>
             </article>
@@ -136,6 +141,7 @@
       <!-- PROCESS -->
       <section id="process" class="section">
         <div class="container">
+          <p class="eyebrow"><span class="eyebrow-idx">02</span> Method</p>
           <h2>Our Process</h2>
           <div class="process-line">Finding Opportunities → Pursuing → Winning.</div>
           <p class="muted">From confusion to contract—supported by the BonnyCsolutions team where needed.</p>
@@ -160,6 +166,7 @@
       <!-- ANNUAL SPEND -->
       <section id="spend" class="section">
         <div class="container">
+          <p class="eyebrow"><span class="eyebrow-idx">03</span> The Market</p>
           <h2>Annual Spend 2025</h2>
           <p class="muted">Budget &amp; spending highlights.</p>
 
@@ -214,6 +221,7 @@
       <!-- TARGET DEPARTMENTS -->
       <section id="agencies" class="section">
         <div class="container">
+          <p class="eyebrow"><span class="eyebrow-idx">04</span> Buyers</p>
           <h2>Target Departments</h2>
 
           <div class="seal-track" style="margin-top:14px;">
@@ -233,6 +241,8 @@
       <!-- ABOUT -->
 <section id="about" class="section">
   <div class="container">
+
+    <p class="eyebrow"><span class="eyebrow-idx">05</span> Who You're Working With</p>
 
     <div class="bubble">
       <h2>About</h2>
@@ -268,9 +278,8 @@
         <div class="container">
 
           <div class="enquiry-head">
+            <p class="eyebrow"><span class="eyebrow-idx">06</span> Get In Touch</p>
             <h2 class="enquiry-title">Quick Enquiry</h2>
-            <div class="enquiry-head-divider" aria-hidden="true"></div>
-            <h2 class="contact-title">Contact</h2>
           </div>
 
           <p class="muted">Send us a note and we’ll reply within 1–3 business days.</p>
@@ -306,6 +315,7 @@
             <div class="enquiry-divider" aria-hidden="true"></div>
 
             <div class="enquiry-col">
+              <h3 class="contact-heading">Contact</h3>
               <div class="contact-card">
                 <ul class="contact-list">
                   <li><strong>Phone (U.S.):</strong> <a href="tel:+17075146122">+1 (707) 514-6122</a></li>
