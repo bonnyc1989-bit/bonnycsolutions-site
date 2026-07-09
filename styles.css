@@ -313,3 +313,30 @@
   content-visibility: auto;
   contain-intrinsic-size: 1px 1000px;
 }
+/* === Bubbles (card-style panels) === */
+.bubble{
+  background: rgba(255,255,255,0.04);       /* subtle fill over dark bg */
+  border: 1px solid rgba(255,255,255,0.16); /* faint outline */
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin: 16px 0 28px;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.25),             /* soft drop shadow */
+    inset 0 1px 0 rgba(255,255,255,0.03);   /* faint inner highlight */
+}
+
+.bubble--tight{
+  padding: 18px 22px;                        /* slightly tighter variant */
+}
+
+/* Keep spacing tidy inside the bubble */
+.bubble h3{ margin-top: 0; }
+.bubble p { margin: 0 0 12px; }
+.bubble li{ margin: 6px 0; }
+
+@media (min-width: 900px){
+  .bubble{
+    padding: 28px 32px;
+    border-radius: 22px;
+  }
+}

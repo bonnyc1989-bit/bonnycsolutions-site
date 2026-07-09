@@ -18,7 +18,11 @@
   <!-- Fonts (preconnects for faster font CSS) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="favicon.png">
+
 
   <!-- Preload hero poster (fast first paint) -->
   <link rel="preload" as="image" href="images/hero-poster.jpg" fetchpriority="high">
@@ -81,22 +85,26 @@
       <section id="hero" class="hero section">
         <div class="hero-video" aria-hidden="true">
           <!-- preload switched to metadata to keep first load light -->
-          <video id="videoA" class="hero-video-el" playsinline muted preload="none" poster="images/hero-poster.jpg"></video>
-          <video id="videoB" class="hero-video-el" playsinline muted preload="none" poster="images/hero-poster.jpg"></video>
+<video id="videoA" class="hero-video-el" playsinline muted preload="none" poster="images/hero-poster.jpg" autoplay loop>
+  <source src="images/b1.opt.mp4" type="video/mp4">
+</video>
+
+<video id="videoB" class="hero-video-el" playsinline muted preload="none" poster="images/hero-poster.jpg" autoplay loop>
+  <source src="images/boots.mp4" type="video/mp4">
+</video>
+
         </div>
 
         <div class="container">
           <div class="hero-panel">
             <h1>Find. Influence. Win.<br>U.S. Federal Contracts.</h1>
-            <p>Pipeline development, early shaping, and compliant proposals—built for small businesses.</p>
+            <p>“We pair our heavy/precision machinery and maintenance know-how with data-driven research on federal spending patterns—anticipating what buyers need and raising your probability of win.”</p>
+
             <div class="cta-row">
               <a class="btn btn-primary" href="#enquiry">Get Started</a>
               <a class="btn" style="border-color:rgba(255,255,255,.55);color:#e8f3ff;" href="#services">See Services</a>
             </div>
-            <p class="support muted" style="max-width:920px;">
-              We specialize in bringing the right <strong>DoD</strong> and <strong>U.S. State Department</strong> solicitations forward and increasing
-              your probability of award—through focused targeting, disciplined capture, and sharp proposals.
-            </p>
+
           </div>
         </div>
       </section>
@@ -223,35 +231,37 @@
       </section>
 
       <!-- ABOUT -->
-      <section id="about" class="section">
-        <div class="container">
-          <h2>About</h2>
+<section id="about" class="section">
+  <div class="container">
 
-          <p>Most small businesses entering the U.S. Federal market face the same challenges: compliance feels overwhelming, proposals miss key details, and opportunities slip by because targeting and timing aren’t precise. That’s where I come in.</p>
+    <div class="bubble">
+      <h2>About</h2>
 
-          <p>With 15+ years of experience in mechanical engineering, heavy industry, and military operations, I’ve built a career around making complex systems work under pressure. I now apply that discipline to federal contracting—helping small businesses close the gaps that keep them from winning.</p>
+      <p>Most small businesses entering the U.S. Federal market face the same challenges: compliance feels overwhelming, proposals miss key details, and opportunities slip by because targeting and timing aren’t precise. That’s where I come in.</p>
 
-          <ul class="impact-list">
-            <li><strong>If your proposals aren’t compliant</strong> — I <u>bring structure and story so they pass review</u>.</li>
+      <p>With 15+ years of experience in mechanical engineering, heavy industry, and military operations, I’ve built a career around making complex systems work under pressure. I now apply that discipline to federal contracting—helping small businesses close the gaps that keep them from winning.</p>
 
-            <li><strong>If your capture process lacks focus</strong> — I <u>design a system to target the right agencies at the right time</u>.</li>
+      <h3>What We Do for You</h3>
+      <ul class="what-we-do">
+        <li><strong>Targeted market research</strong> — identify who buys what, where, and when across agencies, NAICS/PSC, and contract vehicles.</li>
+        <li><strong>Capture focused on highest PWin</strong> — prioritize leads and opportunities tailored to your capabilities, timelines, and past performance.</li>
+        <li><strong>Relationship building with awarding offices</strong> — engage COs/PMs early, nurture trust, and set the stage for repeat federal work over time.</li>
+      </ul>
+    </div><!-- /bubble -->
 
-            <li><strong>If your internal processes are ad-hoc</strong> — I <u>turn them into repeatable, auditable workflows that withstand scrutiny</u>.</li>
-          </ul>
+    <!-- Bubble: closer statement -->
+    <div class="closer-block bubble bubble--tight">
+      <div class="closer-rule" aria-hidden="true"></div>
+      <h3 class="closer-line">
+        When small businesses fall short, I step in to turn weak spots into winning strategies—
+        so you don’t just compete, you succeed.
+      </h3>
+    </div>
 
-          <p>I don’t just advise—I improve the systems you already have, turning uncertainty into repeatable success.</p>
+  </div><!-- /container -->
+</section>
 
-          <h3>How I Work</h3>
-          <ul>
-            <li>Pinpoint where your capture and proposal systems break down.</li>
-            <li>Build lean, compliant processes that align with federal requirements.</li>
-            <li>Target mechanical, technology, and security opportunities with precision.</li>
-            <li>Deliver proposals and pipelines that can withstand scrutiny from agencies like DoD, Homeland Security, Justice, and VA.</li>
-          </ul>
 
-          <p>When small businesses fall short, I step in to turn weak spots into winning strategies—so you don’t just compete, you succeed.</p>
-        </div>
-      </section>
 
       <!-- ENQUIRY -->
       <section id="enquiry" class="section">
