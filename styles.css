@@ -56,10 +56,17 @@
 html,body{margin:0;padding:0}
 html{scroll-behavior:smooth}
 
-/* overscroll-behavior:none together with overflow-x:hidden on BOTH html and
-   body stops the mouse wheel scrolling the page in Chrome. Limiting the
-   containment to the x axis keeps the intent and restores the wheel. */
-html,body{overscroll-behavior-x:none;overflow-x:hidden}
+/* Do NOT use `overflow-x:hidden` here. On the root it creates a scroll
+   container, which (a) combined with `overscroll-behavior` stops the mouse
+   wheel scrolling the page in Chromium, and (b) can break `position:sticky`
+   descendants. `overflow-x:clip` clips without creating a scroll container,
+   so it cannot capture the wheel. Older Safari (<16) lacks `clip`; there we
+   fall back to `hidden` on body only, never on html. */
+html,body{overflow-x:clip}
+@supports not (overflow:clip){
+  html{overflow-x:visible}
+  body{overflow-x:hidden}
+}
 
 body{
   background:var(--ink);
