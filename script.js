@@ -303,33 +303,52 @@ const files = [
   applyRM();
 })();
 
-/* ---------- Enquiry form (demo only) ---------- */
+/* ---------- Enquiry form -> Netlify Forms ----------
+   Submissions POST url-encoded to the site root, which is how Netlify Forms
+   accepts a JS-driven submit. The `form-name` field must match the form's
+   name attribute or Netlify rejects the payload. Honeypot field is `hp`,
+   declared via netlify-honeypot on the form element.                        */
 (() => {
   const form = $('#enquiryForm'); if (!form) return;
   const status = $('#enquiryStatus');
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-  form.addEventListener('submit', (e) => {
+  const say = (msg, kind) => {
+    if (!status) return;
+    status.textContent = msg;
+    status.className = 'enquiry-status' + (kind ? ' ' + kind : '');
+  };
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (status) {
-      status.classList.remove('error', 'success');
-      status.textContent = 'Sending…';
-    }
 
-    const hp = (new FormData(form)).get('hp');
-    if (hp) {
-      if (status) {
-        status.textContent = 'Something went wrong.';
-        status.className = 'enquiry-status error';
-      }
-      return;
-    }
+    const data = new FormData(form);
 
-    setTimeout(() => {
-      if (status) {
-        status.textContent = 'Thanks! We’ll be in touch shortly.';
-        status.className = 'enquiry-status success';
-      }
+    // Bot filled the hidden field: pretend success, send nothing.
+    if (data.get('hp')) { say('Thanks! We’ll be in touch shortly.', 'success'); form.reset(); return; }
+
+    const name = (data.get('name') || '').toString().trim();
+    const email = (data.get('email') || '').toString().trim();
+    const message = (data.get('message') || '').toString().trim();
+    if (!name || !email || !message) { say('Please complete every field.', 'error'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say('That email address doesn’t look right.', 'error'); return; }
+
+    say('Sending…');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data).toString(),
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      say('Thanks! We’ll be in touch shortly.', 'success');
       form.reset();
-    }, 600);
+    } catch (err) {
+      say('Could not send. Please email info@bonnycsolutions.com.', 'error');
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
   });
 })();

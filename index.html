@@ -289,7 +289,10 @@
 
           <div class="enquiry-grid">
             <div class="enquiry-col">
-              <form class="enquiry-form" id="enquiryForm" novalidate>
+              <form class="enquiry-form" id="enquiryForm" name="enquiry" method="POST"
+                    data-netlify="true" netlify-honeypot="hp" novalidate>
+                <!-- Netlify matches submissions to this form by name. -->
+                <input type="hidden" name="form-name" value="enquiry" />
                 <div class="grid">
                   <label class="field">
                     <span>Your name</span>
@@ -347,7 +350,7 @@
 
   </div>
 
-  <script src="script.js?v=dossier-1" defer></script>
+  <script src="script.js?v=dossier-2" defer></script>
 
 </body>
 </html>
