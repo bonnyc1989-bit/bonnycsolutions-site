@@ -35,11 +35,15 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 /* ---------- HERO: robust infinite 4-video loop ---------- */
 (() => {
+// 1440px-wide re-encodes from the original HD masters, with the hero's grade
+// (saturate .42, brightness .74) baked in — so styles.css no longer filters
+// each frame at runtime. Only files[0] and files[1] load up front; the rest
+// are fetched as the loop rotates.
 const files = [
-  'images/Soldiers.opt.mp4',  // smaller
-  'images/Iwojima.opt.mp4',   // MUCH smaller
-  'images/boots.mp4',         // already small, keep
-  'images/b1.opt.mp4',        // MUCH smaller
+  'images/hero/soldiers.mp4',
+  'images/hero/iwojima.mp4',
+  'images/hero/boots.mp4',
+  'images/hero/b1.mp4',
 ];
 
 

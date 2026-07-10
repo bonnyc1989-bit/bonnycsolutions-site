@@ -1,1 +1,9 @@
 /favicon.ico /images/icons/favicon.png 200
+
+# Netlify publishes every file in the repo. These directories hold the HD video
+# masters and retired assets, kept for archival rather than for visitors.
+# Nothing on the site links to them; this stops them being downloadable.
+# The trailing `!` forces the rule: without it an existing static file wins
+# over the redirect and the asset is still served.
+/images/_src/*    /404.html 404!
+/images/_unused/* /404.html 404!
