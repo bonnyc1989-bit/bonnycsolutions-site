@@ -25,13 +25,13 @@
 
 
   <!-- Preload hero poster (fast first paint) -->
-  <link rel="preload" as="image" href="images/hero-poster.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="images/hero/poster.jpg" fetchpriority="high">
 
   <!-- Site styles -->
   <!-- _headers caches /*.css immutable for a year, so this version query must
        change whenever styles.css changes, or returning visitors pair new HTML
        with a stale stylesheet. -->
-  <link rel="stylesheet" href="styles.css?v=dossier-1" />
+  <link rel="stylesheet" href="styles.css?v=dossier-2" />
 
   <!-- Minimal inline tweaks for bullet spacing/underline thickness -->
   <style>
@@ -90,14 +90,14 @@
       <!-- HERO -->
       <section id="hero" class="hero section">
         <div class="hero-video" aria-hidden="true">
-          <!-- preload switched to metadata to keep first load light -->
-<video id="videoA" class="hero-video-el" playsinline muted preload="none" poster="images/hero-poster.jpg" autoplay loop>
-  <source src="images/b1.opt.mp4" type="video/mp4">
-</video>
-
-<video id="videoB" class="hero-video-el" playsinline muted preload="none" poster="images/hero-poster.jpg" autoplay loop>
-  <source src="images/boots.mp4" type="video/mp4">
-</video>
+          <!-- No <source> children and no autoplay: script.js assigns src and
+               drives the loop. With them, the browser eagerly downloaded two
+               clips that the script then replaced, and reduced-motion visitors
+               (who never see video) downloaded them too. Poster carries the
+               same baked grade as the clips, so there is no brightness pop
+               when the first one starts. -->
+          <video id="videoA" class="hero-video-el" playsinline muted preload="none" poster="images/hero/poster.jpg"></video>
+          <video id="videoB" class="hero-video-el" playsinline muted preload="none" poster="images/hero/poster.jpg"></video>
 
         </div>
 
@@ -350,7 +350,7 @@
 
   </div>
 
-  <script src="script.js?v=dossier-2" defer></script>
+  <script src="script.js?v=dossier-3" defer></script>
 
 </body>
 </html>
