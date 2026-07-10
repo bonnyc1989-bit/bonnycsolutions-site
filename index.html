@@ -28,7 +28,10 @@
   <link rel="preload" as="image" href="images/hero-poster.jpg" fetchpriority="high">
 
   <!-- Site styles -->
-  <link rel="stylesheet" href="styles.css" />
+  <!-- _headers caches /*.css immutable for a year, so this version query must
+       change whenever styles.css changes, or returning visitors pair new HTML
+       with a stale stylesheet. -->
+  <link rel="stylesheet" href="styles.css?v=dossier-1" />
 
   <!-- Minimal inline tweaks for bullet spacing/underline thickness -->
   <style>
@@ -344,7 +347,7 @@
 
   </div>
 
-  <script src="script.js?v=opt-v1" defer></script>
+  <script src="script.js?v=dossier-1" defer></script>
 
 </body>
 </html>
