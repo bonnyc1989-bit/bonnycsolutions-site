@@ -42,8 +42,11 @@
      Anchor jumps use it via scroll-padding-top; overridden per breakpoint. */
   --nav-h:74px;
 
-  /* Department seal sizing (grid) */
-  --seal-size:104px;
+  /* Marquee (consumed by script.js clone logic) */
+  --seal-size:118px;
+  --seal-gap:74px;
+  --seal-speed:46s;
+  --edge-fade:14%;
 
   /* Set at runtime by script.js */
   --stats-caption-h:auto;
@@ -320,7 +323,13 @@ strong{font-weight:600;color:var(--bone)}
 }
 .hero.section + .section::before{display:none}
 
-.hero-video{position:absolute;inset:0;z-index:0;overflow:hidden}
+.hero-video{
+  position:absolute;inset:0;z-index:0;overflow:hidden;
+  /* Poster as a permanent base layer so the hero is never empty: shown before
+     the loop starts, on slow/save-data/reduced-motion, and if a clip fails to
+     paint. The <video> elements sit on top and cover it once they play. */
+  background:var(--ink) url("images/hero/poster.jpg") center 42%/cover no-repeat;
+}
 .hero-video-el{
   position:absolute;inset:0;
   width:100%;height:100%;
@@ -560,51 +569,42 @@ strong{font-weight:600;color:var(--bone)}
 }
 
 /* =========================================================
-   Department seals — a dignified static grid, labelled.
-   (Replaces the earlier auto-scrolling marquee: federal seals
-   read as more credible standing still and named than sliding by.)
+   Department seals — continuous right-to-left marquee
    ========================================================= */
-.seal-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:clamp(18px,2.6vw,36px) clamp(12px,2vw,28px);
-  margin-top:40px;
-  align-items:start;
+.seal-track{
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  height:calc(var(--seal-size) + 36px);
+  margin-top:32px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),transparent 100%);
 }
-.seal-item{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:14px;
-  text-align:center;
+.seal-row{
+  display:flex;align-items:center;gap:var(--seal-gap);
+  position:absolute;left:0;top:50%;
+  transform:translateY(-50%) translateX(0);
+  will-change:transform;
+  animation:seal-loop var(--seal-speed) linear infinite;
+}
+@keyframes seal-loop{
+  0%{transform:translateY(-50%) translateX(0)}
+  100%{transform:translateY(-50%) translateX(-50%)}
 }
 .seal{
-  width:100%;
-  max-width:var(--seal-size);
-  aspect-ratio:1;
-  object-fit:contain;
+  width:var(--seal-size);height:var(--seal-size);
+  object-fit:contain;flex:0 0 auto;
   border-radius:50%;
-  filter:saturate(.82) drop-shadow(0 6px 18px rgba(0,0,0,.5));
-  opacity:.92;
+  filter:saturate(.82) drop-shadow(0 6px 18px rgba(0,0,0,.55));
+  opacity:.9;
   transition:filter .35s ease,opacity .35s ease,transform .35s ease;
 }
-.seal-item:hover .seal{
-  filter:saturate(1) drop-shadow(0 8px 24px rgba(0,0,0,.6));
+.seal:hover{
+  filter:saturate(1) drop-shadow(0 8px 24px rgba(0,0,0,.65));
   opacity:1;
-  transform:translateY(-3px);
+  transform:scale(1.05);
 }
-.seal-label{
-  font-family:var(--font-mono);
-  font-size:10px;
-  font-weight:500;
-  letter-spacing:.13em;
-  text-transform:uppercase;
-  line-height:1.4;
-  color:var(--muted);
-  transition:color .35s ease;
-  text-wrap:balance;
-}
-.seal-item:hover .seal-label{color:var(--bone-2)}
+.seal-track:hover .seal-row{animation-play-state:paused}
 
 /* =========================================================
    About
@@ -811,7 +811,7 @@ strong{font-weight:600;color:var(--bone)}
    ========================================================= */
 @media (prefers-reduced-motion:no-preference){
   @supports (animation-timeline:view()){
-    .service-card,.step,.stat-card,.bubble,.closer-block,.seal-item,.contact-card,.enquiry-form{
+    .service-card,.step,.stat-card,.bubble,.closer-block,.seal-track,.contact-card,.enquiry-form{
       animation:rise .8s linear both;
       animation-timeline:view();
       animation-range:entry 2% cover 20%;
@@ -850,7 +850,6 @@ strong{font-weight:600;color:var(--bone)}
   .link-contact{display:list-item}
   .nav-cta{display:none}
 
-  .seal-grid{grid-template-columns:repeat(4,1fr);gap:clamp(20px,4vw,32px)}
   .services-grid{grid-template-columns:1fr}
   .steps{grid-template-columns:1fr}
   .step{border-right:0;border-bottom:1px solid var(--line);padding:32px 0}
@@ -863,8 +862,7 @@ strong{font-weight:600;color:var(--bone)}
 }
 
 @media (max-width:720px){
-  :root{--seal-size:88px}
-  .seal-grid{grid-template-columns:repeat(3,1fr)}
+  :root{--seal-size:88px;--seal-gap:48px}
   .stats{grid-template-columns:repeat(2,1fr)}
   .stat-card{border-right:1px solid var(--line);border-top:1px solid var(--line)}
   .stat-card:nth-child(2n){border-right:0}
@@ -884,5 +882,6 @@ strong{font-weight:600;color:var(--bone)}
     transition:none!important;
     scroll-behavior:auto!important;
   }
+  .seal-row{transform:translateY(-50%) translateX(0)}
   .hero-video-el{transition:none}
 }

@@ -285,6 +285,28 @@ const files = [
   }
 })();
 
+/* ---------- Departments marquee: duplicate once for seamless loop ---------- */
+(() => {
+  const track = $('.seal-track');
+  const row = track ? $('.seal-row', track) : null;
+  if (!track || !row) return;
+
+  if (!row.dataset.cloned) {
+    const originals = Array.from(row.children);
+    originals.forEach(node => {
+      const clone = node.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      row.appendChild(clone);
+    });
+    row.dataset.cloned = 'true';
+  }
+
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const applyRM = () => { row.style.animationPlayState = mq.matches ? 'paused' : 'running'; };
+  mq.addEventListener ? mq.addEventListener('change', applyRM) : mq.addListener(applyRM);
+  applyRM();
+})();
+
 /* ---------- Nav scroll-spy: mark the section you're currently reading ----------
    One IntersectionObserver watches every anchored section and keeps the matching
    nav link flagged .is-active. A rootMargin biased toward the top means a section
