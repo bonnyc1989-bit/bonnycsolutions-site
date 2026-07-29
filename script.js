@@ -285,26 +285,43 @@ const files = [
   }
 })();
 
-/* ---------- Departments marquee: duplicate once for seamless loop ---------- */
+/* ---------- Nav scroll-spy: mark the section you're currently reading ----------
+   One IntersectionObserver watches every anchored section and keeps the matching
+   nav link flagged .is-active. A rootMargin biased toward the top means a section
+   counts as "current" once its heading clears the sticky nav, which matches what
+   the reader sees. Falls back to no highlight if IO is unavailable. */
 (() => {
-  const track = $('.seal-track');
-  const row = track ? $('.seal-row', track) : null;
-  if (!track || !row) return;
+  const links = $$('.nav-list a[href^="#"]');
+  if (!links.length || !('IntersectionObserver' in window)) return;
 
-  if (!row.dataset.cloned) {
-    const originals = Array.from(row.children);
-    originals.forEach(node => {
-      const clone = node.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true');
-      row.appendChild(clone);
-    });
-    row.dataset.cloned = 'true';
-  }
+  // Map each section id -> its nav link, and collect the sections to watch.
+  const linkFor = new Map();
+  const sections = [];
+  links.forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    const sec = id && document.getElementById(id);
+    if (sec) { linkFor.set(sec, a); sections.push(sec); }
+  });
+  if (!sections.length) return;
 
-  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const applyRM = () => { row.style.animationPlayState = mq.matches ? 'paused' : 'running'; };
-  mq.addEventListener ? mq.addEventListener('change', applyRM) : mq.addListener(applyRM);
-  applyRM();
+  const setActive = (link) => {
+    links.forEach(a => a.classList.toggle('is-active', a === link));
+  };
+
+  // Track which sections are on screen; the topmost one wins.
+  const visible = new Set();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { e.isIntersecting ? visible.add(e.target) : visible.delete(e.target); });
+    if (!visible.size) return;
+    const top = [...visible].sort((a, b) =>
+      a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
+    setActive(linkFor.get(top));
+  }, {
+    // Trigger the switch around the point where a heading clears the nav.
+    rootMargin: '-45% 0px -50% 0px',
+    threshold: 0,
+  });
+  sections.forEach(sec => io.observe(sec));
 })();
 
 /* ---------- Enquiry form -> Netlify Forms ----------
