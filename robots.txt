@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /images/_src/
+Disallow: /images/_unused/
+
+Sitemap: https://www.bonnycsolutions.com/sitemap.xml
